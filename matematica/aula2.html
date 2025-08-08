@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evolução Educacional - Aula 2: Multiplicação, Divisão e PEMDAS</title>
+    <style>
+        /* Estilos Gerais */
+        :root {
+            --cor-primaria: #0056b3;
+            --cor-secundaria: #17a2b8;
+            --cor-sucesso: #28a745;
+            --cor-erro: #dc3545;
+            --cor-fundo: #f8f9fa;
+            --cor-texto: #212529;
+            --cor-cinza-claro: #e9ecef;
+            --cor-cinza-medio: #ced4da;
+            --cor-cinza-escuro: #6c757d;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+        .container {
+            max-width: 850px;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        /* Títulos e Textos */
+        h1, h2, h3, h4 {
+            color: var(--cor-primaria);
+        }
+        h1 { font-size: 2.3em; text-align: center; border-bottom: 3px solid var(--cor-primaria); padding-bottom: 15px; margin-bottom: 20px;}
+        h2 { font-size: 1.9em; border-bottom: 2px solid #dee2e6; padding-bottom: 10px; margin-top: 40px;}
+        h3 { font-size: 1.5em; color: var(--cor-secundaria);}
+        h4 { font-size: 1.3em; color: #343a40;}
+        p {
+            font-size: 1.1em;
+            text-align: justify;
+        }
+        strong {
+            color: var(--cor-primaria);
+        }
+        /* Blocos de Esquema Visual */
+        pre {
+            background-color: var(--cor-cinza-claro);
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 5px solid var(--cor-secundaria);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        /* Seção de Vídeo */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* Proporção 16:9 */
+            height: 0;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        /* Timer Pomodoro */
+        .pomodoro-timer {
+            background-color: var(--cor-cinza-claro);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .pomodoro-timer .timer-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: var(--cor-primaria);
+            margin: 10px 0;
+        }
+        .pomodoro-timer .controls button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        .pomodoro-timer .controls button:hover {
+            background-color: var(--cor-primaria);
+        }
+        /* Estilos do Quiz */
+        .aviso-timer {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .questao {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid var(--cor-cinza-medio);
+            border-radius: 8px;
+            background-color: #fdfdfd;
+        }
+        .questao-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+        .questao-header p {
+            font-weight: bold;
+            text-align: left;
+            margin: 0;
+            flex-grow: 1;
+        }
+        .question-timer-control button {
+            background-color: var(--cor-sucesso);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s;
+        }
+        .question-timer-control button:hover {
+            background-color: #218838;
+        }
+        .question-timer-control button:disabled {
+            background-color: var(--cor-cinza-escuro);
+            cursor: not-allowed;
+        }
+        .question-timer-display {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--cor-erro);
+            background-color: #f8d7da;
+            padding: 5px 10px;
+            border-radius: 5px;
+            min-width: 60px;
+            text-align: center;
+        }
+        .options label {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .options label.disabled {
+            cursor: not-allowed;
+            background-color: var(--cor-cinza-claro);
+            opacity: 0.7;
+        }
+        .options label:hover:not(.disabled) {
+            background-color: var(--cor-cinza-claro);
+            border-color: #adb5bd;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        /* Botões */
+        .btn {
+            padding: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s, opacity 0.3s;
+            flex-grow: 1;
+        }
+        #finalizarBtn {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            background-color: #007bff;
+        }
+        #finalizarBtn:hover {
+            background-color: var(--cor-primaria);
+        }
+        #finalizarBtn:disabled {
+            background-color: var(--cor-cinza-escuro);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .final-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .print-btn {
+            background-color: var(--cor-sucesso);
+        }
+        .print-btn:hover {
+            background-color: #218838;
+        }
+        .back-btn {
+            background-color: var(--cor-cinza-escuro);
+        }
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+        /* Elementos Ocultos e Resultados */
+        .hidden {
+            display: none;
+        }
+        #resultado {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+        .resultado-acerto {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .resultado-erro {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        #gabarito {
+            margin-top: 30px;
+        }
+        .resolucao {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        .resolucao strong {
+            color: var(--cor-primaria);
+        }
+        /* Estilos de Feedback para as Questões */
+        .correct {
+            background-color: #d4edda !important;
+            border-color: var(--cor-sucesso) !important;
+            font-weight: bold;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: var(--cor-erro) !important;
+        }
+        /* Estilos para Impressão */
+        @media print {
+            body { background-color: #fff; font-size: 12pt; padding: 0; margin: 0; }
+            .container { box-shadow: none; margin: 0; padding: 0 1cm; max-width: 100%; border: none; }
+            #finalizarBtn, #quizForm, .final-actions, .video-container, .pomodoro-timer { display: none !important; }
+            #gabarito, .resolucao, #resultado { display: block !important; border: none; background-color: #fff; padding: 10px 0; page-break-before: auto; }
+            h1, h2, h3, h4 { page-break-after: avoid; }
+            p, pre, ol, ul, li, div.resolucao { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Aula 2: Multiplicação, Divisão e Ordem de Precedência</h1>
+        
+        <div class="pomodoro-timer">
+            <h3>Timer Pomodoro de Estudos</h3>
+            <div class="timer-display" id="pomodoroDisplay">25:00</div>
+            <div class="controls">
+                <button id="startPomodoro">Iniciar Foco</button>
+                <button id="pausePomodoro">Pausar</button>
+                <button id="resetPomodoro">Reiniciar</button>
+            </div>
+        </div>
+
+        <section id="aula">
+            <h2>Tópico 1: Multiplicação e Divisão com Números Inteiros</h2>
+            <h3>Conceito 1.1: A Regra de Sinais para Multiplicação e Divisão</h3>
+            <p>Diferente da soma, a regra de sinais para multiplicação e divisão é mais direta e pode ser resumida em uma ideia: "amigos e inimigos". Pense no sinal positivo (+) como "amigo" e no negativo (-) como "inimigo".</p>
+            <h4>Esquema Visual (Regras de Sinais):</h4>
+            <pre>
++-------------------------------------------------------------+
+|                SINAIS IGUAIS (+) * (+) ou (-) * (-)           |
+|-------------------------------------------------------------|
+| Resultado: Sempre POSITIVO (+).                             |
+| Analogia: "O amigo do meu amigo é meu amigo" -> (+) * (+) = (+) |
+|           "O inimigo do meu inimigo é meu amigo" -> (-) * (-) = (+) |
++-------------------------------------------------------------+
+
++-------------------------------------------------------------+
+|                SINAIS DIFERENTES (+) * (-)                    |
+|-------------------------------------------------------------|
+| Resultado: Sempre NEGATIVO (-).                             |
+| Analogia: "O amigo do meu inimigo é meu inimigo" -> (+) * (-) = (-) |
+|           "O inimigo do meu amigo é meu inimigo" -> (-) * (+) = (-) |
++-------------------------------------------------------------+
+            </pre>
+            <h4>Exemplo Prático (Dívida Parcelada):</h4>
+            <p><strong>Situação:</strong> Você fez uma dívida de R$ 300,00 e vai pagá-la em 5 parcelas iguais. Qual número representa o impacto de cada parcela no seu orçamento?</p>
+            <p><strong>Modelagem:</strong> A dívida é um valor negativo (-300). Dividir em 5 parcelas é <code>/ 5</code>. A operação é: <code>-300 / 5</code>.</p>
+            <p><strong>Resolução Super Detalhada:</strong></p>
+            <ol>
+                <li><strong>Identificar os Sinais:</strong> Temos um número negativo (-300) e um positivo (+5). Os sinais são <strong>diferentes</strong>.</li>
+                <li><strong>Aplicar a Regra:</strong> A regra para sinais diferentes na divisão diz que o resultado será sempre <strong>negativo</strong>.</li>
+                <li><strong>Executar a Divisão dos Valores:</strong> <code>300 / 5 = 60</code>.</li>
+                <li><strong>Combinar o Valor com o Sinal:</strong> O resultado é <strong>-60</strong>.</li>
+            </ol>
+            <p><strong>Resposta:</strong> Cada parcela representa um impacto de <strong>-R$ 60,00</strong> no seu orçamento.</p>
+
+            <h2>Tópico 2: Multiplicação e Divisão com Números Decimais</h2>
+            <h3>Conceito 2.1: A Mecânica da Multiplicação e Divisão com Vírgula</h3>
+            <p><strong>Multiplicação:</strong> O segredo é multiplicar os números como se fossem inteiros, ignorando as vírgulas. No final, você conta o total de casas decimais nos números originais e coloca a vírgula no resultado.</p>
+            <p><strong>Divisão:</strong> Para dividir, o passo mais importante é igualar o número de casas decimais do dividendo e do divisor, acrescentando zeros. Depois, você pode "cortar" as vírgulas e dividir os números como se fossem inteiros.</p>
+            <h4>Exemplo Prático (Custo de um Produto por Quilo):</h4>
+            <p><strong>Situação:</strong> Uma peça de queijo de 1,5 kg custou R$ 83,70. Qual o preço por quilo (R$/kg) desse queijo?</p>
+            <p><strong>Modelagem:</strong> Preço por quilo = <code>Custo Total / Peso Total</code> -> <code>83,70 / 1,5</code>.</p>
+            <p><strong>Resolução Desenhada:</strong></p>
+            <ol>
+                <li><strong>Igualar as casas decimais:</strong> <code>83,70</code> (2 casas) e <code>1,5</code> vira <code>1,50</code> (2 casas).</li>
+                <li><strong>Cortar as vírgulas e dividir:</strong> Agora dividimos <code>8370</code> por <code>150</code>.</li>
+            </ol>
+            <pre>
+  8370 | 150
+ -750  +-------
+ ----   55,8
+  0870
+  -750
+  ----
+   1200  <-- (Adicionamos um 0 e uma vírgula no quociente)
+  -1200
+  -----
+      0
+            </pre>
+            <p><strong>Resposta:</strong> O preço por quilo do queijo é <strong>R$ 55,80</strong>.</p>
+
+            <h2>Tópico 3: Multiplicação e Divisão com Frações</h2>
+            <h3>Conceito 3.1: As Operações Diretas com Frações</h3>
+            <p>Diferente da soma, a multiplicação e a divisão de frações não exigem o MMC. As regras são diretas.</p>
+            <h4>Esquema Visual (Regras Diretas):</h4>
+            <pre>
++------------------------------------------------------------+
+|                       MULTIPLICAÇÃO                        |
+|------------------------------------------------------------|
+| Ação: Multiplique o de cima pelo de cima e o de baixo      |
+|       pelo de baixo.                                       |
+| Regra: a/b * c/d = (a*c)/(b*d)                             |
++------------------------------------------------------------+
+
++------------------------------------------------------------+
+|                          DIVISÃO                           |
+|------------------------------------------------------------|
+| Ação: Repita a primeira fração e multiplique pelo INVERSO  |
+|       da segunda.                                          |
+| Regra: a/b ÷ c/d = a/b * d/c                               |
++------------------------------------------------------------+
+            </pre>
+            <h4>Exemplo Prático (Dividindo uma Herança):</h4>
+            <p><strong>Situação:</strong> Três irmãos devem dividir igualmente 1/2 (metade) de um terreno. Que fração do terreno <strong>total</strong> cada irmão receberá?</p>
+            <p><strong>Modelagem:</strong> Devemos dividir a fração 1/2 por 3. Lembre-se que o número inteiro 3 pode ser escrito como a fração 3/1. A operação é: <code>(1/2) / (3/1)</code>.</p>
+            <p><strong>Resolução Super Detalhada:</strong></p>
+            <ol>
+                <li><strong>Aplicar a Regra da Divisão:</strong> "Repita a primeira e multiplique pelo inverso da segunda".</li>
+                <li>A primeira fração é `1/2`. O inverso da segunda (`3/1`) é `1/3`.</li>
+                <li><strong>Executar a Multiplicação:</strong> A conta agora é: `1/2 * 1/3`.</li>
+                <li>Multiplicando os de cima: `1 * 1 = 1`. Multiplicando os de baixo: `2 * 3 = 6`.</li>
+            </ol>
+            <p><strong>Resposta:</strong> Cada irmão receberá <strong>1/6</strong> do terreno total.</p>
+
+            <h2>Tópico 4: A Hierarquia Completa das Operações (PEMDAS) – A Ordem de Comando</h2>
+            <h3>Conceito 4.1: Entendendo a Hierarquia com uma Analogia</h3>
+            <p>Imagine as operações matemáticas como patentes em um exército. Algumas têm mais autoridade e agem primeiro. A sigla <strong>PEMDAS</strong> é a cadeia de comando que você <strong>deve</strong> seguir.</p>
+            <h4>Esquema Visual (A Pirâmide de Comando):</h4>
+            <pre>
+                      ^
+                     / \
+                    / ! \   <-- General (Prioridade Máxima)
+            +-------------------+
+            |  P - Parênteses   |   O Quartel-General. Tudo aqui dentro
+            |   ( ), [ ], { }   |   é resolvido antes de tudo.
+            +-------------------+
+                    / \
+                   / ! \  <-- Forças Especiais
+            +-------------------+
+            |   E - Expoentes   |   Agem sobre seus números antes das
+            |      x², √x       |   tropas comuns.
+            +-------------------+
+                    / \
+                   / ! \  <-- Capitães (Mesma Patente)
+            +-------------------+
+            | M - Multiplicação |   Agem na ordem em que aparecem na
+            |   D - Divisão     |   linha de batalha (da esquerda para a direita).
+            +-------------------+
+                    / \
+                   / ! \  <-- Soldados (Base do Exército)
+            +-------------------+
+            |    A - Adição     |   Agem por último, também na ordem em que
+            |  S - Subtração    |   aparecem (da esquerda para a direita).
+            +-------------------+
+            </pre>
+            <h4>Exemplo Prático Super Detalhado (Cálculo de Média Ponderada do ENEM):</h4>
+            <p><strong>Situação:</strong> A nota final de um curso é calculada da seguinte forma: a média de duas provas (P1 e P2) tem peso 2, e o trabalho final (T) tem peso 1. A nota final é a soma dos resultados ponderados dividida pela soma dos pesos (2+1=3). Se um aluno tirou 7,0 na P1, 9,0 na P2 e 6,0 no trabalho, qual sua nota final?</p>
+            <p><strong>Modelagem:</strong> <code>[ ((7 + 9) / 2) * 2  +  (6 * 1) ] / 3</code></p>
+            <p><strong>Resolução Visual e Passo a Passo:</strong></p>
+            <ol>
+                <li><strong>Atacar os Parênteses:</strong> `(7 + 9) = 16` e `(6 * 1) = 6`. A expressão vira: `[ 16 / 2 * 2 + 6 ] / 3`.</li>
+                <li><strong>Dominar os Colchetes (da esquerda para a direita):</strong>
+                    <ul>
+                        <li>Primeiro a Divisão: `16 / 2 = 8`. A expressão vira: `[ 8 * 2 + 6 ] / 3`.</li>
+                        <li>Agora a Multiplicação: `8 * 2 = 16`. A expressão vira: `[ 16 + 6 ] / 3`.</li>
+                        <li>Por último a Adição: `16 + 6 = 22`.</li>
+                    </ul>
+                </li>
+                <li><strong>A Batalha Final:</strong> A expressão final é: `22 / 3`. O resultado é aproximadamente <strong>7,33</strong>.</li>
+            </ol>
+        </section>
+
+        <section id="video-aula">
+            <h2>Vídeo Aula Complementar</h2>
+            <div class="video-container">
+                <!-- Para usar, substitua o 'SEU_CODIGO_DO_YOUTUBE' pelo código do vídeo. Ex: se o link é https://www.youtube.com/watch?v=dQw4w9WgXcQ, o código é dQw4w9WgXcQ -->
+                <iframe 
+                    width="560" 
+                    height="315" 
+                    src="https://www.youtube.com/embed/SEU_CODIGO_DO_YOUTUBE" 
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </section>
+
+        <section id="exercicios">
+            <h2>Exercícios de Fixação – Aula 2</h2>
+            <div class="aviso-timer">Antes de começar a ler cada questão, ative o timer!</div>
+            <form id="quizForm">
+                <div class="questao" id="q1-container">
+                    <div class="questao-header">
+                        <p><strong>Questão 1:</strong> Em um torneio de videogame, uma equipe inicia com 500 pontos. Para cada uma das 10 partidas jogadas, a equipe ganha 30 pontos por vitória e perde 15 pontos por derrota. Se a equipe obteve 6 vitórias e 4 derrotas, a pontuação final da equipe foi de:</p>
+                        <div class="question-timer-control">
+                            <button type="button" id="start-timer-q1">Ativar Timer</button>
+                            <span class="question-timer-display" id="timer-q1">03:00</span>
+                        </div>
+                    </div>
+                    <div class="options" id="options-q1">
+                        <label><input type="radio" name="q1" value="A"> (A) 525</label>
+                        <label><input type="radio" name="q1" value="B"> (B) 620</label>
+                        <label><input type="radio" name="q1" value="C"> (C) 680</label>
+                        <label><input type="radio" name="q1" value="D"> (D) 740</label>
+                        <label><input type="radio" name="q1" value="E"> (E) 5.120</label>
+                    </div>
+                </div>
+
+                <div class="questao" id="q2-container">
+                     <div class="questao-header">
+                        <p><strong>Questão 2:</strong> O valor da conta de energia elétrica de uma residência é composto por uma taxa fixa de R$ 22,50, mais um valor variável de R$ 0,80 por kWh consumido. Além disso, sobre o valor total (taxa fixa + valor variável), é adicionado um imposto de R$ 13,40. Em um mês que o consumo foi de 150 kWh, o valor total da conta de energia foi de:</p>
+                        <div class="question-timer-control">
+                            <button type="button" id="start-timer-q2">Ativar Timer</button>
+                            <span class="question-timer-display" id="timer-q2">03:00</span>
+                        </div>
+                    </div>
+                    <div class="options" id="options-q2">
+                        <label><input type="radio" name="q2" value="A"> (A) R$ 120,00</label>
+                        <label><input type="radio" name="q2" value="B"> (B) R$ 142,50</label>
+                        <label><input type="radio" name="q2" value="C"> (C) R$ 155,90</label>
+                        <label><input type="radio" name="q2" value="D"> (D) R$ 165,90</label>
+                        <label><input type="radio" name="q2" value="E"> (E) R$ 213,40</label>
+                    </div>
+                </div>
+
+                <div class="questao" id="q3-container">
+                     <div class="questao-header">
+                        <p><strong>Questão 3:</strong> Um agricultor possui um terreno de 120 hectares. Ele decide usar 2/5 da área total para o plantio de soja. Em seguida, ele divide <strong>apenas a área de soja</strong> em 6 talhões de tamanhos iguais. A área de cada talhão, em hectares, é de:</p>
+                        <div class="question-timer-control">
+                            <button type="button" id="start-timer-q3">Ativar Timer</button>
+                            <span class="question-timer-display" id="timer-q3">03:00</span>
+                        </div>
+                    </div>
+                    <div class="options" id="options-q3">
+                        <label><input type="radio" name="q3" value="A"> (A) 8</label>
+                        <label><input type="radio" name="q3" value="B"> (B) 12</label>
+                        <label><input type="radio" name="q3" value="C"> (C) 20</label>
+                        <label><input type="radio" name="q3" value="D"> (D) 48</label>
+                        <label><input type="radio" name="q3" value="E"> (E) 72</label>
+                    </div>
+                </div>
+
+                <div class="questao" id="q4-container">
+                     <div class="questao-header">
+                        <p><strong>Questão 4:</strong> Para a reforma de uma sala de estar retangular de 8 metros de comprimento por 5 metros de largura, será aplicado um verniz no piso. No centro da sala, há um tapete quadrado de 3 metros de lado, e a área coberta por ele não será envernizada. O custo do serviço é de R$ 12,00 por metro quadrado de área envernizada. O valor total gasto com o serviço será de:</p>
+                        <div class="question-timer-control">
+                            <button type="button" id="start-timer-q4">Ativar Timer</button>
+                            <span class="question-timer-display" id="timer-q4">03:00</span>
+                        </div>
+                    </div>
+                    <div class="options" id="options-q4">
+                        <label><input type="radio" name="q4" value="A"> (A) R$ 108,00</label>
+                        <label><input type="radio" name="q4" value="B"> (B) R$ 372,00</label>
+                        <label><input type="radio" name="q4" value="C"> (C) R$ 480,00</label>
+                        <label><input type="radio" name="q4" value="D"> (D) R$ 588,00</label>
+                        <label><input type="radio" name="q4" value="E"> (E) R$ 60,00</label>
+                    </div>
+                </div>
+                
+                <div class="questao" id="q5-container">
+                     <div class="questao-header">
+                        <p><strong>Questão 5:</strong> Uma pequena fábrica de parafusos produz 200 peças por hora. A máquina trabalhou por 8 horas seguidas, mas 1/10 de toda a produção apresentou defeito e foi descartada. Os parafusos restantes, sem defeito, foram embalados em caixas com capacidade para 50 unidades cada. O número de caixas utilizadas para embalar a produção sem defeito foi de:</p>
+                        <div class="question-timer-control">
+                            <button type="button" id="start-timer-q5">Ativar Timer</button>
+                            <span class="question-timer-display" id="timer-q5">03:00</span>
+                        </div>
+                    </div>
+                    <div class="options" id="options-q5">
+                        <label><input type="radio" name="q5" value="A"> (A) 28</label>
+                        <label><input type="radio" name="q5" value="B"> (B) 28,8</label>
+                        <label><input type="radio" name="q5" value="C"> (C) 30</label>
+                        <label><input type="radio" name="q5" value="D"> (D) 32</label>
+                        <label><input type="radio" name="q5" value="E"> (E) 144</label>
+                    </div>
+                </div>
+            </form>
+
+            <button id="finalizarBtn" class="btn">Finalizar e Ver Resultado</button>
+
+            <div id="resultado" class="hidden"></div>
+
+            <section id="gabarito" class="hidden">
+                <h2>Gabarito Comentado e Super Detalhado</h2>
+                
+                <div class="resolucao">
+                    <p><strong>Questão 1: Alternativa (B)</strong></p>
+                    <p><strong>Modelagem:</strong> `500 + (6 * 30) - (4 * 15)`</p>
+                    <ol>
+                        <li><strong>Multiplicações primeiro:</strong> `6 * 30 = 180` e `4 * 15 = 60`.</li>
+                        <li><strong>Expressão atualizada:</strong> `500 + 180 - 60`.</li>
+                        <li><strong>Resolver da esquerda para a direita:</strong> `500 + 180 = 680`, e depois `680 - 60 = 620`.</li>
+                    </ol>
+                </div>
+
+                <div class="resolucao">
+                    <p><strong>Questão 2: Alternativa (C)</strong></p>
+                    <p><strong>Modelagem:</strong> `[(0,80 * 150) + 22,50] + 13,40`</p>
+                    <ol>
+                        <li><strong>Custo variável (Multiplicação):</strong> `0,80 * 150 = 120,00`.</li>
+                        <li><strong>Soma com taxa fixa (Adição):</strong> `120,00 + 22,50 = 142,50`.</li>
+                        <li><strong>Adição do imposto (Adição final):</strong> `142,50 + 13,40 = 155,90`.</li>
+                    </ol>
+                </div>
+
+                <div class="resolucao">
+                    <p><strong>Questão 3: Alternativa (A)</strong></p>
+                    <p><strong>Modelagem:</strong> `(120 * 2/5) / 6`</p>
+                    <ol>
+                        <li><strong>Área da Soja (Multiplicação de fração):</strong> `(120 * 2) / 5 = 240 / 5 = 48` hectares.</li>
+                        <li><strong>Área por Talhão (Divisão):</strong> `48 / 6 = 8` hectares.</li>
+                    </ol>
+                </div>
+
+                <div class="resolucao">
+                    <p><strong>Questão 4: Alternativa (B)</strong></p>
+                    <p><strong>Modelagem:</strong> `[(8 * 5) - 3²] * 12`</p>
+                     <ol>
+                        <li><strong>Área da sala (Multiplicação):</strong> `8 * 5 = 40 m²`.</li>
+                        <li><strong>Área do tapete (Potência):</strong> `3² = 9 m²`.</li>
+                        <li><strong>Área a ser envernizada (Subtração):</strong> `40 - 9 = 31 m²`.</li>
+                        <li><strong>Custo total (Multiplicação):</strong> `31 * 12 = 372`.</li>
+                    </ol>
+                </div>
+                 <div class="resolucao">
+                    <p><strong>Questão 5: Alternativa (B)</strong></p>
+                    <p><strong>Modelagem:</strong> `[(200 * 8) - (1/10 * (200 * 8))] / 50`</p>
+                    <ol>
+                        <li><strong>Produção Total:</strong> `200 * 8 = 1600` peças.</li>
+                        <li><strong>Peças com Defeito:</strong> `1/10` de `1600` = `1600 / 10 = 160` peças.</li>
+                        <li><strong>Peças Boas:</strong> `1600 - 160 = 1440` peças.</li>
+                        <li><strong>Número de Caixas:</strong> `1440 / 50 = 28,8`.</li>
+                    </ol>
+                </div>
+
+                <div class="final-actions">
+                    <a href="aulas.html" class="btn back-btn">Voltar para o Menu de Aulas</a>
+                    <button type="button" id="printBtnFinal" class="btn print-btn">Salvar como PDF ou Imprimir</button>
+                </div>
+            </section>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const finalizarBtn = document.getElementById('finalizarBtn');
+            const printBtnFinal = document.getElementById('printBtnFinal');
+            const quizForm = document.getElementById('quizForm');
+            const resultadoDiv = document.getElementById('resultado');
+            const gabaritoDiv = document.getElementById('gabarito');
+            
+            // Gabarito e Timers
+            const correctAnswers = ['B', 'C', 'A', 'B', 'B'];
+            const totalQuestions = correctAnswers.length;
+            const questionTimers = [];
+
+            // --- Lógica do Timer Pomodoro ---
+            const pomodoroDisplay = document.getElementById('pomodoroDisplay');
+            const startPomodoroBtn = document.getElementById('startPomodoro');
+            const pausePomodoroBtn = document.getElementById('pausePomodoro');
+            const resetPomodoroBtn = document.getElementById('resetPomodoro');
+            let pomodoroInterval;
+            let pomodoroTime = 25 * 60; // 25 minutos em segundos
+            let isPomodoroPaused = true;
+
+            function updatePomodoroDisplay() {
+                const minutes = Math.floor(pomodoroTime / 60);
+                const seconds = pomodoroTime % 60;
+                pomodoroDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+
+            function startPomodoro() {
+                if (isPomodoroPaused) {
+                    isPomodoroPaused = false;
+                    pomodoroInterval = setInterval(() => {
+                        pomodoroTime--;
+                        updatePomodoroDisplay();
+                        if (pomodoroTime <= 0) {
+                            clearInterval(pomodoroInterval);
+                            alert("Tempo de foco concluído! Faça uma pausa de 5 minutos.");
+                        }
+                    }, 1000);
+                }
+            }
+
+            function pausePomodoro() {
+                isPomodoroPaused = true;
+                clearInterval(pomodoroInterval);
+            }
+
+            function resetPomodoro() {
+                pausePomodoro();
+                pomodoroTime = 25 * 60;
+                updatePomodoroDisplay();
+            }
+
+            startPomodoroBtn.addEventListener('click', startPomodoro);
+            pausePomodoroBtn.addEventListener('click', pausePomodoro);
+            resetPomodoroBtn.addEventListener('click', resetPomodoro);
+            updatePomodoroDisplay();
+
+            // --- Lógica dos Timers das Questões ---
+            function setupQuestionTimer(questionNumber) {
+                const startBtn = document.getElementById(`start-timer-q${questionNumber}`);
+                const display = document.getElementById(`timer-q${questionNumber}`);
+                let duration = 3 * 60; // 3 minutos
+                let interval;
+
+                startBtn.addEventListener('click', function() {
+                    this.disabled = true; // Desabilita o botão de iniciar
+                    
+                    interval = setInterval(() => {
+                        duration--;
+                        const minutes = Math.floor(duration / 60);
+                        const seconds = duration % 60;
+                        display.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                        if (duration <= 0) {
+                            clearInterval(interval);
+                            display.textContent = "Esgotado";
+                            // Bloquear as opções da questão
+                            const optionsDiv = document.getElementById(`options-q${questionNumber}`);
+                            const labels = optionsDiv.querySelectorAll('label');
+                            const inputs = optionsDiv.querySelectorAll('input');
+                            labels.forEach(label => label.classList.add('disabled'));
+                            inputs.forEach(input => input.disabled = true);
+                        }
+                    }, 1000);
+                    questionTimers[questionNumber - 1] = interval;
+                });
+            }
+            
+            for (let i = 1; i <= totalQuestions; i++) {
+                setupQuestionTimer(i);
+            }
+
+
+            // --- Lógica do Quiz ---
+            finalizarBtn.addEventListener('click', function() {
+                // Parar todos os timers das questões
+                questionTimers.forEach(interval => {
+                    if (interval) clearInterval(interval);
+                });
+
+                let score = 0;
+                
+                const allInputs = quizForm.querySelectorAll('input[type="radio"]');
+                allInputs.forEach(input => {
+                    if (!input.disabled) { // Desabilita apenas os que não foram desabilitados pelo timer
+                        input.disabled = true;
+                    }
+                });
+
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionName = 'q' + i;
+                    const userAnswerNode = quizForm.querySelector(`input[name="${questionName}"]:checked`);
+                    
+                    const correctAnswer = correctAnswers[i-1];
+                    const labels = document.querySelectorAll(`#q${i}-container label`);
+                    let correctLabel = null;
+                    labels.forEach(label => {
+                        if(label.querySelector('input').value === correctAnswer) {
+                            correctLabel = label;
+                        }
+                    });
+
+                    if (userAnswerNode) { // Verifica se o usuário respondeu
+                        const userLabel = userAnswerNode.parentElement;
+                        if (userAnswerNode.value === correctAnswer) {
+                            score++;
+                            userLabel.classList.add('correct');
+                        } else {
+                            userLabel.classList.add('incorrect');
+                            if(correctLabel) correctLabel.classList.add('correct');
+                        }
+                    } else { // Se não respondeu (seja por tempo ou por escolha)
+                         if(correctLabel) correctLabel.classList.add('correct'); // Apenas marca a correta
+                    }
+                }
+
+                const percentage = (score / totalQuestions) * 100;
+                resultadoDiv.innerHTML = `Você acertou ${score} de ${totalQuestions} questões (${percentage.toFixed(0)}%)`;
+                
+                if(percentage >= 60){
+                    resultadoDiv.className = 'resultado-acerto';
+                } else {
+                    resultadoDiv.className = 'resultado-erro';
+                }
+                
+                resultadoDiv.classList.remove('hidden');
+                gabaritoDiv.classList.remove('hidden');
+                finalizarBtn.disabled = true;
+                finalizarBtn.style.display = 'none'; // Esconde o botão de finalizar
+            });
+
+            if (printBtnFinal) {
+                printBtnFinal.addEventListener('click', function() {
+                    window.print();
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

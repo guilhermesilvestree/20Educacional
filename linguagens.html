@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linguagens e Códigos | Evolução Educacional</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cor-fundo: #0A0A10;
+            --cor-texto: #EAEAEA;
+            --cor-container: rgba(26, 26, 46, 0.7);
+            --cor-borda: rgba(255, 255, 255, 0.15);
+            --cor-sutil: #A0A0B0;
+            --cor-linguagens: #00A8FF;
+
+            /* NOVAS CORES PARA O BOTÃO VOLTAR */
+            --cor-botao-fundo: #FFFFFF;
+            --cor-botao-texto: #0A0A10;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #constellation-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        
+        /* BOTÃO VOLTAR REDESENHADO */
+        .back-button-fixed {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            z-index: 10;
+            
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            
+            padding: 10px 15px;
+            /* Novas cores de alto contraste */
+            background: var(--cor-botao-fundo);
+            color: var(--cor-botao-texto);
+            
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            
+            text-decoration: none;
+            font-weight: 600; /* Mais forte */
+            
+            transition: all 0.3s ease;
+        }
+        
+        .back-button-fixed .icon {
+            stroke: var(--cor-botao-texto); /* Garante que o ícone também seja preto */
+        }
+
+        .back-button-fixed:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 25px rgba(255, 255, 255, 0.2); /* Brilho branco no hover */
+        }
+
+        .page-container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+        }
+
+        header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--cor-linguagens);
+            text-shadow: 0 0 20px rgba(0, 168, 255, 0.7);
+        }
+        
+        .subject-menu {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .menu-item {
+            background: var(--cor-container);
+            border-radius: 12px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--cor-borda);
+            padding: 25px 30px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--cor-texto);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInSlideUp 0.5s ease forwards;
+        }
+        
+        .menu-item:nth-child(1) { animation-delay: 0.2s; }
+        .menu-item:nth-child(2) { animation-delay: 0.3s; }
+        .menu-item:nth-child(3) { animation-delay: 0.4s; }
+        .menu-item:nth-child(4) { animation-delay: 0.5s; }
+
+        .menu-item:hover {
+            transform: translateX(10px) scale(1.02);
+            border-color: var(--cor-linguagens);
+            box-shadow: 0 0 20px rgba(0, 168, 255, 0.4);
+        }
+        
+        @keyframes fadeInSlideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+             header h1 { font-size: 2rem; }
+            .menu-item { font-size: 1.1rem; padding: 20px; }
+            .back-button-fixed { top: 20px; left: 20px; padding: 8px 12px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="constellation-background"></canvas>
+    
+    <a href="menu.html" class="back-button-fixed">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <span>Voltar</span>
+    </a>
+
+    <div class="page-container">
+        <header>
+            <h1>Linguagens e Códigos</h1>
+        </header>
+
+        <nav class="subject-menu">
+            <a href="lingua_portuguesa.html" class="menu-item">Língua Portuguesa</a>
+            <a href="literatura.html" class="menu-item">Literatura</a>
+            <a href="lingua_estrangeira.html" class="menu-item">Língua Estrangeira</a>
+            <a href="redacao.html" class="menu-item">Redação</a>
+        </nav>
+    </div>
+
+    <script>
+        // --- ANIMAÇÃO ATUALIZADA: Constelação de Palavras Colorida ---
+        const canvas = document.getElementById('constellation-background');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const words = ['ENEM', 'REDAÇÃO', 'TRI', 'SINTAXE', 'METÁFORA', 'KANT', 'VARGAS', 'GLOBALIZAÇÃO', 'ECOLOGIA', 'GENÉTICA', 'ENERGIA', 'FUNÇÃO', 'GEOMETRIA', 'CÓDIGO', 'CONTEXTO'];
+        let particlesArray = [];
+
+        class WordParticle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.directionX = (Math.random() * 0.4) - 0.2;
+                this.directionY = (Math.random() * 0.4) - 0.2;
+                this.size = 12;
+                this.text = words[Math.floor(Math.random() * words.length)];
+                // MUDANÇA: Cada palavra agora tem uma cor aleatória vibrante
+                this.color = `hsl(${Math.random() * 360}, 90%, 65%)`;
+            }
+            draw() {
+                ctx.font = this.size + 'px Poppins';
+                // As palavras continuam brancas para melhor leitura
+                ctx.fillStyle = 'rgba(234, 234, 234, 0.8)'; 
+                ctx.fillText(this.text, this.x, this.y);
+            }
+            update() {
+                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+                this.x += this.directionX;
+                this.y += this.directionY;
+                this.draw();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 25000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new WordParticle());
+            }
+        }
+
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = Math.sqrt(
+                        Math.pow(particlesArray[a].x - particlesArray[b].x, 2) +
+                        Math.pow(particlesArray[a].y - particlesArray[b].y, 2)
+                    );
+                    
+                    if (distance < 200) { // Aumentei a distância para mais conexões
+                        opacityValue = 1 - (distance / 200);
+                        // MUDANÇA: A cor da linha agora é a cor da primeira partícula
+                        ctx.strokeStyle = `rgba(${hexToRgb(particlesArray[a].color)}, ${opacityValue})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            connect();
+            requestAnimationFrame(animate);
+        }
+        
+        // Função auxiliar para converter HSL para RGB para usar com RGBA
+        function hexToRgb(hsl) {
+            let sep = hsl.indexOf(",") > -1 ? "," : " ";
+            hsl = hsl.substr(4).split(")")[0].split(sep);
+
+            let h = hsl[0],
+                s = hsl[1].substr(0,hsl[1].length - 1) / 100,
+                l = hsl[2].substr(0,hsl[2].length - 1) / 100;
+
+            let c = (1 - Math.abs(2 * l - 1)) * s,
+                x = c * (1 - Math.abs((h / 60) % 2 - 1)),
+                m = l - c/2,
+                r = 0,
+                g = 0,
+                b = 0;
+            
+            if (0 <= h && h < 60) { r = c; g = x; b = 0; } 
+            else if (60 <= h && h < 120) { r = x; g = c; b = 0; } 
+            else if (120 <= h && h < 180) { r = 0; g = c; b = x; } 
+            else if (180 <= h && h < 240) { r = 0; g = x; b = c; } 
+            else if (240 <= h && h < 300) { r = x; g = 0; b = c; } 
+            else if (300 <= h && h < 360) { r = c; g = 0; b = x; }
+
+            r = Math.round((r + m) * 255);
+            g = Math.round((g + m) * 255);
+            b = Math.round((b + m) * 255);
+
+            return r + "," + g + "," + b;
+        }
+
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            init();
+        });
+
+        init();
+        animate();
+    </script>
+</body>
+</html>

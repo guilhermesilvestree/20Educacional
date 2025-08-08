@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evolução Educacional - Aula 4: Cálculo de MMC e MDC</title>
+    <style>
+        /* Estilos Gerais */
+        :root {
+            --cor-primaria: #0056b3;
+            --cor-secundaria: #17a2b8;
+            --cor-sucesso: #28a745;
+            --cor-erro: #dc3545;
+            --cor-fundo: #f8f9fa;
+            --cor-texto: #212529;
+            --cor-cinza-claro: #e9ecef;
+            --cor-cinza-medio: #ced4da;
+            --cor-cinza-escuro: #6c757d;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+        .container {
+            max-width: 850px;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        /* Títulos e Textos */
+        h1, h2, h3, h4 {
+            color: var(--cor-primaria);
+        }
+        h1 { font-size: 2.3em; text-align: center; border-bottom: 3px solid var(--cor-primaria); padding-bottom: 15px; margin-bottom: 20px;}
+        h2 { font-size: 1.9em; border-bottom: 2px solid #dee2e6; padding-bottom: 10px; margin-top: 40px;}
+        h3 { font-size: 1.5em; color: var(--cor-secundaria);}
+        h4 { font-size: 1.3em; color: #343a40;}
+        p {
+            font-size: 1.1em;
+            text-align: justify;
+        }
+        strong {
+            color: var(--cor-primaria);
+        }
+        /* Blocos de Esquema Visual e Dicas */
+        pre {
+            background-color: var(--cor-cinza-claro);
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 5px solid var(--cor-secundaria);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .dica {
+            background-color: #fff3cd;
+            color: #856404;
+            border-left: 5px solid #ffeeba;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        /* Seção de Vídeo */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* Proporção 16:9 */
+            height: 0;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        /* Timer Pomodoro */
+        .pomodoro-timer {
+            background-color: var(--cor-cinza-claro);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .pomodoro-timer .timer-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: var(--cor-primaria);
+            margin: 10px 0;
+        }
+        .pomodoro-timer .controls button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        .pomodoro-timer .controls button:hover {
+            background-color: var(--cor-primaria);
+        }
+        /* Estilos do Quiz */
+        .aviso-timer {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .questao {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid var(--cor-cinza-medio);
+            border-radius: 8px;
+            background-color: #fdfdfd;
+        }
+        .questao-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+        .questao-header p {
+            font-weight: bold;
+            text-align: left;
+            margin: 0;
+            flex-grow: 1;
+        }
+        .question-timer-control button {
+            background-color: var(--cor-sucesso);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s;
+        }
+        .question-timer-control button:hover {
+            background-color: #218838;
+        }
+        .question-timer-control button:disabled {
+            background-color: var(--cor-cinza-escuro);
+            cursor: not-allowed;
+        }
+        .question-timer-display {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--cor-erro);
+            background-color: #f8d7da;
+            padding: 5px 10px;
+            border-radius: 5px;
+            min-width: 60px;
+            text-align: center;
+        }
+        .options label {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .options label.disabled {
+            cursor: not-allowed;
+            background-color: var(--cor-cinza-claro);
+            opacity: 0.7;
+        }
+        .options label:hover:not(.disabled) {
+            background-color: var(--cor-cinza-claro);
+            border-color: #adb5bd;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        /* Botões */
+        .btn {
+            padding: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s, opacity 0.3s;
+            flex-grow: 1;
+        }
+        #finalizarBtn {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            background-color: #007bff;
+        }
+        #finalizarBtn:hover {
+            background-color: var(--cor-primaria);
+        }
+        #finalizarBtn:disabled {
+            background-color: var(--cor-cinza-escuro);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .final-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .print-btn {
+            background-color: var(--cor-sucesso);
+        }
+        .print-btn:hover {
+            background-color: #218838;
+        }
+        .back-btn {
+            background-color: var(--cor-cinza-escuro);
+        }
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+        /* Elementos Ocultos e Resultados */
+        .hidden {
+            display: none;
+        }
+        #resultado {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+        .resultado-acerto {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .resultado-erro {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        #gabarito {
+            margin-top: 30px;
+        }
+        .resolucao {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        .resolucao strong {
+            color: var(--cor-primaria);
+        }
+        /* Estilos de Feedback para as Questões */
+        .correct {
+            background-color: #d4edda !important;
+            border-color: var(--cor-sucesso) !important;
+            font-weight: bold;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: var(--cor-erro) !important;
+        }
+        /* Estilos para Impressão */
+        @media print {
+            body { background-color: #fff; font-size: 12pt; padding: 0; margin: 0; }
+            .container { box-shadow: none; margin: 0; padding: 0 1cm; max-width: 100%; border: none; }
+            #finalizarBtn, #quizForm, .final-actions, .video-container, .pomodoro-timer { display: none !important; }
+            #gabarito, .resolucao, #resultado { display: block !important; border: none; background-color: #fff; padding: 10px 0; page-break-before: auto; }
+            h1, h2, h3, h4 { page-break-after: avoid; }
+            p, pre, ol, ul, li, div.resolucao, table, .dica { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Aula 4: Cálculo de MMC e MDC</h1>
+        
+        <div class="pomodoro-timer">
+            <h3>Timer Pomodoro de Estudos</h3>
+            <div class="timer-display" id="pomodoroDisplay">25:00</div>
+            <div class="controls">
+                <button id="startPomodoro">Iniciar Foco</button>
+                <button id="pausePomodoro">Pausar</button>
+                <button id="resetPomodoro">Reiniciar</button>
+            </div>
+        </div>
+
+        <section id="aula">
+            <h2>Tópico 1: Decomposição em Fatores Primos (Fatoração) – O "DNA" de um Número</h2>
+            <h3>Conceito 1.1: O que é Fatorar?</h3>
+            <p>Fatorar um número (composto) significa reescrevê-lo como uma <strong>multiplicação usando apenas números primos</strong>. Pense nos números primos (2, 3, 5, 7, 11...) como os "tijolos" ou o "DNA" da matemática. A fatoração nos mostra exatamente quais "tijolos primos" e em que quantidade foram usados para construir um número. Este é o passo fundamental para calcular o MMC e o MDC de forma rápida e segura.</p>
+            <h3>Conceito 1.2: Como Fatorar um Número (Método da Divisão Sucessiva)</h3>
+            <p>Para decompor um número, traçamos uma linha vertical. Do lado esquerdo fica o número que queremos fatorar, e do lado direito, os fatores primos que usamos para dividi-lo. Começamos sempre pelo menor número primo possível (o 2, se o número for par) e continuamos dividindo até que o resultado do lado esquerdo seja 1.</p>
+            <h4>Esquema Visual e Exemplo Prático (Fatorando o número 36):</h4>
+            <p><strong>Situação:</strong> Vamos encontrar o "DNA primo" do número 36.</p>
+            <pre>
+  36 | 2   <-- 36 é par, então começamos dividindo por 2. O resultado (18) vai abaixo.
+  18 | 2   <-- 18 ainda é par, dividimos por 2 de novo. O resultado (9) vai abaixo.
+   9 | 3   <-- 9 não é mais divisível por 2. Testamos o próximo primo, o 3. 9/3=3.
+   3 | 3   <-- 3 é divisível por 3. O resultado é 1.
+   1 |     <-- Quando chegamos no 1, o processo acaba.
+            </pre>
+            <p><strong>Forma Fatorada:</strong> <code>36 = 2 * 2 * 3 * 3</code> ou, em forma de potência, <code>36 = 2² * 3²</code>.</p>
+            
+            <h2>Tópico 2: O Mínimo Múltiplo Comum (MMC) – O Ponto de Encontro</h2>
+            <h3>Conceito 2.1: O que é o MMC?</h3>
+            <p>O <strong>Mínimo Múltiplo Comum (MMC)</strong> é o menor valor <strong>diferente de zero</strong> que é múltiplo de dois ou mais números ao mesmo tempo. A principal aplicação do MMC é em problemas que envolvem <strong>ciclos, eventos periódicos ou a repetição de frequências</strong>, onde a pergunta central é: "Quando eles acontecerão juntos novamente?".</p>
+            <div class="dica">
+                <p><strong>Dica para Identificar Problemas de MMC:</strong> Procure por palavras-chave como "juntos novamente", "próximo encontro", "coincidir", "menor tempo".</p>
+            </div>
+            <h3>Conceito 2.2: Como Calcular o MMC (Método da Fatoração Simultânea)</h3>
+            <p>Fatoramos os números ao mesmo tempo. O MMC será a <strong>multiplicação de todos os fatores primos</strong> encontrados na coluna da direita.</p>
+            <h4>Exemplo Prático (Encontro de Ônibus):</h4>
+            <p><strong>Situação:</strong> De um terminal rodoviário, um ônibus da linha A sai a cada 10 minutos e um da linha B sai a cada 12 minutos. Se ambos saíram juntos às 8h00, a que horas eles sairão juntos novamente pela primeira vez?</p>
+            <p><strong>Resolução Desenhada (Fatoração Simultânea):</strong></p>
+            <pre>
+  10, 12 | 2
+   5,  6 | 2
+   5,  3 | 3
+   5,  1 | 5
+   1,  1 |
+            </pre>
+            <p><strong>Cálculo Final:</strong> Multiplicamos todos os fatores da direita: `2 * 2 * 3 * 5 = 60`.</p>
+            <p><strong>Resposta:</strong> Os ônibus sairão juntos novamente após <strong>60 minutos</strong>, ou seja, às <strong>9h00</strong>.</p>
+            
+            <h2>Tópico 3: O Máximo Divisor Comum (MDC) – A Maior Divisão Possível</h2>
+            <h3>Conceito 3.1: O que é o MDC?</h3>
+            <p>O <strong>Máximo Divisor Comum (MDC)</strong> é o maior número que consegue dividir dois ou mais números sem deixar resto. O MDC é a ferramenta para resolver problemas onde precisamos <strong>dividir diferentes quantidades em grupos idênticos, com o maior tamanho ou quantidade possível</strong>, sem que haja sobras.</p>
+            <div class="dica">
+                <p><strong>Dica para Identificar Problemas de MDC:</strong> Procure por palavras-chave como "maior tamanho possível", "dividir em partes iguais", "grupos idênticos", "máximo".</p>
+            </div>
+            <h3>Conceito 3.2: Como Calcular o MDC (Método da Fatoração Simultânea Adaptado)</h3>
+            <p>O processo é quase idêntico ao do MMC, mas com uma regra fundamental: nós só vamos multiplicar os fatores primos que conseguiram dividir <strong>TODOS</strong> os números da linha ao mesmo tempo. Para não esquecer, vamos marcá-los com um asterisco (*).</p>
+            <h4>Exemplo Prático (Montando Cestas Básicas):</h4>
+            <p><strong>Situação:</strong> Uma organização de caridade arrecadou 48 kg de arroz e 60 kg de feijão. Eles querem montar cestas básicas, todas idênticas, usando toda a comida e formando o <strong>maior número possível de cestas</strong>. Quantas cestas serão montadas?</p>
+            <p><strong>Resolução Desenhada (Fatoração com Marcação):</strong></p>
+            <pre>
+  48, 60 | 2* <-- O 2 divide o 48 E o 60. Marcamos!
+  24, 30 | 2* <-- O 2 divide o 24 E o 30. Marcamos!
+  12, 15 | 2   <-- O 2 divide o 12, mas não o 15. NÃO marcamos.
+   6, 15 | 2   <-- O 2 divide o 6, mas não o 15. NÃO marcamos.
+   3, 15 | 3* <-- O 3 divide o 3 E o 15. Marcamos!
+   1,  5 | 5   <-- O 5 só divide o 5. NÃO marcamos.
+   1,  1 |
+            </pre>
+            <p><strong>Cálculo Final:</strong> Multiplicamos APENAS os fatores marcados: `2 * 2 * 3 = 12`.</p>
+            <p><strong>Resposta:</strong> Serão montadas <strong>12 cestas básicas</strong>. (Cada cesta terá `48/12 = 4` kg de arroz e `60/12 = 5` kg de feijão).</p>
+            
+            <h2>Tópico 4: A Relação Fundamental entre MMC e MDC</h2>
+            <h3>Conceito 4.1: A Propriedade de Produto</h3>
+            <p>Existe uma propriedade muito útil que conecta o MMC e o MDC de <strong>dois</strong> números. O produto entre o MMC e o MDC desses dois números é sempre igual ao produto dos próprios números. É um ótimo atalho para problemas específicos.</p>
+            <h4>Esquema Visual (A Fórmula):</h4>
+            <pre>
++-----------------------------------+
+|  Para dois números A e B:         |
+|                                   |
+|  MMC(A, B) * MDC(A, B) = A * B    |
++-----------------------------------+
+            </pre>
+            <h4>Exemplo Prático (Descobrindo um Número Oculto):</h4>
+            <p><strong>Situação:</strong> O MMC entre dois números é 120 e o MDC entre eles é 8. Sabendo que um dos números é 40, qual é o outro número?</p>
+            <p><strong>Modelagem:</strong> `120 * 8 = 40 * x`</p>
+            <p><strong>Resolução Super Detalhada:</strong></p>
+            <ol>
+                <li><strong>Resolver o lado conhecido:</strong> `120 * 8 = 960`.</li>
+                <li><strong>A equação se torna:</strong> `960 = 40 * x`.</li>
+                <li><strong>Isolar o `x`:</strong> `x = 960 / 40`.</li>
+                <li><strong>Executar a divisão:</strong> `x = 24`.</li>
+            </ol>
+            <p><strong>Resposta:</strong> O outro número é <strong>24</strong>.</p>
+        </section>
+
+        <section id="video-aula">
+            <h2>Vídeo Aula Complementar</h2>
+            <div class="video-container">
+                <iframe 
+                    width="560" 
+                    height="315" 
+                    src="https://www.youtube.com/embed/SEU_CODIGO_DO_YOUTUBE" 
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </section>
+
+        <section id="exercicios">
+            <h2>Exercícios de Fixação – Aula 4</h2>
+            <div class="aviso-timer">Antes de começar a ler cada questão, ative o timer!</div>
+            <form id="quizForm">
+                <div class="questao" id="q1-container">
+                    <div class="questao-header">
+                        <p><strong>Questão 1:</strong> Em um hospital, um paciente precisa tomar dois medicamentos com horários rigorosos. O remédio A deve ser administrado a cada 6 horas, e o remédio B, a cada 8 horas. Se a primeira dose de ambos os medicamentos foi administrada simultaneamente às 10h00 da manhã de uma segunda-feira, qual será o próximo horário e dia em que o paciente tomará os dois remédios juntos novamente?</p>
+                        <div class="question-timer-control">
+                            <button type="button" id="start-timer-q1">Ativar Timer</button>
+                            <span class="question-timer-display" id="timer-q1">03:00</span>
+                        </div>
+                    </div>
+                    <div class="options" id="options-q1">
+                        <label><input type="radio" name="q1" value="A"> (A) 10h00 da terça-feira</label>
+                        <label><input type="radio" name="q1" value="B"> (B) 14h00 da terça-feira</label>
+                        <label><input type="radio" name="q1" value="C"> (C) 22h00 da segunda-feira</label>
+                        <label><input type="radio" name="q1" value="D"> (D) 04h00 da terça-feira</label>
+                        <label><input type="radio" name="q1" value="E"> (E) 12h00 da terça-feira</label>
+                    </div>
+                </div>
+
+                <div class="questao" id="q2-container">
+                     <div class="questao-header">
+                        <p><strong>Questão 2:</strong> Uma florista recebeu 72 rosas e 90 cravos. Ela deseja montar o maior número possível de arranjos idênticos, usando todas as flores que recebeu. Cada arranjo deverá conter o mesmo número de rosas e o mesmo número de cravos. Quantos arranjos a florista conseguirá montar?</p>
+                        <div class="question-timer-control">
+                            <button type="button" id="start-timer-q2">Ativar Timer</button>
+                            <span class="question-timer-display" id="timer-q2">03:00</span>
+                        </div>
+                    </div>
+                    <div class="options" id="options-q2">
+                        <label><input type="radio" name="q2" value="A"> (A) 6</label>
+                        <label><input type="radio" name="q2" value="B"> (B) 9</label>
+                        <label><input type="radio" name="q2" value="C"> (C) 12</label>
+                        <label><input type="radio" name="q2" value="D"> (D) 18</label>
+                        <label><input type="radio" name="q2" value="E"> (E) 360</label>
+                    </div>
+                </div>
+
+                <div class="questao" id="q3-container">
+                     <div class="questao-header">
+                        <p><strong>Questão 3:</strong> O produto entre o Mínimo Múltiplo Comum (MMC) e o Máximo Divisor Comum (MDC) de dois números é igual a 432. Sabendo que um dos números é 24, o outro número é:</p>
+                        <div class="question-timer-control">
+                            <button type="button" id="start-timer-q3">Ativar Timer</button>
+                            <span class="question-timer-display" id="timer-q3">03:00</span>
+                        </div>
+                    </div>
+                    <div class="options" id="options-q3">
+                        <label><input type="radio" name="q3" value="A"> (A) 12</label>
+                        <label><input type="radio" name="q3" value="B"> (B) 18</label>
+                        <label><input type="radio" name="q3" value="C"> (C) 20</label>
+                        <label><input type="radio" name="q3" value="D"> (D) 27</label>
+                        <label><input type="radio" name="q3" value="E"> (E) 36</label>
+                    </div>
+                </div>
+
+                <div class="questao" id="q4-container">
+                     <div class="questao-header">
+                        <p><strong>Questão 4:</strong> Três semáforos em uma avenida fecham ao mesmo tempo. O primeiro fecha a cada 40 segundos, o segundo a cada 50 segundos e o terceiro a cada 60 segundos. A primeira vez que os três fecharão juntos novamente será após:</p>
+                        <div class="question-timer-control">
+                            <button type="button" id="start-timer-q4">Ativar Timer</button>
+                            <span class="question-timer-display" id="timer-q4">03:00</span>
+                        </div>
+                    </div>
+                    <div class="options" id="options-q4">
+                        <label><input type="radio" name="q4" value="A"> (A) 2 minutos e 30 segundos</label>
+                        <label><input type="radio" name="q4" value="B"> (B) 5 minutos</label>
+                        <label><input type="radio" name="q4" value="C"> (C) 6 minutos</label>
+                        <label><input type="radio" name="q4" value="D"> (D) 10 minutos</label>
+                        <label><input type="radio" name="q4" value="E"> (E) 20 minutos</label>
+                    </div>
+                </div>
+                
+                <div class="questao" id="q5-container">
+                     <div class="questao-header">
+                        <p><strong>Questão 5:</strong> Dois rolos de barbante, um com 96 metros e outro com 120 metros de comprimento, precisam ser cortados em pedaços do mesmo tamanho, sendo este o maior tamanho possível, sem que haja qualquer desperdício. O comprimento de cada pedaço de barbante, em metros, será:</p>
+                        <div class="question-timer-control">
+                            <button type="button" id="start-timer-q5">Ativar Timer</button>
+                            <span class="question-timer-display" id="timer-q5">03:00</span>
+                        </div>
+                    </div>
+                    <div class="options" id="options-q5">
+                        <label><input type="radio" name="q5" value="A"> (A) 12</label>
+                        <label><input type="radio" name="q5" value="B"> (B) 16</label>
+                        <label><input type="radio" name="q5" value="C"> (C) 20</label>
+                        <label><input type="radio" name="q5" value="D"> (D) 24</label>
+                        <label><input type="radio" name="q5" value="E"> (E) 480</label>
+                    </div>
+                </div>
+            </form>
+
+            <button id="finalizarBtn" class="btn">Finalizar e Ver Resultado</button>
+
+            <div id="resultado" class="hidden"></div>
+
+            <section id="gabarito" class="hidden">
+                <h2>Gabarito Comentado e Super Detalhado</h2>
+                
+                <div class="resolucao">
+                    <p><strong>Questão 1: Alternativa (A)</strong></p>
+                    <p><strong>Raciocínio:</strong> Problema de encontros cíclicos, resolvido com <strong>MMC</strong>.</p>
+                    <p><strong>Modelagem:</strong> Calcular o MMC(6, 8) = 24. O próximo encontro será 24 horas depois.</p>
+                    <p><strong>Cálculo do Horário:</strong> 10h00 de segunda + 24 horas = <strong>10h00 de terça-feira</strong>.</p>
+                </div>
+
+                <div class="resolucao">
+                    <p><strong>Questão 2: Alternativa (D)</strong></p>
+                    <p><strong>Raciocínio:</strong> Dividir em maior número de grupos idênticos, problema de <strong>MDC</strong>.</p>
+                    <p><strong>Modelagem:</strong> Calcular o MDC(72, 90). Fatorando, encontramos `2 * 3 * 3 = 18`.</p>
+                    <p><strong>Resposta:</strong> A florista conseguirá montar <strong>18 arranjos</strong>.</p>
+                </div>
+
+                <div class="resolucao">
+                    <p><strong>Questão 3: Alternativa (B)</strong></p>
+                    <p><strong>Raciocínio:</strong> Aplicação da propriedade `MMC * MDC = A * B`.</p>
+                    <p><strong>Modelagem:</strong> `432 = 24 * B`. Para achar B, dividimos: `B = 432 / 24`.</p>
+                    <p><strong>Resposta:</strong> O outro número é <strong>18</strong>.</p>
+                </div>
+
+                <div class="resolucao">
+                    <p><strong>Questão 4: Alternativa (D)</strong></p>
+                    <p><strong>Raciocínio:</strong> Encontro cíclico de três eventos, resolvido com <strong>MMC</strong>.</p>
+                    <p><strong>Modelagem:</strong> Calcular o MMC(40, 50, 60). Fatorando, encontramos `2³ * 3 * 5² = 600` segundos.</p>
+                    <p><strong>Conversão:</strong> `600 segundos / 60 = 10 minutos`.</p>
+                    <p><strong>Resposta:</strong> O próximo encontro será após <strong>10 minutos</strong>.</p>
+                </div>
+                 <div class="resolucao">
+                    <p><strong>Questão 5: Alternativa (D)</strong></p>
+                    <p><strong>Raciocínio:</strong> Cortar em pedaços do **maior tamanho possível**, problema de <strong>MDC</strong>.</p>
+                    <p><strong>Modelagem:</strong> Calcular o MDC(96, 120). Fatorando, encontramos `2³ * 3 = 24`.</p>
+                    <p><strong>Resposta:</strong> O comprimento de cada pedaço será de <strong>24 metros</strong>.</p>
+                </div>
+
+                <div class="final-actions">
+                    <a href="aulas.html" class="btn back-btn">Voltar para o Menu de Aulas</a>
+                    <button type="button" id="printBtnFinal" class="btn print-btn">Salvar como PDF ou Imprimir</button>
+                </div>
+            </section>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const finalizarBtn = document.getElementById('finalizarBtn');
+            const printBtnFinal = document.getElementById('printBtnFinal');
+            const quizForm = document.getElementById('quizForm');
+            const resultadoDiv = document.getElementById('resultado');
+            const gabaritoDiv = document.getElementById('gabarito');
+            
+            // Gabarito e Timers
+            const correctAnswers = ['A', 'D', 'B', 'D', 'D'];
+            const totalQuestions = correctAnswers.length;
+            const questionTimers = [];
+
+            // --- Lógica do Timer Pomodoro ---
+            const pomodoroDisplay = document.getElementById('pomodoroDisplay');
+            const startPomodoroBtn = document.getElementById('startPomodoro');
+            const pausePomodoroBtn = document.getElementById('pausePomodoro');
+            const resetPomodoroBtn = document.getElementById('resetPomodoro');
+            let pomodoroInterval;
+            let pomodoroTime = 25 * 60; // 25 minutos em segundos
+            let isPomodoroPaused = true;
+
+            function updatePomodoroDisplay() {
+                const minutes = Math.floor(pomodoroTime / 60);
+                const seconds = pomodoroTime % 60;
+                pomodoroDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+
+            function startPomodoro() {
+                if (isPomodoroPaused) {
+                    isPomodoroPaused = false;
+                    pomodoroInterval = setInterval(() => {
+                        pomodoroTime--;
+                        updatePomodoroDisplay();
+                        if (pomodoroTime <= 0) {
+                            clearInterval(pomodoroInterval);
+                            alert("Tempo de foco concluído! Faça uma pausa de 5 minutos.");
+                        }
+                    }, 1000);
+                }
+            }
+
+            function pausePomodoro() {
+                isPomodoroPaused = true;
+                clearInterval(pomodoroInterval);
+            }
+
+            function resetPomodoro() {
+                pausePomodoro();
+                pomodoroTime = 25 * 60;
+                updatePomodoroDisplay();
+            }
+
+            startPomodoroBtn.addEventListener('click', startPomodoro);
+            pausePomodoroBtn.addEventListener('click', pausePomodoro);
+            resetPomodoroBtn.addEventListener('click', resetPomodoro);
+            updatePomodoroDisplay();
+
+            // --- Lógica dos Timers das Questões ---
+            function setupQuestionTimer(questionNumber) {
+                const startBtn = document.getElementById(`start-timer-q${questionNumber}`);
+                const display = document.getElementById(`timer-q${questionNumber}`);
+                let duration = 3 * 60; // 3 minutos
+                let interval;
+
+                startBtn.addEventListener('click', function() {
+                    this.disabled = true; 
+                    
+                    interval = setInterval(() => {
+                        duration--;
+                        const minutes = Math.floor(duration / 60);
+                        const seconds = duration % 60;
+                        display.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                        if (duration <= 0) {
+                            clearInterval(interval);
+                            display.textContent = "Esgotado";
+                            const optionsDiv = document.getElementById(`options-q${questionNumber}`);
+                            const labels = optionsDiv.querySelectorAll('label');
+                            const inputs = optionsDiv.querySelectorAll('input');
+                            labels.forEach(label => label.classList.add('disabled'));
+                            inputs.forEach(input => input.disabled = true);
+                        }
+                    }, 1000);
+                    questionTimers[questionNumber - 1] = interval;
+                });
+            }
+            
+            for (let i = 1; i <= totalQuestions; i++) {
+                setupQuestionTimer(i);
+            }
+
+            // --- Lógica do Quiz ---
+            finalizarBtn.addEventListener('click', function() {
+                questionTimers.forEach(interval => {
+                    if (interval) clearInterval(interval);
+                });
+
+                let score = 0;
+                
+                const allInputs = quizForm.querySelectorAll('input[type="radio"]');
+                allInputs.forEach(input => {
+                    if (!input.disabled) {
+                        input.disabled = true;
+                    }
+                });
+
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionName = 'q' + i;
+                    const userAnswerNode = quizForm.querySelector(`input[name="${questionName}"]:checked`);
+                    const correctAnswer = correctAnswers[i-1];
+                    const labels = document.querySelectorAll(`#q${i}-container label`);
+                    let correctLabel = null;
+                    labels.forEach(label => {
+                        if(label.querySelector('input').value === correctAnswer) {
+                            correctLabel = label;
+                        }
+                    });
+
+                    if (userAnswerNode) {
+                        const userLabel = userAnswerNode.parentElement;
+                        if (userAnswerNode.value === correctAnswer) {
+                            score++;
+                            userLabel.classList.add('correct');
+                        } else {
+                            userLabel.classList.add('incorrect');
+                            if(correctLabel) correctLabel.classList.add('correct');
+                        }
+                    } else {
+                         if(correctLabel) correctLabel.classList.add('correct');
+                    }
+                }
+
+                const percentage = (score / totalQuestions) * 100;
+                resultadoDiv.innerHTML = `Você acertou ${score} de ${totalQuestions} questões (${percentage.toFixed(0)}%)`;
+                
+                if(percentage >= 60){
+                    resultadoDiv.className = 'resultado-acerto';
+                } else {
+                    resultadoDiv.className = 'resultado-erro';
+                }
+                
+                resultadoDiv.classList.remove('hidden');
+                gabaritoDiv.classList.remove('hidden');
+                finalizarBtn.disabled = true;
+                finalizarBtn.style.display = 'none';
+            });
+
+            if (printBtnFinal) {
+                printBtnFinal.addEventListener('click', function() {
+                    window.print();
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

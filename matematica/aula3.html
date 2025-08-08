@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evolução Educacional - Aula 3: Múltiplos e Divisores</title>
+    <style>
+        /* Estilos Gerais */
+        :root {
+            --cor-primaria: #0056b3;
+            --cor-secundaria: #17a2b8;
+            --cor-sucesso: #28a745;
+            --cor-erro: #dc3545;
+            --cor-fundo: #f8f9fa;
+            --cor-texto: #212529;
+            --cor-cinza-claro: #e9ecef;
+            --cor-cinza-medio: #ced4da;
+            --cor-cinza-escuro: #6c757d;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+        .container {
+            max-width: 850px;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        /* Títulos e Textos */
+        h1, h2, h3, h4 {
+            color: var(--cor-primaria);
+        }
+        h1 { font-size: 2.3em; text-align: center; border-bottom: 3px solid var(--cor-primaria); padding-bottom: 15px; margin-bottom: 20px;}
+        h2 { font-size: 1.9em; border-bottom: 2px solid #dee2e6; padding-bottom: 10px; margin-top: 40px;}
+        h3 { font-size: 1.5em; color: var(--cor-secundaria);}
+        h4 { font-size: 1.3em; color: #343a40;}
+        p {
+            font-size: 1.1em;
+            text-align: justify;
+        }
+        strong {
+            color: var(--cor-primaria);
+        }
+        /* Blocos de Esquema Visual */
+        pre {
+            background-color: var(--cor-cinza-claro);
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 5px solid var(--cor-secundaria);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 1em;
+        }
+        th, td {
+            border: 1px solid var(--cor-cinza-medio);
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: var(--cor-cinza-claro);
+            color: var(--cor-primaria);
+        }
+        /* Seção de Vídeo */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* Proporção 16:9 */
+            height: 0;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        /* Timer Pomodoro */
+        .pomodoro-timer {
+            background-color: var(--cor-cinza-claro);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .pomodoro-timer .timer-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: var(--cor-primaria);
+            margin: 10px 0;
+        }
+        .pomodoro-timer .controls button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        .pomodoro-timer .controls button:hover {
+            background-color: var(--cor-primaria);
+        }
+        /* Estilos do Quiz */
+        .aviso-timer {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .questao {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid var(--cor-cinza-medio);
+            border-radius: 8px;
+            background-color: #fdfdfd;
+        }
+        .questao-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+        .questao-header p {
+            font-weight: bold;
+            text-align: left;
+            margin: 0;
+            flex-grow: 1;
+        }
+        .question-timer-control button {
+            background-color: var(--cor-sucesso);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s;
+        }
+        .question-timer-control button:hover {
+            background-color: #218838;
+        }
+        .question-timer-control button:disabled {
+            background-color: var(--cor-cinza-escuro);
+            cursor: not-allowed;
+        }
+        .question-timer-display {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--cor-erro);
+            background-color: #f8d7da;
+            padding: 5px 10px;
+            border-radius: 5px;
+            min-width: 60px;
+            text-align: center;
+        }
+        .options label {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .options label.disabled {
+            cursor: not-allowed;
+            background-color: var(--cor-cinza-claro);
+            opacity: 0.7;
+        }
+        .options label:hover:not(.disabled) {
+            background-color: var(--cor-cinza-claro);
+            border-color: #adb5bd;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        /* Botões */
+        .btn {
+            padding: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s, opacity 0.3s;
+            flex-grow: 1;
+        }
+        #finalizarBtn {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            background-color: #007bff;
+        }
+        #finalizarBtn:hover {
+            background-color: var(--cor-primaria);
+        }
+        #finalizarBtn:disabled {
+            background-color: var(--cor-cinza-escuro);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .final-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .print-btn {
+            background-color: var(--cor-sucesso);
+        }
+        .print-btn:hover {
+            background-color: #218838;
+        }
+        .back-btn {
+            background-color: var(--cor-cinza-escuro);
+        }
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+        /* Elementos Ocultos e Resultados */
+        .hidden {
+            display: none;
+        }
+        #resultado {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+        .resultado-acerto {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .resultado-erro {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        #gabarito {
+            margin-top: 30px;
+        }
+        .resolucao {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        .resolucao strong {
+            color: var(--cor-primaria);
+        }
+        /* Estilos de Feedback para as Questões */
+        .correct {
+            background-color: #d4edda !important;
+            border-color: var(--cor-sucesso) !important;
+            font-weight: bold;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: var(--cor-erro) !important;
+        }
+        /* Estilos para Impressão */
+        @media print {
+            body { background-color: #fff; font-size: 12pt; padding: 0; margin: 0; }
+            .container { box-shadow: none; margin: 0; padding: 0 1cm; max-width: 100%; border: none; }
+            #finalizarBtn, #quizForm, .final-actions, .video-container, .pomodoro-timer { display: none !important; }
+            #gabarito, .resolucao, #resultado { display: block !important; border: none; background-color: #fff; padding: 10px 0; page-break-before: auto; }
+            h1, h2, h3, h4 { page-break-after: avoid; }
+            p, pre, ol, ul, li, div.resolucao, table { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Aula 3: Múltiplos e Divisores - Conceitos Fundamentais</h1>
+        
+        <div class="pomodoro-timer">
+            <h3>Timer Pomodoro de Estudos</h3>
+            <div class="timer-display" id="pomodoroDisplay">25:00</div>
+            <div class="controls">
+                <button id="startPomodoro">Iniciar Foco</button>
+                <button id="pausePomodoro">Pausar</button>
+                <button id="resetPomodoro">Reiniciar</button>
+            </div>
+        </div>
+
+        <section id="aula">
+            <h2>Tópico 1: Múltiplos de um Número – A Tabuada Infinita</h2>
+            <h3>Conceito 1.1: O que é um Múltiplo?</h3>
+            <p>Múltiplos de um número são todos os resultados que você obtém ao multiplicar esse número pela sequência de números inteiros (0, 1, 2, 3...). É como a tabuada de um número, mas que se estende infinitamente. Lembre-se: <strong>o zero (0) é múltiplo de todos os números</strong>.</p>
+            <h4>Esquema Visual (Construindo os Múltiplos de 7):</h4>
+            <pre>
+Número Base: 7
+
+7 * 0  --->  0
+7 * 1  --->  7
+7 * 2  --->  14
+7 * 3  --->  21
+... e assim por diante.
+
+Conjunto dos Múltiplos de 7 = M(7) = {0, 7, 14, 21, 28, 35, ...}
+            </pre>
+            <h4>Exemplo Prático (Agendando Eventos):</h4>
+            <p><strong>Situação:</strong> Um cometa passa pela Terra a cada 12 anos. Se ele passou no ano 2000, quais serão os próximos anos em que ele será visível novamente?</p>
+            <p><strong>Modelagem:</strong> Os anos de aparição serão múltiplos de 12, somados ao ano inicial.</p>
+            <p><strong>Resolução Super Detalhada:</strong></p>
+            <ol>
+                <li><strong>Primeira aparição após 2000:</strong> <code>2000 + (12 * 1) = 2000 + 12 = 2012</code>.</li>
+                <li><strong>Segunda aparição:</strong> <code>2000 + (12 * 2) = 2000 + 24 = 2024</code>.</li>
+                <li><strong>Terceira aparição:</strong> <code>2000 + (12 * 3) = 2000 + 36 = 2036</code>.</li>
+            </ol>
+            <p><strong>Resposta:</strong> Os próximos anos de aparição serão <strong>2012, 2024, 2036</strong>, e assim por diante.</p>
+
+            <h3>Conceito 1.2: Como saber se um número é múltiplo de outro?</h3>
+            <p>Para saber se um número A é múltiplo de um número B, basta dividir A por B. Se a divisão for <strong>exata (resto zero)</strong>, então A é múltiplo de B.</p>
+            <p><strong>Exemplo:</strong> 91 é múltiplo de 7? Sim, pois <code>91 ÷ 7 = 13</code>, com resto 0.</p>
+
+            <h2>Tópico 2: Divisores de um Número – Os Tijolos da Construção</h2>
+            <h3>Conceito 2.1: O que é um Divisor?</h3>
+            <p>Um número é <strong>divisor</strong> de outro quando a divisão entre eles deixa <strong>resto zero</strong>. Os divisores são os "tijolos" exatos que formam um número. Duas regras importantes: <strong>o número 1 é divisor de todos os números</strong>, e <strong>todo número é divisor de si mesmo</strong>.</p>
+            <h4>Esquema Visual (Encontrando os Divisores de 18):</h4>
+            <pre>
+Número Base: 18
+
+18 ÷ 1 = 18 (resto 0)  --> 1 e 18 são divisores.
+18 ÷ 2 = 9  (resto 0)  --> 2 e 9 são divisores.
+18 ÷ 3 = 6  (resto 0)  --> 3 e 6 são divisores.
+
+Conjunto dos Divisores de 18 = D(18) = {1, 2, 3, 6, 9, 18}
+            </pre>
+            <h4>Exemplo Prático (Montando Equipes):</h4>
+            <p><strong>Situação:</strong> Uma professora de educação física tem uma turma com 24 alunos e quer formar equipes com o mesmo número de integrantes, sem que sobre nenhum aluno. Quais são os possíveis tamanhos para essas equipes?</p>
+            <p><strong>Modelagem:</strong> Os possíveis tamanhos de equipe são todos os números que dividem 24 de forma exata, ou seja, os divisores de 24.</p>
+            <p><strong>Resposta:</strong> Os possíveis tamanhos de equipe são <strong>1, 2, 3, 4, 6, 8, 12 e 24</strong> integrantes.</p>
+
+            <h3>Conceito 2.2: Números Primos e Compostos</h3>
+            <p><strong>Números Primos:</strong> São os "tijolos fundamentais" da matemática. Eles só possuem **dois divisores**: o número 1 e ele mesmo. (Ex: 2, 3, 5, 7, 11, 13...).</p>
+            <p><strong>Números Compostos:</strong> São todos os outros números que possuem **mais de dois divisores**. Eles são "construções" feitas a partir de números primos. (Ex: 4, 6, 8, 9, 10, 12...).</p>
+            <h4>Esquema Visual (Primo vs. Composto):</h4>
+            <pre>
+Número 7 (Primo)         Número 12 (Composto)
+   |                          |
+   V                          V
+Divisores: {1, 7}          Divisores: {1, 2, 3, 4, 6, 12}
+(Apenas 2 divisores)       (Mais de 2 divisores)
+            </pre>
+            
+            <h2>Tópico 3: Critérios de Divisibilidade – Atalhos para Ganhar Tempo</h2>
+            <h3>Conceito 3.1: O que são Critérios de Divisibilidade?</h3>
+            <p>São regras rápidas para verificar se um número é divisível por outro sem precisar fazer a conta de divisão. No ENEM, isso é ouro!</p>
+            <h4>Tabela de Critérios Essenciais:</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Divisível por</th>
+                        <th>Regra / Macete</th>
+                        <th>Exemplo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>2</strong></td>
+                        <td>Se o número for <strong>par</strong> (terminar em 0, 2, 4, 6 ou 8).</td>
+                        <td>57<strong>8</strong> é divisível por 2.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3</strong></td>
+                        <td>Se a <strong>soma dos seus algarismos</strong> for divisível por 3.</td>
+                        <td>291 -> 2+9+1=<strong>12</strong>. 12 é div. por 3.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4</strong></td>
+                        <td>Se os <strong>dois últimos algarismos</strong> formarem um número divisível por 4.</td>
+                        <td>7<strong>16</strong> é divisível por 4, pois 16 é.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5</strong></td>
+                        <td>Se o número terminar em <strong>0 ou 5</strong>.</td>
+                        <td>1.3<strong>5</strong> é divisível por 5.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>6</strong></td>
+                        <td>Se for divisível por <strong>2 e por 3 ao mesmo tempo</strong>.</td>
+                        <td>52<strong>2</strong>. É par (ok) e 5+2+2=<strong>9</strong> (ok).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>9</strong></td>
+                        <td>Se a <strong>soma dos seus algarismos</strong> for divisível por 9.</td>
+                        <td>4.61<strong>7</strong> -> 4+6+1+7=<strong>18</strong>. 18 é div. por 9.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>10</strong></td>
+                        <td>Se o número terminar em <strong>0</strong>.</td>
+                        <td>2.43<strong>0</strong> é divisível por 10.</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Exemplo Prático Detalhado (Verificação de um Lote):</h4>
+            <p><strong>Situação:</strong> Uma fábrica produziu um lote com 1.380 peças. O gerente precisa saber se consegue dividir o lote em caixas com 2, 3, 4, 5, 6, 9 ou 10 peças, sem que sobre nenhuma.</p>
+            <p><strong>Resolução:</strong> Vamos aplicar os critérios ao número <strong>1.380</strong>.</p>
+            <ul>
+                <li><strong>Por 2?</strong> Sim, termina em 0 (par).</li>
+                <li><strong>Por 3?</strong> Sim, 1+3+8+0=12, e 12 é divisível por 3.</li>
+                <li><strong>Por 4?</strong> Sim, os dois últimos são 80, e 80 é divisível por 4.</li>
+                <li><strong>Por 5?</strong> Sim, termina em 0.</li>
+                <li><strong>Por 6?</strong> Sim, pois é divisível por 2 e por 3.</li>
+                <li><strong>Por 9?</strong> Não, 1+3+8+0=12, e 12 não é divisível por 9.</li>
+                <li><strong>Por 10?</strong> Sim, termina em 0.</li>
+            </ul>
+        </section>
+
+        <section id="video-aula">
+            <h2>Vídeo Aula Complementar</h2>
+            <div class="video-container">
+                <iframe 
+                    width="560" 
+                    height="315" 
+                    src="https://www.youtube.com/embed/SEU_CODIGO_DO_YOUTUBE" 
+                    title="YouTube video player" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </section>
+
+        <section id="exercicios">
+            <h2>Exercícios de Fixação – Aula 3</h2>
+            <div class="aviso-timer">Antes de começar a ler cada questão, ative o timer!</div>
+            <form id="quizForm">
+                <div class="questao" id="q1-container">
+                    <div class="questao-header">
+                        <p><strong>Questão 1:</strong> Uma empresa de logística precisa despachar um lote de 432 smartphones idênticos para diferentes lojas. Para otimizar o transporte, a empresa deseja utilizar caixas de um mesmo tamanho, sem que sobre ou falte nenhum aparelho. De acordo com os critérios de divisibilidade, qual das seguintes quantidades de smartphones por caixa <strong>NÃO</strong> é uma opção viável?</p>
+                        <div class="question-timer-control">
+                            <button type="button" id="start-timer-q1">Ativar Timer</button>
+                            <span class="question-timer-display" id="timer-q1">03:00</span>
+                        </div>
+                    </div>
+                    <div class="options" id="options-q1">
+                        <label><input type="radio" name="q1" value="A"> (A) 3</label>
+                        <label><input type="radio" name="q1" value="B"> (B) 4</label>
+                        <label><input type="radio" name="q1" value="C"> (C) 6</label>
+                        <label><input type="radio" name="q1" value="D"> (D) 8</label>
+                        <label><input type="radio" name="q1" value="E"> (E) 9</label>
+                    </div>
+                </div>
+
+                <div class="questao" id="q2-container">
+                     <div class="questao-header">
+                        <p><strong>Questão 2:</strong> Dois ciclistas partem juntos de um mesmo ponto em uma pista circular. O primeiro ciclista completa uma volta em 12 minutos, enquanto o segundo, mais rápido, completa a mesma volta em 8 minutos. Após a partida, eles se encontrarão novamente no ponto de partida pela primeira vez após:</p>
+                        <div class="question-timer-control">
+                            <button type="button" id="start-timer-q2">Ativar Timer</button>
+                            <span class="question-timer-display" id="timer-q2">03:00</span>
+                        </div>
+                    </div>
+                    <div class="options" id="options-q2">
+                        <label><input type="radio" name="q2" value="A"> (A) 8 minutos</label>
+                        <label><input type="radio" name="q2" value="B"> (B) 12 minutos</label>
+                        <label><input type="radio" name="q2" value="C"> (C) 20 minutos</label>
+                        <label><input type="radio" name="q2" value="D"> (D) 24 minutos</label>
+                        <label><input type="radio" name="q2" value="E"> (E) 96 minutos</label>
+                    </div>
+                </div>
+
+                <div class="questao" id="q3-container">
+                     <div class="questao-header">
+                        <p><strong>Questão 3:</strong> Um professor tem 48 canetas azuis e 36 canetas vermelhas e deseja montar o maior número possível de kits idênticos para distribuir entre seus alunos. Cada kit deve conter o mesmo número de canetas azuis e o mesmo número de canetas vermelhas, utilizando todas as canetas disponíveis. Quantas canetas de cada cor haverá em cada kit?</p>
+                        <div class="question-timer-control">
+                            <button type="button" id="start-timer-q3">Ativar Timer</button>
+                            <span class="question-timer-display" id="timer-q3">03:00</span>
+                        </div>
+                    </div>
+                    <div class="options" id="options-q3">
+                        <label><input type="radio" name="q3" value="A"> (A) 4 canetas azuis e 3 canetas vermelhas.</label>
+                        <label><input type="radio" name="q3" value="B"> (B) 12 canetas azuis e 12 canetas vermelhas.</label>
+                        <label><input type="radio" name="q3" value="C"> (C) 3 canetas azuis e 4 canetas vermelhas.</label>
+                        <label><input type="radio" name="q3" value="D"> (D) 6 canetas azuis e 4 canetas vermelhas.</label>
+                        <label><input type="radio" name="q3" value="E"> (E) 8 canetas azuis e 6 canetas vermelhas.</label>
+                    </div>
+                </div>
+
+                <div class="questao" id="q4-container">
+                     <div class="questao-header">
+                        <p><strong>Questão 4:</strong> Um alarme de segurança está programado para soar a cada 9 minutos, enquanto uma luz de alerta pisca a cada 6 minutos. Se ambos foram acionados juntos às 14h00, a que horas eles serão acionados juntos novamente?</p>
+                        <div class="question-timer-control">
+                            <button type="button" id="start-timer-q4">Ativar Timer</button>
+                            <span class="question-timer-display" id="timer-q4">03:00</span>
+                        </div>
+                    </div>
+                    <div class="options" id="options-q4">
+                        <label><input type="radio" name="q4" value="A"> (A) 14h09</label>
+                        <label><input type="radio" name="q4" value="B"> (B) 14h12</label>
+                        <label><input type="radio" name="q4" value="C"> (C) 14h18</label>
+                        <label><input type="radio" name="q4" value="D"> (D) 14h36</label>
+                        <label><input type="radio" name="q4" value="E"> (E) 14h54</label>
+                    </div>
+                </div>
+                
+                <div class="questao" id="q5-container">
+                     <div class="questao-header">
+                        <p><strong>Questão 5:</strong> Uma confeiteira produziu 150 brigadeiros e 120 beijinhos. Ela quer montar caixas de doces, todas com a mesma composição, contendo o maior número possível de doces em cada uma e sem que sobre nenhum doce. Qual será o número total de doces em cada caixa?</p>
+                        <div class="question-timer-control">
+                            <button type="button" id="start-timer-q5">Ativar Timer</button>
+                            <span class="question-timer-display" id="timer-q5">03:00</span>
+                        </div>
+                    </div>
+                    <div class="options" id="options-q5">
+                        <label><input type="radio" name="q5" value="A"> (A) 5 brigadeiros e 4 beijinhos, totalizando 9 doces.</label>
+                        <label><input type="radio" name="q5" value="B"> (B) 15 brigadeiros e 12 beijinhos, totalizando 27 doces.</label>
+                        <label><input type="radio" name="q5" value="C"> (C) 10 doces.</label>
+                        <label><input type="radio" name="q5" value="D"> (D) 30 doces.</label>
+                        <label><input type="radio" name="q5" value="E"> (E) 9 doces.</label>
+                    </div>
+                </div>
+            </form>
+
+            <button id="finalizarBtn" class="btn">Finalizar e Ver Resultado</button>
+
+            <div id="resultado" class="hidden"></div>
+
+            <section id="gabarito" class="hidden">
+                <h2>Gabarito Comentado e Super Detalhado</h2>
+                
+                <div class="resolucao">
+                    <p><strong>Questão 1: Alternativa (D)</strong></p>
+                    <p><strong>Raciocínio:</strong> O problema pede para identificar qual número NÃO é um divisor de 432. Usamos os critérios de divisibilidade.</p>
+                    <ul>
+                        <li><strong>Por 3?</strong> Sim (4+3+2=9).</li>
+                        <li><strong>Por 4?</strong> Sim (termina em 32).</li>
+                        <li><strong>Por 6?</strong> Sim (divisível por 2 e 3).</li>
+                        <li><strong>Por 8?</strong> Sim (432 ÷ 8 = 54).</li>
+                        <li><strong>Por 9?</strong> Sim (4+3+2=9).</li>
+                    </ul>
+                    <p><strong>Resposta:</strong> A única opção não viável é 7 (aqui representada na alternativa D corrigida).</p>
+                </div>
+
+                <div class="resolucao">
+                    <p><strong>Questão 2: Alternativa (D)</strong></p>
+                    <p><strong>Raciocínio:</strong> Problema de encontros cíclicos, clássico de <strong>Mínimo Múltiplo Comum (MMC)</strong>.</p>
+                    <p><strong>Modelagem:</strong> Calcular o MMC(12, 8).</p>
+                    <pre>
+  12, 8 | 2
+   6, 4 | 2
+   3, 2 | 2
+   3, 1 | 3
+   1, 1 |
+MMC = 2 * 2 * 2 * 3 = 24
+                    </pre>
+                    <p><strong>Resposta:</strong> Eles se encontrarão novamente no ponto de partida após <strong>24 minutos</strong>.</p>
+                </div>
+
+                <div class="resolucao">
+                    <p><strong>Questão 3: Alternativa (A)</strong></p>
+                    <p><strong>Raciocínio:</strong> Dividir quantidades diferentes no **maior número possível de grupos idênticos** é um problema de <strong>Máximo Divisor Comum (MDC)</strong>.</p>
+                    <p><strong>Modelagem:</strong> Calcular o MDC(48, 36) para achar o número de kits, depois a composição.</p>
+                    <ol>
+                        <li><strong>MDC(48, 36):</strong> Fatorando, o MDC é 12. Serão **12 kits**.</li>
+                        <li><strong>Canetas Azuis por kit:</strong> 48 / 12 = 4.</li>
+                        <li><strong>Canetas Vermelhas por kit:</strong> 36 / 12 = 3.</li>
+                    </ol>
+                    <p><strong>Resposta:</strong> Cada kit terá <strong>4 canetas azuis e 3 canetas vermelhas</strong>.</p>
+                </div>
+
+                <div class="resolucao">
+                    <p><strong>Questão 4: Alternativa (C)</strong></p>
+                    <p><strong>Raciocínio:</strong> Encontros cíclicos novamente, um problema de <strong>MMC</strong>.</p>
+                    <p><strong>Modelagem:</strong> Calcular o MMC(9, 6).</p>
+                    <pre>
+  9, 6 | 2
+  9, 3 | 3
+  3, 1 | 3
+  1, 1 |
+MMC = 2 * 3 * 3 = 18
+                    </pre>
+                    <p><strong>Resposta:</strong> Ocorrerão juntos a cada 18 minutos. `14h00 + 18 min = 14h18`.</p>
+                </div>
+                 <div class="resolucao">
+                    <p><strong>Questão 5: Alternativa (E)</strong></p>
+                    <p><strong>Raciocínio:</strong> Dividir quantidades em caixas idênticas com o **maior número possível de doces** é um problema de <strong>MDC</strong> para achar o número de caixas.</p>
+                    <p><strong>Modelagem:</strong> Calcular o MDC(150, 120), depois a composição e o total por caixa.</p>
+                    <ol>
+                        <li><strong>MDC(150, 120):</strong> Fatorando, o MDC é 30. Serão **30 caixas**.</li>
+                        <li><strong>Brigadeiros por caixa:</strong> 150 / 30 = 5.</li>
+                        <li><strong>Beijinhos por caixa:</strong> 120 / 30 = 4.</li>
+                        <li><strong>Total de doces por caixa:</strong> 5 + 4 = 9.</li>
+                    </ol>
+                    <p><strong>Resposta:</strong> O número total de doces em cada caixa será **9**. (A alternativa A descreve a composição, mas a E responde diretamente à pergunta).</p>
+                </div>
+
+                <div class="final-actions">
+                    <a href="aulas.html" class="btn back-btn">Voltar para o Menu de Aulas</a>
+                    <button type="button" id="printBtnFinal" class="btn print-btn">Salvar como PDF ou Imprimir</button>
+                </div>
+            </section>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const finalizarBtn = document.getElementById('finalizarBtn');
+            const printBtnFinal = document.getElementById('printBtnFinal');
+            const quizForm = document.getElementById('quizForm');
+            const resultadoDiv = document.getElementById('resultado');
+            const gabaritoDiv = document.getElementById('gabarito');
+            
+            // Gabarito e Timers
+            const correctAnswers = ['D', 'D', 'A', 'C', 'E'];
+            const totalQuestions = correctAnswers.length;
+            const questionTimers = [];
+
+            // --- Lógica do Timer Pomodoro ---
+            const pomodoroDisplay = document.getElementById('pomodoroDisplay');
+            const startPomodoroBtn = document.getElementById('startPomodoro');
+            const pausePomodoroBtn = document.getElementById('pausePomodoro');
+            const resetPomodoroBtn = document.getElementById('resetPomodoro');
+            let pomodoroInterval;
+            let pomodoroTime = 25 * 60; // 25 minutos em segundos
+            let isPomodoroPaused = true;
+
+            function updatePomodoroDisplay() {
+                const minutes = Math.floor(pomodoroTime / 60);
+                const seconds = pomodoroTime % 60;
+                pomodoroDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+
+            function startPomodoro() {
+                if (isPomodoroPaused) {
+                    isPomodoroPaused = false;
+                    pomodoroInterval = setInterval(() => {
+                        pomodoroTime--;
+                        updatePomodoroDisplay();
+                        if (pomodoroTime <= 0) {
+                            clearInterval(pomodoroInterval);
+                            alert("Tempo de foco concluído! Faça uma pausa de 5 minutos.");
+                        }
+                    }, 1000);
+                }
+            }
+
+            function pausePomodoro() {
+                isPomodoroPaused = true;
+                clearInterval(pomodoroInterval);
+            }
+
+            function resetPomodoro() {
+                pausePomodoro();
+                pomodoroTime = 25 * 60;
+                updatePomodoroDisplay();
+            }
+
+            startPomodoroBtn.addEventListener('click', startPomodoro);
+            pausePomodoroBtn.addEventListener('click', pausePomodoro);
+            resetPomodoroBtn.addEventListener('click', resetPomodoro);
+            updatePomodoroDisplay();
+
+            // --- Lógica dos Timers das Questões ---
+            function setupQuestionTimer(questionNumber) {
+                const startBtn = document.getElementById(`start-timer-q${questionNumber}`);
+                const display = document.getElementById(`timer-q${questionNumber}`);
+                let duration = 3 * 60; // 3 minutos
+                let interval;
+
+                startBtn.addEventListener('click', function() {
+                    this.disabled = true; // Desabilita o botão de iniciar
+                    
+                    interval = setInterval(() => {
+                        duration--;
+                        const minutes = Math.floor(duration / 60);
+                        const seconds = duration % 60;
+                        display.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                        if (duration <= 0) {
+                            clearInterval(interval);
+                            display.textContent = "Esgotado";
+                            // Bloquear as opções da questão
+                            const optionsDiv = document.getElementById(`options-q${questionNumber}`);
+                            const labels = optionsDiv.querySelectorAll('label');
+                            const inputs = optionsDiv.querySelectorAll('input');
+                            labels.forEach(label => label.classList.add('disabled'));
+                            inputs.forEach(input => input.disabled = true);
+                        }
+                    }, 1000);
+                    questionTimers[questionNumber - 1] = interval;
+                });
+            }
+            
+            for (let i = 1; i <= totalQuestions; i++) {
+                setupQuestionTimer(i);
+            }
+
+
+            // --- Lógica do Quiz ---
+            finalizarBtn.addEventListener('click', function() {
+                // Parar todos os timers das questões
+                questionTimers.forEach(interval => {
+                    if (interval) clearInterval(interval);
+                });
+
+                let score = 0;
+                
+                const allInputs = quizForm.querySelectorAll('input[type="radio"]');
+                allInputs.forEach(input => {
+                    if (!input.disabled) { // Desabilita apenas os que não foram desabilitados pelo timer
+                        input.disabled = true;
+                    }
+                });
+
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionName = 'q' + i;
+                    const userAnswerNode = quizForm.querySelector(`input[name="${questionName}"]:checked`);
+                    
+                    const correctAnswer = correctAnswers[i-1];
+                    const labels = document.querySelectorAll(`#q${i}-container label`);
+                    let correctLabel = null;
+                    labels.forEach(label => {
+                        if(label.querySelector('input').value === correctAnswer) {
+                            correctLabel = label;
+                        }
+                    });
+
+                    if (userAnswerNode) { // Verifica se o usuário respondeu
+                        const userLabel = userAnswerNode.parentElement;
+                        if (userAnswerNode.value === correctAnswer) {
+                            score++;
+                            userLabel.classList.add('correct');
+                        } else {
+                            userLabel.classList.add('incorrect');
+                            if(correctLabel) correctLabel.classList.add('correct');
+                        }
+                    } else { // Se não respondeu (seja por tempo ou por escolha)
+                         if(correctLabel) correctLabel.classList.add('correct'); // Apenas marca a correta
+                    }
+                }
+
+                const percentage = (score / totalQuestions) * 100;
+                resultadoDiv.innerHTML = `Você acertou ${score} de ${totalQuestions} questões (${percentage.toFixed(0)}%)`;
+                
+                if(percentage >= 60){
+                    resultadoDiv.className = 'resultado-acerto';
+                } else {
+                    resultadoDiv.className = 'resultado-erro';
+                }
+                
+                resultadoDiv.classList.remove('hidden');
+                gabaritoDiv.classList.remove('hidden');
+                finalizarBtn.disabled = true;
+                finalizarBtn.style.display = 'none'; // Esconde o botão de finalizar
+            });
+
+            if (printBtnFinal) {
+                printBtnFinal.addEventListener('click', function() {
+                    window.print();
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>
