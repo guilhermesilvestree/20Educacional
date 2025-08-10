@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redação | Evolução Educacional</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cor-fundo: #0A0A10;
+            --cor-texto: #EAEAEA;
+            --cor-container: rgba(26, 26, 46, 0.7);
+            --cor-borda: rgba(255, 255, 255, 0.15);
+            --cor-sutil: #A0A0B0;
+            --cor-linguagens: #00A8FF;
+            --cor-sucesso: #4CAF50;
+            --cor-alerta: #FFC107;
+            --cor-perigo: #F44336;
+            --cor-botao-fundo: #FFFFFF;
+            --cor-botao-texto: #0A0A10;
+
+            /* NOVAS CORES: TEMA FOCO "BRANCO GELO" */
+            --cor-fundo-escrita: #f7f9fc;
+            --cor-texto-escrita: #1d2129;
+            --cor-borda-escrita: #dfe3e8;
+            --cor-sutil-escrita: #5a6371;
+            --cor-caixa-texto-fundo: #FFFFFF;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        html, body {
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #constellation-background {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; z-index: 0;
+        }
+
+        .page-container {
+            width: 100%;
+            max-width: 1200px; /* Aumentado para a tela de escrita */
+            padding: 20px;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .step-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            background: var(--cor-container);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--cor-borda);
+            padding: 40px;
+            animation: fadeIn 0.6s ease;
+            width: 100%;
+            max-width: 800px; /* Largura padrão para passos iniciais */
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+
+        .step-container.active { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .back-button-fixed {
+            position: fixed; top: 30px; left: 30px; z-index: 10;
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 15px; background: var(--cor-botao-fundo);
+            color: var(--cor-botao-texto); border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            text-decoration: none; font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .back-button-fixed:hover { transform: scale(1.05); }
+
+        h1 {
+            font-size: 2.5rem; font-weight: 700;
+            color: var(--cor-linguagens);
+            text-shadow: 0 0 15px rgba(0, 168, 255, 0.5);
+            text-align: center;
+        }
+        p { font-size: 1rem; color: var(--cor-sutil); text-align: center; line-height: 1.6; }
+
+        .action-button {
+            padding: 12px 30px; font-size: 1.1rem; font-weight: 600;
+            border-radius: 50px; border: none; cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--cor-botao-texto);
+            background-color: var(--cor-botao-fundo);
+        }
+        .action-button:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(255, 255, 255, 0.3); }
+
+        #instructions-step ul { list-style: none; padding: 0 20px; width: 100%; max-width: 600px; }
+        #instructions-step li {
+            margin-bottom: 15px; color: var(--cor-texto); line-height: 1.7;
+            padding-left: 30px; position: relative;
+        }
+        #instructions-step li::before {
+            content: '✓'; position: absolute; left: 0;
+            color: var(--cor-linguagens); font-weight: bold;
+        }
+
+        .preparation-animation { font-size: 1.5rem; animation: pulse 2s infinite ease-in-out; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.7; } }
+
+        /* --- PASSO 3: REDAÇÃO (TELA AMPLIADA E ESPAÇOSA) --- */
+        #writing-step {
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 60px; /* Mais espaçoso */
+            padding: 50px 60px; /* Mais espaçoso */
+            max-width: 1200px; /* Container maior */
+        }
+        .writing-sidebar {
+            flex: 0 0 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+        .theme-content { flex: 1; text-align: left; }
+        
+        .timer-container { position: relative; width: 180px; height: 180px; }
+        .timer-svg { transform: rotate(-90deg); }
+        .timer-bg, .timer-progress { fill: none; stroke-width: 12; }
+        .timer-bg { stroke: rgba(255, 255, 255, 0.2); }
+        .timer-progress { stroke: var(--cor-linguagens); stroke-linecap: round; transition: stroke-dashoffset 1s linear, stroke 0.5s; }
+        .timer-progress.warning { stroke: var(--cor-alerta); }
+        .timer-progress.danger { stroke: var(--cor-perigo); animation: timerFlash 1s infinite; }
+        
+        #timer-text {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.2rem;
+            font-weight: 600;
+        }
+        .instructions-sidebar {
+            font-size: 0.9rem;
+            color: var(--cor-sutil);
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        #theme-title { color: var(--cor-texto); margin-bottom: 20px; font-size: 1.8rem; font-weight: 600; text-align: left;}
+        #theme-text {
+            background: rgba(0,0,0,0.2); padding: 25px;
+            border-radius: 8px; border-left: 4px solid var(--cor-linguagens);
+            font-style: italic; text-align: left; font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        @keyframes timerFlash { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        /* --- TEMA "BRANCO GELO" PARA CONCENTRAÇÃO --- */
+        #writing-step.focus-mode {
+            background: var(--cor-fundo-escrita);
+            border: 1px solid var(--cor-borda-escrita);
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.1);
+        }
+        #writing-step.focus-mode #theme-title { color: var(--cor-texto-escrita); text-shadow: none; }
+        #writing-step.focus-mode p,
+        #writing-step.focus-mode #theme-text {
+            color: var(--cor-sutil-escrita);
+            font-style: normal;
+        }
+        #writing-step.focus-mode #theme-text {
+            background: var(--cor-caixa-texto-fundo);
+            border-color: var(--cor-linguagens);
+        }
+        #writing-step.focus-mode .instructions-sidebar,
+        #writing-step.focus-mode .instructions-sidebar strong {
+            color: var(--cor-sutil-escrita);
+        }
+        #writing-step.focus-mode .timer-bg { stroke: var(--cor-borda-escrita); }
+        #writing-step.focus-mode #timer-text { color: var(--cor-texto-escrita); }
+
+
+        #times-up-step h1, #submission-step h1 { font-size: 3rem; animation: shake 0.8s; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+        #upload-icon { width: 80px; height: 80px; color: var(--cor-linguagens); margin: 20px 0; }
+
+        @media (max-width: 992px) {
+            #writing-step { flex-direction: column; align-items: center; gap: 40px; }
+            .writing-sidebar { flex-basis: auto; width: 100%; }
+            .theme-content { text-align: center; width: 100%; }
+            #theme-title, #theme-text { text-align: left; }
+        }
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .page-container { padding: 10px; }
+            .step-container { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="constellation-background"></canvas>
+    
+    <a href="../linguagens.html" class="back-button-fixed">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <span>Voltar</span>
+    </a>
+
+    <div class="page-container">
+        
+        <div id="instructions-step" class="step-container active">
+            <h1>Como Funciona a Redação</h1>
+            <p>Leia atentamente as instruções antes de começar. Prepare-se para um desafio real!</p>
+            <ul>
+                <li>Você terá <strong>2 horas (120 minutos)</strong> para concluir sua redação, assim como no ENEM.</li>
+                <li>Sua redação deve ser um texto dissertativo-argumentativo de até 30 linhas.</li>
+                <li>Desenvolva o tema proposto, defendendo um ponto de vista com argumentos consistentes.</li>
+                <li>Elabore uma proposta de intervenção para o problema abordado, respeitando os direitos humanos.</li>
+                <li>Use caneta de tinta preta e escreva em uma folha de papel sem pautas, se possível.</li>
+            </ul>
+            <button id="understand-button" class="action-button">Entendi, vamos lá!</button>
+        </div>
+
+        <div id="preparation-step" class="step-container">
+            <h1 class="preparation-animation">Prepare-se</h1>
+            <p>Pegue sua caneta, uma folha de papel e um copo d'água. <br>Encontre um lugar tranquilo e concentre-se. A contagem começa em breve.</p>
+            <button id="start-button" class="action-button">Estou Pronto! Iniciar</button>
+        </div>
+
+        <div id="writing-step" class="step-container">
+            <aside class="writing-sidebar">
+                <div class="timer-container">
+                    <svg class="timer-svg" width="180" height="180" viewBox="0 0 180 180">
+                        <circle class="timer-bg" cx="90" cy="90" r="84"></circle>
+                        <circle id="timer-progress" class="timer-progress" cx="90" cy="90" r="84"></circle>
+                    </svg>
+                    <div id="timer-text">02:00:00</div>
+                </div>
+                <div class="instructions-sidebar">
+                    <strong>Lembretes:</strong><br>
+                    - Dissertativo-argumentativo<br>
+                    - Proposta de intervenção<br>
+                    - Respeito aos direitos humanos<br>
+                    - Mínimo de 7 linhas
+                </div>
+            </aside>
+            <main class="theme-content">
+                <h2 id="theme-title">Tema da Redação</h2>
+                <p id="theme-text">Texto motivador será carregado aqui.</p>
+            </main>
+        </div>
+
+        <div id="times-up-step" class="step-container">
+            <h1>Tempo Esgotado!</h1>
+            <p>O tempo acabou. Pare de escrever agora. <br>Prepare-se para enviar sua redação para correção.</p>
+        </div>
+
+        <div id="submission-step" class="step-container">
+            <h1>Envie sua Redação</h1>
+            <svg id="upload-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+            </svg>
+            <p>Tire uma foto nítida e bem iluminada da sua folha de redação.<br>Nossa IA irá escanear e transcrever seu texto para que nossos professores possam avaliá-lo.</p>
+             <button id="submit-button" class="action-button">Tirar Foto e Enviar</button>
+             <p style="font-size: 0.8rem; margin-top: 15px;">(Funcionalidade em desenvolvimento)</p>
+        </div>
+    </div>
+
+    <script>
+        const steps = {
+            instructions: document.getElementById('instructions-step'),
+            preparation: document.getElementById('preparation-step'),
+            writing: document.getElementById('writing-step'),
+            timesUp: document.getElementById('times-up-step'),
+            submission: document.getElementById('submission-step')
+        };
+        const understandButton = document.getElementById('understand-button');
+        const startButton = document.getElementById('start-button');
+        const submitButton = document.getElementById('submit-button');
+
+        // LÓGICA DE NAVEGAÇÃO E MODO FOCO
+        function showStep(stepName) {
+            Object.values(steps).forEach(step => {
+                step.classList.remove('active');
+                // Garante que a classe de foco seja removida de 'writing-step' se não estiver ativo
+                if(step.id === 'writing-step') {
+                    step.classList.remove('focus-mode');
+                }
+            });
+
+            const activeStep = steps[stepName];
+            activeStep.classList.add('active');
+
+            // Adiciona a classe de foco especificamente ao entrar no passo de escrita
+            if (activeStep.id === 'writing-step') {
+                // Pequeno delay para a transição de cor ser mais perceptível
+                setTimeout(() => {
+                    activeStep.classList.add('focus-mode');
+                }, 50);
+            }
+        }
+
+        understandButton.addEventListener('click', () => showStep('preparation'));
+        startButton.addEventListener('click', () => {
+            showStep('writing');
+            startEssay();
+        });
+        submitButton.addEventListener('click', () => {
+            alert('A mágica da correção acontecerá aqui! Em breve, sua nota estará no painel.');
+        });
+        
+        const themes = [
+            {
+                title: "Desafios para a valorização de comunidades e povos tradicionais no Brasil",
+                text: "“Os povos e comunidades tradicionais são grupos culturalmente diferenciados e que se reconhecem como tais, que possuem formas próprias de organização social, que ocupam e usam territórios e recursos naturais como condição para sua reprodução cultural, social, religiosa, ancestral e econômica, utilizando conhecimentos, inovações e práticas gerados e transmitidos pela tradição.” (Política Nacional de Desenvolvimento Sustentável dos Povos e Comunidades Tradicionais)"
+            },
+            {
+                title: "Invisibilidade e registro civil: garantia de acesso à cidadania no Brasil",
+                text: "“Toda pessoa tem direito ao nome e ao sobrenome. Além disso, o registro de nascimento é fundamental para que um indivíduo seja reconhecido como cidadão. No Brasil, embora a certidão de nascimento seja um direito e gratuita, milhões de pessoas ainda vivem à margem desse direito, enfrentando a invisibilidade social e a negação de acesso a programas e políticas públicas.”"
+            },
+            {
+                title: "O estigma associado às doenças mentais na sociedade brasileira",
+                text: "“A saúde mental é um tema que tem ganhado visibilidade, mas o estigma e o preconceito ainda são barreiras significativas. Muitas pessoas evitam buscar ajuda por medo do julgamento, o que agrava quadros clínicos e perpetua um ciclo de sofrimento e exclusão. A desinformação é um dos principais fatores que alimentam essa realidade.”"
+            }
+        ];
+        let timerInterval;
+
+        function startEssay() {
+            const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+            document.getElementById('theme-title').innerText = randomTheme.title;
+            document.getElementById('theme-text').innerText = randomTheme.text;
+            
+            const totalTime = 120 * 60; // 2 horas
+            // const totalTime = 15; // TEMPO DE TESTE: 15 segundos
+            startTimer(totalTime);
+        }
+        
+        function handleTimesUp() {
+             showStep('timesUp');
+             setTimeout(() => {
+                 showStep('submission');
+             }, 4000);
+        }
+
+        // LÓGICA DO TIMER CIRCULAR
+        const timerText = document.getElementById('timer-text');
+        const timerProgress = document.getElementById('timer-progress');
+        const radius = timerProgress.r.baseVal.value;
+        const circumference = 2 * Math.PI * radius;
+        timerProgress.style.strokeDasharray = `${circumference} ${circumference}`;
+        timerProgress.style.strokeDashoffset = circumference;
+
+        function setProgress(percent) {
+            const offset = circumference - (percent / 100) * circumference;
+            timerProgress.style.strokeDashoffset = offset;
+        }
+
+        function startTimer(duration) {
+            let timer = duration;
+            let totalDuration = duration;
+            clearInterval(timerInterval); // Limpa qualquer timer anterior
+
+            timerInterval = setInterval(() => {
+                let hours = parseInt(timer / 3600, 10);
+                let minutes = parseInt((timer % 3600) / 60, 10);
+                let seconds = parseInt(timer % 60, 10);
+
+                hours = hours < 10 ? "0" + hours : hours;
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                timerText.textContent = `${hours}:${minutes}:${seconds}`;
+                const progressPercent = (timer / totalDuration) * 100;
+                setProgress(progressPercent);
+                
+                timerProgress.classList.remove('warning', 'danger');
+                if (timer <= 10) {
+                    timerProgress.classList.add('danger');
+                } else if (timer <= 60) {
+                    timerProgress.classList.add('warning');
+                }
+
+                if (--timer < 0) {
+                    clearInterval(timerInterval);
+                    handleTimesUp();
+                }
+            }, 1000);
+        }
+
+        // ANIMAÇÃO DE FUNDO
+        const canvas = document.getElementById('constellation-background');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const words = ['TESE', 'ARGUMENTO', 'PROPOSTA', 'REPERTÓRIO', 'COESÃO', 'ENEM', 'CIDADANIA', 'DIREITOS', 'CONTEXTO', 'INTERVENÇÃO', 'CONECTOR'];
+        let particlesArray = [];
+        class WordParticle {
+            constructor() {
+                this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+                this.directionX = (Math.random() * 0.4) - 0.2; this.directionY = (Math.random() * 0.4) - 0.2;
+                this.size = 12; this.text = words[Math.floor(Math.random() * words.length)];
+                this.color = `hsl(${Math.random() * 360}, 90%, 65%)`;
+            }
+            draw() {
+                ctx.font = this.size + 'px Poppins'; ctx.fillStyle = 'rgba(234, 234, 234, 0.8)'; 
+                ctx.fillText(this.text, this.x, this.y);
+            }
+            update() {
+                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+                this.x += this.directionX; this.y += this.directionY; this.draw();
+            }
+        }
+        function init() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 25000;
+            for (let i = 0; i < numberOfParticles; i++) { particlesArray.push(new WordParticle()); }
+        }
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = Math.sqrt(Math.pow(particlesArray[a].x - particlesArray[b].x, 2) + Math.pow(particlesArray[a].y - particlesArray[b].y, 2));
+                    if (distance < 200) {
+                        opacityValue = 1 - (distance / 200);
+                        ctx.strokeStyle = `rgba(0, 168, 255, ${opacityValue * 0.5})`;
+                        ctx.lineWidth = 1; ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); }
+            connect(); requestAnimationFrame(animate);
+        }
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            init();
+        });
+        init(); animate();
+    </script>
+</body>
+</html>
