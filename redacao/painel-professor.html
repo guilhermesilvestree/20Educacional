@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Professor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --cor-fundo: #F4F4F6;
+            --cor-container: #FFFFFF;
+            --cor-texto-principal: #333A45;
+            --cor-texto-sutil: #7A8291;
+            --cor-borda: #EAEBEE;
+            --cor-acento: #00A8FF;
+            --cor-sucesso: #28a745;
+            --cor-pendente: #ffc107;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto-principal);
+            margin: 0;
+        }
+        .header {
+            background-color: var(--cor-container);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--cor-borda);
+        }
+        .header h1 {
+            font-size: 1.5rem;
+            color: var(--cor-acento);
+            margin: 0;
+        }
+        #export-btn {
+            background-color: var(--cor-sucesso);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+        #export-btn:hover {
+            background-color: #218838;
+        }
+        .dashboard-container {
+            display: flex;
+            height: calc(100vh - 81px);
+        }
+        .sidebar {
+            width: 350px;
+            background-color: var(--cor-container);
+            border-right: 1px solid var(--cor-borda);
+            padding: 20px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        .sidebar h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        #essay-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        #essay-list li {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border: 1px solid var(--cor-borda);
+            transition: background-color 0.2s, border-color 0.2s;
+            border-left: 4px solid transparent;
+        }
+        #essay-list li:hover {
+            background-color: #f8f9fa;
+        }
+        #essay-list li.active {
+            background-color: #eef8ff;
+            border-left-color: var(--cor-acento);
+        }
+        #essay-list .student-name { font-weight: 600; }
+        #essay-list .submission-date { font-size: 0.8rem; color: var(--cor-texto-sutil); }
+        .status {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+            float: right;
+            margin-left: 10px;
+        }
+        .status.pendente { background-color: var(--cor-pendente); }
+        .status.corrigida { background-color: var(--cor-sucesso); }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+        .placeholder {
+            text-align: center;
+            color: var(--cor-texto-sutil);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .placeholder i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        #essay-details, #feedback-form { width: 100%; max-width: 800px; margin: 0 auto; }
+        .detail-box, .feedback-box {
+            background-color: var(--cor-container);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            border: 1px solid var(--cor-borda);
+        }
+        .detail-box h3, .feedback-box h3 { margin-top: 0; }
+        #essay-theme { font-style: italic; color: var(--cor-texto-sutil); margin-bottom: 20px; border-left: 3px solid var(--cor-acento); padding-left: 15px; }
+        #essay-content { white-space: pre-wrap; line-height: 1.7; }
+
+        #feedback-form textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--cor-borda);
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+        #save-feedback-btn {
+            background-color: var(--cor-acento);
+            color: white; padding: 12px 25px;
+            border: none; border-radius: 8px;
+            cursor: pointer; font-weight: 600;
+            margin-top: 20px;
+            transition: background-color 0.2s;
+        }
+        #save-feedback-btn:hover {
+            background-color: var(--cor-acento-hover);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Painel de Correção</h1>
+        <button id="export-btn"><i class="fa-solid fa-file-export"></i> Exportar para JSON</button>
+    </header>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h2>Redações Recebidas</h2>
+            <ul id="essay-list">
+                </ul>
+        </aside>
+        <main class="main-content">
+            <div id="essay-details-wrapper">
+                <div class="placeholder">
+                    <i class="fa-regular fa-file-lines"></i>
+                    <p>Selecione uma redação na lista para visualizar e corrigir.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const essayList = document.getElementById('essay-list');
+        const essayDetailsWrapper = document.getElementById('essay-details-wrapper');
+        const exportBtn = document.getElementById('export-btn');
+
+        let essaysDB = [];
+        let currentEssayId = null;
+
+        function loadEssays() {
+            essaysDB = JSON.parse(localStorage.getItem('essaysDB')) || [];
+            essayList.innerHTML = ''; 
+            
+            essaysDB.sort((a, b) => new Date(b.submissionDate) - new Date(a.submissionDate)); // Ordena por mais recente
+
+            essaysDB.forEach(essay => {
+                const li = document.createElement('li');
+                li.dataset.id = essay.id;
+
+                const date = new Date(essay.submissionDate).toLocaleDateString('pt-BR');
+                
+                li.innerHTML = `
+                    <span class="status ${essay.status}">${essay.status}</span>
+                    <div class="student-name">${essay.studentName}</div>
+                    <div class="submission-date">Enviado em: ${date}</div>
+                `;
+
+                li.addEventListener('click', () => {
+                    displayEssayDetails(essay.id);
+                    document.querySelectorAll('#essay-list li').forEach(item => item.classList.remove('active'));
+                    li.classList.add('active');
+                });
+                essayList.appendChild(li);
+            });
+        }
+
+        function displayEssayDetails(id) {
+            currentEssayId = id;
+            const essay = essaysDB.find(e => e.id == id);
+            if (!essay) return;
+
+            essayDetailsWrapper.innerHTML = `
+                <div id="essay-details">
+                    <div class="detail-box">
+                        <h3>Redação de: ${essay.studentName}</h3>
+                        <p id="essay-theme"><strong>Tema:</strong> ${essay.themeTitle}</p>
+                        <p id="essay-content">${essay.essayText}</p>
+                    </div>
+                </div>
+                <form id="feedback-form">
+                    <div class="feedback-box">
+                        <h3>Feedback e Nota</h3>
+                        <textarea id="feedback-text" placeholder="Escreva o feedback para o aluno...">${essay.feedback || ''}</textarea>
+                        <button type="submit" id="save-feedback-btn">Salvar Correção</button>
+                    </div>
+                </form>
+            `;
+            
+            // Adiciona o event listener ao formulário recém-criado
+            document.getElementById('feedback-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (!currentEssayId) return;
+
+                const feedbackText = document.getElementById('feedback-text').value;
+                const essayIndex = essaysDB.findIndex(e => e.id == currentEssayId);
+                if (essayIndex === -1) return;
+
+                essaysDB[essayIndex].feedback = feedbackText;
+                essaysDB[essayIndex].status = 'corrigida';
+
+                localStorage.setItem('essaysDB', JSON.stringify(essaysDB));
+                alert('Correção salva com sucesso!');
+                loadEssays();
+            });
+        }
+        
+        exportBtn.addEventListener('click', () => {
+            if(essaysDB.length === 0) {
+                alert('Não há redações para exportar.');
+                return;
+            }
+            const dataStr = JSON.stringify(essaysDB, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = 'redacoes_exportadas.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        });
+
+        document.addEventListener('DOMContentLoaded', loadEssays);
+    </script>
+</body>
+</html>
