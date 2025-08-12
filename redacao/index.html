@@ -52,7 +52,7 @@
             display: none;
             flex-direction: column;
             align-items: center;
-            gap: 20px; /* Ajuste no espaçamento */
+            gap: 20px;
             background: var(--cor-container);
             border-radius: 28px;
             box-shadow: 0 16px 40px rgba(0, 0, 0, 0.07);
@@ -90,11 +90,11 @@
         p { 
             font-size: 1.1rem; color: var(--cor-texto-sutil); 
             text-align: center; line-height: 1.7;
-            max-width: 550px; /* Reduzido para melhor leitura */
+            max-width: 550px;
         }
 
         .action-button {
-            margin-top: 10px; /* Espaçamento extra para o botão */
+            margin-top: 10px;
             padding: 14px 35px; font-size: 1.1rem; font-weight: 600;
             border-radius: 50px; border: none; cursor: pointer;
             transition: all 0.3s ease;
@@ -117,11 +117,10 @@
             margin-top: 3px; width: 25px; text-align: center;
         }
 
-        /* --- ESTILO PARA O GIF DE PREPARAÇÃO --- */
         .preparation-gif {
-            width: 180px;  /* Tamanho aumentado */
+            width: 180px;
             height: auto;
-            margin-bottom: 10px; /* Espaço abaixo da animação */
+            margin-bottom: 10px;
         }
         
         #writing-step {
@@ -142,7 +141,6 @@
         .writing-right-column {
             flex: 1;
         }
-        /* Impede seleção de texto na página */
 
         #lembretes-list {
             list-style: none; padding: 0;
@@ -179,6 +177,31 @@
         
         #times-up-step h1, #submission-step h1 { font-size: 2.5rem; }
         #upload-icon { width: 80px; height: 80px; color: var(--cor-acento); margin: 20px 0; }
+
+        .upload-label {
+            display: inline-block;
+            padding: 14px 35px; font-size: 1.1rem; font-weight: 600;
+            border-radius: 50px; border: none; cursor: pointer;
+            transition: all 0.3s ease;
+            color: #FFFFFF; background-color: var(--cor-acento);
+            box-shadow: 0 4px 15px rgba(0, 168, 255, 0.25);
+        }
+        .upload-label:hover { background-color: var(--cor-acento-hover); transform: translateY(-2px); }
+        #photo-input { display: none; }
+
+        .input-group {
+            margin-top: 15px;
+            width: 100%;
+            max-width: 400px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 50px;
+            border: 1px solid var(--cor-borda);
+            font-size: 1rem;
+            text-align: center;
+        }
 
         @media (max-width: 992px) {
             #writing-step { flex-direction: column; align-items: center; gap: 40px; }
@@ -253,12 +276,50 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
             </svg>
             <p>Tire uma foto nítida e bem iluminada da sua redação. Nossa plataforma irá transcrever e preparar seu texto para a avaliação.</p>
-             <button id="submit-button" class="action-button">Tirar Foto e Enviar</button>
-             <p style="font-size: 0.8rem; margin-top: 15px; color: var(--cor-texto-sutil)">(Funcionalidade em desenvolvimento)</p>
+            
+            <div class="input-group">
+                <input type="text" id="student-name" placeholder="Digite seu nome completo">
+            </div>
+
+            <label for="photo-input" class="upload-label" id="upload-label">
+                <i class="fa-solid fa-camera"></i> Escolher Foto
+            </label>
+            <input type="file" id="photo-input" accept="image/*">
+            
+             <p id="submission-status" style="font-size: 0.9rem; margin-top: 15px; color: var(--cor-texto-sutil)"></p>
         </div>
     </div>
+    
+    <script type="module">
+        // =================================================================
+        // ==  CONFIGURAÇÃO DO FIREBASE - SUBSTITUA COM SUAS CREDENCIAIS  ==
+        // =================================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5u7IkNNqpQzwbW86paI3a4pZBPO_yjwk",
+            authDomain: "sistema-ce534.firebaseapp.com",
+            databaseURL: "https://sistema-ce534-default-rtdb.firebaseio.com",
+            projectId: "sistema-ce534",
+            storageBucket: "sistema-ce534.firebasestorage.app",
+            messagingSenderId: "839435076253",
+            appId: "1:839435076253:web:92e9485fe2ed9c95364a74"
+        };
+        
+        // ========================================================
+        // == IMPORTAÇÕES DO FIREBASE V9 (SINTAXE MODULAR)       ==
+        // ========================================================
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+        import { getFirestore, doc, collection, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
 
-    <script>
+        // ========================================================
+        // ==  INICIALIZAÇÃO DO FIREBASE E VARIÁVEIS GLOBAIS     ==
+        // ========================================================
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+        
         const steps = {
             instructions: document.getElementById('instructions-step'),
             preparation: document.getElementById('preparation-step'),
@@ -268,8 +329,17 @@
         };
         const understandButton = document.getElementById('understand-button');
         const startButton = document.getElementById('start-button');
-        const submitButton = document.getElementById('submit-button');
+        const studentNameInput = document.getElementById('student-name');
+        const photoInput = document.getElementById('photo-input');
+        const submissionStatus = document.getElementById('submission-status');
+        const uploadLabel = document.getElementById('upload-label');
+        
+        let currentTheme = null;
+        let timerInterval;
 
+        // ========================================================
+        // ==  LÓGICA DE NAVEGAÇÃO E CONTROLE DOS PASSOS (STEPS) ==
+        // ========================================================
         function showStep(stepName) {
             Object.values(steps).forEach(step => step.classList.remove('active'));
             steps[stepName].classList.add('active');
@@ -280,10 +350,10 @@
             showStep('writing');
             startEssay();
         });
-        submitButton.addEventListener('click', () => {
-            alert('A mágica da correção acontecerá aqui! Em breve, sua nota estará no painel.');
-        });
-        
+
+        // ========================================================
+        // ==  LÓGICA DA REDAÇÃO (TEMA E TIMER)                  ==
+        // ========================================================
         const themes = [
             {
                 title: "Desafios para a valorização de comunidades e povos tradicionais no Brasil",
@@ -298,14 +368,14 @@
                 text: "“A saúde mental é um tema que tem ganhado visibilidade, mas o estigma e o preconceito ainda são barreiras significativas. Muitas pessoas evitam buscar ajuda por medo do julgamento, o que agrava quadros clínicos e perpetua um ciclo de sofrimento e exclusão. A desinformação é um dos principais fatores que alimentam essa realidade.”"
             }
         ];
-        let timerInterval;
 
         function startEssay() {
             const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+            currentTheme = randomTheme; // Salva o tema atual
             document.getElementById('theme-title').innerText = randomTheme.title;
             document.getElementById('theme-text').innerText = randomTheme.text;
             
-            const totalTime = 120 * 60; // 2 horas
+            const totalTime = 1; // 2 horas
             startTimer(totalTime);
         }
         
@@ -349,7 +419,7 @@
                 timerProgress.classList.remove('warning', 'danger');
                 if (timer <= 10) {
                     timerProgress.classList.add('danger');
-                } else if (timer <= 60) {
+                } else if (timer <= 300) { // 5 minutos
                     timerProgress.classList.add('warning');
                 }
 
@@ -359,7 +429,84 @@
                 }
             }, 1000);
         }
+
+        // ========================================================
+        // ==  LÓGICA DE AUTENTICAÇÃO E UPLOAD (FIREBASE V9)     ==
+        // ========================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            signInAnonymously(auth).catch(error => {
+                console.error("Erro no login anônimo:", error);
+                submissionStatus.textContent = "Erro de conexão. Por favor, recarregue a página.";
+            });
+        });
+
+        photoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handlePhotoUpload(file);
+            }
+        });
+
+        async function handlePhotoUpload(file) {
+            const studentName = studentNameInput.value.trim();
+            if (!studentName) {
+                alert('Por favor, digite seu nome antes de enviar a redação.');
+                return;
+            }
+            
+            const user = auth.currentUser;
+            if (!user) {
+                alert('Erro de autenticação. Por favor, recarregue a página.');
+                return;
+            }
+
+            uploadLabel.textContent = 'Enviando...';
+            uploadLabel.style.pointerEvents = 'none';
+            submissionStatus.textContent = 'Aguarde, estamos processando sua redação...';
+
+            try {
+                // Cria uma referência de documento com um ID gerado automaticamente
+                const newEssayRef = doc(collection(db, "essays"));
+                const essayId = newEssayRef.id;
+
+                const filePath = `essays/${user.uid}/${essayId}/${file.name}`;
+                const fileRef = ref(storage, filePath);
+
+                // 1. Enviar arquivo para o Storage
+                await uploadBytes(fileRef, file);
+
+                // 2. Obter a URL de download
+                const fileURL = await getDownloadURL(fileRef);
+
+                // 3. Salvar informações no Firestore
+                await setDoc(newEssayRef, {
+                    id: essayId,
+                    studentName: studentName,
+                    themeTitle: currentTheme.title,
+                    essayImageURL: fileURL,
+                    storagePath: filePath,
+                    submissionDate: serverTimestamp(),
+                    status: 'pendente', // Status inicial
+                    transcribedText: null,
+                    feedback: null,
+                    grades: null
+                });
+                
+                submissionStatus.innerHTML = '<strong>Sucesso!</strong> Sua redação foi enviada e em breve será corrigida.';
+                uploadLabel.style.display = 'none';
+                studentNameInput.disabled = true;
+
+            } catch (error) {
+                console.error("Erro no envio:", error);
+                submissionStatus.textContent = 'Ocorreu um erro ao enviar. Tente novamente.';
+                uploadLabel.textContent = 'Escolher Foto';
+                uploadLabel.style.pointerEvents = 'auto';
+            }
+        }
         
+        // ========================================================
+        // ==  ANIMAÇÃO DE FUNDO (CANVAS)                        ==
+        // ========================================================
         const canvas = document.getElementById('constellation-background');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
@@ -436,5 +583,5 @@
         init();
         animate();
     </script>
-</body>
+    </body>
 </html>
