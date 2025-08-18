@@ -3,714 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redação | Evolução Educacional</title>
+    <title>Evolução Educacional: Acesso</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
     <style>
+        /* * CSS - Estilo "Tecnológico Moderno"
+         * Dark mode com cores vibrantes e foco em animação.
+        */
+
+        /* Novas Variáveis de Cor (Dark Mode) */
         :root {
-            --cor-fundo: #F4F4F6;
-            --cor-container: #FFFFFF;
-            --cor-texto-principal: #333A45;
-            --cor-texto-sutil: #7A8291;
-            --cor-borda: #EAEBEE;
-            --cor-acento: #00A8FF;
-            --cor-acento-hover: #008DD1;
-            --cor-alerta: #E5A05B;
-            --cor-perigo: #C96464;
+            --cor-fundo: #0F0F1A;      /* Azul-marinho quase preto */
+            --cor-texto: #EAEAEA;      /* Branco suave */
+            --cor-slogan: #A0A0B0;     /* Cinza claro para o slogan */
+            --cor-primaria-btn: #1A1A2E; /* Cor do botão */
+            
+            /* Cores para a animação */
+            --cor-risco-1: #00A8FF;     /* Azul Vibrante */
+            --cor-risco-2: #9C27B0;     /* Roxo Vibrante */
+            --cor-risco-3: #00BCD4;     /* Ciano Vibrante */
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        /* Reset Básico e Estilos Globais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         html, body {
             height: 100%;
+            font-family: 'Poppins', sans-serif;
             background-color: var(--cor-fundo);
-            color: var(--cor-texto-principal);
+            color: var(--cor-texto);
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-        }
-        
-        #constellation-background {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; z-index: 0;
+            overflow: hidden; 
         }
 
-        .page-container {
+        /* NOVO: Canvas para a animação de fundo */
+        #art-background {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 1100px;
-            position: relative; z-index: 1;
-            display: flex; justify-content: center;
+            height: 100%;
+            z-index: 0;
         }
-        
-        .step-container {
-            display: none;
+
+        /* Container Principal do Login */
+        .login-container {
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            text-align: center;
+            display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
-            background: var(--cor-container);
-            border-radius: 28px;
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.07);
-            border: 1px solid var(--cor-borda);
-            padding: 50px;
-            animation: fadeIn 0.6s ease;
-            width: 100%;
-        }
-
-        .step-container.active { display: flex; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .back-button-fixed {
-            position: fixed; top: 30px; left: 30px; z-index: 10;
-            display: flex; align-items: center; justify-content: center;
-            width: 44px; height: 44px; 
-            background: var(--cor-container);
-            color: var(--cor-acento); 
-            border-radius: 50%;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            border: 1px solid var(--cor-borda);
-            text-decoration: none; font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-        .back-button-fixed:hover { transform: scale(1.1); }
-        
-        h1 {
-            font-size: 2.2rem; font-weight: 700;
-            color: var(--cor-acento); text-align: center;
-        }
-        p { 
-            font-size: 1.1rem; color: var(--cor-texto-sutil); 
-            text-align: center; line-height: 1.7;
-            max-width: 550px;
-        }
-
-        .action-button {
-            margin-top: 10px;
-            padding: 14px 35px; font-size: 1.1rem; font-weight: 600;
-            border-radius: 50px; border: none; cursor: pointer;
-            transition: all 0.3s ease;
-            color: #FFFFFF; background-color: var(--cor-acento);
-            box-shadow: 0 4px 15px rgba(0, 168, 255, 0.25);
-        }
-        .action-button:hover { background-color: var(--cor-acento-hover); transform: translateY(-2px); }
-
-        #instructions-step ul { 
-            list-style: none; padding: 0; 
-            width: 100%; max-width: 600px; margin-top: 20px;
-        }
-        #instructions-step li {
-            display: flex; align-items: flex-start; gap: 20px;
-            margin-bottom: 25px; color: var(--cor-texto-principal);
-            line-height: 1.6; font-size: 1rem;
-        }
-        #instructions-step li i {
-            color: var(--cor-acento); font-size: 1.3rem;
-            margin-top: 3px; width: 25px; text-align: center;
-        }
-
-        .preparation-gif {
-            width: 180px;
-            height: auto;
-            margin-bottom: 10px;
-        }
-        
-        #writing-step {
-            padding: 20px;
-            user-select: none;
-            -webkit-user-select: none;
-            -ms-user-select: none;
-            -moz-user-select: none;
-            background-color: #F9FAFB;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        
-        .writing-dashboard {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
             gap: 15px;
-        }
-
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--cor-borda);
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.0rem;
-            font-weight: 500;
-        }
-        .user-info i {
-            font-size: 1.2rem;
-            color: var(--cor-acento);
-        }
-        #student-name-display {
-            font-weight: 600;
-        }
-
-        .datetime-info {
-            font-size: 0.9rem;
-            color: var(--cor-texto-sutil);
-            text-align: right;
-        }
-        #current-time { font-weight: 600; }
-
-        .dashboard-main {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            width: 100%;
-        }
-
-        .left-column {
-            flex: 1 1 280px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            min-width: 280px;
-        }
-        .right-column {
-            flex: 2 1 400px;
-            display: flex;
-        }
-
-        .widget {
-            background: var(--cor-container);
+            position: relative;
+            z-index: 1;
+            /* Efeito de "Glassmorphism" para o container */
+            background: rgba(26, 26, 46, 0.4); /* Fundo semi-transparente */
             border-radius: 16px;
-            padding: 18px;
-            border: 1px solid var(--cor-borda);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-            display: flex;
-            flex-direction: column;
-            width: 100%;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .widget-title {
-            font-size: 1.0rem;
+        /* Título e Slogan com nova tipografia e tamanhos */
+        .titulo {
+            font-size: 3.2rem;
             font-weight: 600;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--cor-borda);
-            display: flex;
+        }
+
+        .slogan {
+            font-size: 1.2rem;
+            color: var(--cor-slogan);
+            font-weight: 400;
+        }
+
+        /* Botão de Login com estilo tecnológico */
+        #google-login-btn {
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
-        }
-        .widget-title i { color: var(--cor-acento); }
-
-        .timer-widget { align-items: center; }
-        .timer-container { position: relative; width: 160px; height: 160px; }
-        .timer-svg { transform: rotate(-90deg); }
-        .timer-bg, .timer-progress { fill: none; stroke-width: 12; }
-        .timer-bg { stroke: var(--cor-borda); }
-        .timer-progress { stroke: var(--cor-acento); stroke-linecap: round; transition: stroke-dashoffset 1s linear, stroke 0.5s; }
-        .timer-progress.warning { stroke: var(--cor-alerta); }
-        .timer-progress.danger { stroke: var(--cor-perigo); animation: timerFlash 1s infinite; }
-        
-        #timer-text {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2.0rem;
-        }
-
-        #checklist-lembretes { list-style: none; padding: 0; }
-        #checklist-lembretes li {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 10px;
-            color: var(--cor-texto-sutil);
-            font-size: 0.9rem;
-        }
-        #checklist-lembretes i {
-            color: var(--cor-sucesso, #28a745);
-            font-size: 1.0rem;
-        }
-        
-        #theme-title { 
-            color: var(--cor-texto-principal); 
-            font-size: 1.3rem; 
-            font-weight: 600; 
-            text-align: center;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--cor-borda);
-        }
-        #theme-text {
-            font-size: 0.95rem;
-            line-height: 1.7;
-            color: var(--cor-texto-sutil);
-            flex-grow: 1;
-            text-align: center;
-        }
-        
-        @keyframes timerFlash { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        
-        #times-up-step h1, #submission-step h1 { font-size: 2.5rem; }
-        #upload-icon { width: 80px; height: 80px; color: var(--cor-acento); margin: 20px 0; }
-
-        .upload-label {
-            display: inline-block;
-            padding: 14px 35px; font-size: 1.1rem; font-weight: 600;
-            border-radius: 50px; border: none; cursor: pointer;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            background-color: var(--cor-primaria-btn);
+            color: var(--cor-texto);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 14px 28px;
+            margin-top: 25px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
             transition: all 0.3s ease;
-            color: #FFFFFF; background-color: var(--cor-acento);
-            box-shadow: 0 4px 15px rgba(0, 168, 255, 0.25);
-        }
-        .upload-label:hover { background-color: var(--cor-acento-hover); transform: translateY(-2px); }
-        #photo-input { display: none; }
-
-        .input-group {
-            margin-top: 15px;
-            width: 100%;
-            max-width: 400px;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 12px 20px;
-            border-radius: 50px;
-            border: 1px solid var(--cor-borda);
-            font-size: 1rem;
-            text-align: center;
         }
 
-        @media (max-width: 768px) {
-            .step-container { padding: 40px 25px; }
-            h1 { font-size: 1.8rem; }
-            .preparation-gif { width: 150px; }
-            .dashboard-header { flex-direction: column; gap: 10px; align-items: flex-start; }
-            .datetime-info { text-align: left; }
-            
-            #writing-step {
-                padding: 25px 15px;
-            }
+        #google-login-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--cor-risco-1);
+            box-shadow: 0 0 15px rgba(0, 168, 255, 0.3);
+        }
+
+        #google-login-btn .google-icon {
+            width: 22px;
+            height: 22px;
+        }
+        
+        /* Rodapé com Termos e Privacidade */
+        footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.8rem;
+            color: var(--cor-slogan);
+            z-index: 1;
+        }
+
+        footer a {
+            color: var(--cor-slogan);
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        footer a:hover {
+            color: var(--cor-texto);
         }
     </style>
 </head>
 <body>
     
-    <canvas id="constellation-background"></canvas>
+    <canvas id="art-background"></canvas>
 
-    <a href="../linguagens.html" class="back-button-fixed">
-        <i class="fa-solid fa-chevron-left"></i>
-    </a>
-
-    <div class="page-container">
+    <main class="login-container">
+        <header>
+            <h1 class="titulo">Evolução Educacional</h1>
+            <p class="slogan">Ensino Simples e Claro</p>
+        </header>
         
-        <div id="instructions-step" class="step-container active">
-            <h1>Sua Jornada de Escrita</h1>
-            <p>Prepare-se para transformar suas ideias em palavras. Siga as diretrizes para uma redação de sucesso.</p>
-            <ul>
-                <li><i class="fa-solid fa-hourglass-half"></i><div><strong>Tempo de Foco:</strong> Você terá 2 horas para desenvolver seu texto.</div></li>
-                <li><i class="fa-solid fa-file-pen"></i><div><strong>Estrutura:</strong> Escreva um texto dissertativo-argumentativo com até 30 linhas.</div></li>
-                <li><i class="fa-solid fa-lightbulb"></i><div><strong>Argumentação:</strong> Defenda seu ponto de vista com argumentos claros, consistentes e bem fundamentados.</div></li>
-                <li><i class="fa-solid fa-people-group"></i><div><strong>Proposta de Intervenção:</strong> Elabore uma solução para o problema, respeitando os direitos humanos.</div></li>
-                <li><i class="fa-solid fa-pen-nib"></i><div><strong>Material:</strong> Utilize caneta de tinta preta e escreva em uma folha de papel.</div></li>
-            </ul>
-            <button id="understand-button" class="action-button">Entendi, vamos começar!</button>
-        </div>
-
-        <div id="preparation-step" class="step-container">
-            <img src="anim_escrevendo.gif" class="preparation-gif" alt="Animação de uma pessoa se preparando para escrever">
-            <h1>Momento de Preparação</h1>
-            <p>Organize seus materiais e encontre um lugar tranquilo. Respire fundo. Sua jornada de escrita começa agora.</p>
-            <button id="start-button" class="action-button">Estou Pronto para Iniciar</button>
-        </div>
-
-        <div id="writing-step" class="step-container">
-            <div class="writing-dashboard">
-                <header class="dashboard-header">
-                    <div class="user-info">
-                        <i class="fa-solid fa-user-circle"></i>
-                        <span>Olá, <strong id="student-name-display">...</strong></span>
-                    </div>
-                    <div class="datetime-info">
-                        <span id="current-date">--/--/----</span>
-                        <br>
-                        <span id="current-time">--:--:--</span>
-                    </div>
-                </header>
-
-                <main class="dashboard-main">
-                    <div class="left-column">
-                        <div class="widget timer-widget">
-                            <h3 class="widget-title"><i class="fa-solid fa-stopwatch"></i>Tempo Restante</h3>
-                            <div class="timer-container">
-                                <svg class="timer-svg" width="160" height="160" viewBox="0 0 160 160">
-                                    <circle class="timer-bg" cx="80" cy="80" r="74"></circle>
-                                    <circle id="timer-progress" class="timer-progress" cx="80" cy="80" r="74"></circle>
-                                </svg>
-                                <div id="timer-text">02:00:00</div>
-                            </div>
-                        </div>
-                        <div class="widget">
-                            <h3 class="widget-title"><i class="fa-solid fa-list-check"></i>Checklist</h3>
-                             <ul id="checklist-lembretes">
-                                <li><i class="fa-solid fa-check-circle"></i> Dissertativo-argumentativo</li>
-                                <li><i class="fa-solid fa-check-circle"></i> Proposta de intervenção</li>
-                                <li><i class="fa-solid fa-check-circle"></i> Respeito aos direitos humanos</li>
-                                <li><i class="fa-solid fa-check-circle"></i> Mínimo de 7 linhas</li>
-                                <li><i class="fa-solid fa-check-circle"></i> Máximo de 30 linhas</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="right-column">
-                        <div class="widget theme-widget">
-                             <h3 class="widget-title"><i class="fa-solid fa-book-open"></i>Tema da Redação</h3>
-                            <h2 id="theme-title">Tema da Redação</h2>
-                            <p id="theme-text">Texto motivador será carregado aqui.</p>
-                        </div>
-                    </div>
-                </main>
-            </div>
-        </div>
-
-        <div id="times-up-step" class="step-container">
-            <h1>Tempo Esgotado!</h1>
-            <p>Excelente esforço! O tempo acabou. Pare de escrever agora e prepare-se para o próximo passo.</p>
-        </div>
-
-        <div id="submission-step" class="step-container">
-            <h1>Envie Sua Obra</h1>
-            <svg id="upload-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+        <a href="menu.html">
+        <button id="google-login-btn">
+            <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
+                <path fill="#EAEAEA" d="M488 261.8C488 403.3 381.5 512 244 512 110.3 512 0 401.7 0 265.9 0 130.2 110.3 20 244 20c66.3 0 121.3 24.4 166.5 65.6l-67.5 64.8C295.5 118.8 273.5 104 244 104c-82.3 0-149.3 67.1-149.3 149.8s67 149.8 149.3 149.8c93.5 0 130.3-71.3 134-108.8H244V261.8h244z"/>
             </svg>
-            <p>Tire uma foto nítida e bem iluminada da sua redação. Nossa plataforma irá transcrever e preparar seu texto para a avaliação.</p>
-            
-            <div class="input-group">
-                <input type="text" id="student-name" placeholder="Digite seu nome completo">
-            </div>
+            <span>Entrar com o Google</span>
+        </button>
+        </a>
+    </main>
 
-            <label for="photo-input" class="upload-label" id="upload-label">
-                <i class="fa-solid fa-camera"></i> Escolher Foto
-            </label>
-            <input type="file" id="photo-input" accept="image/*">
-            
-             <p id="submission-status" style="font-size: 0.9rem; margin-top: 15px; color: var(--cor-texto-sutil)"></p>
-        </div>
-    </div>
-    
-    <script type="module">
-        // =================================================================
-        // ==  CONFIGURAÇÃO DO FIREBASE - SUBSTITUA COM SUAS CREDENCIAIS  ==
-        // =================================================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyD5u7IkNNqpQzwbW86paI3a4pZBPO_yjwk",
-            authDomain: "sistema-ce534.firebaseapp.com",
-            databaseURL: "https://sistema-ce534-default-rtdb.firebaseio.com",
-            projectId: "sistema-ce534",
-            storageBucket: "sistema-ce534.firebasestorage.app",
-            messagingSenderId: "839435076253",
-            appId: "1:839435076253:web:92e9485fe2ed9c95364a74"
-        };
-        
-        // ========================================================
-        // == IMPORTAÇÕES DO FIREBASE V9 (SINTAXE MODULAR)       ==
-        // ========================================================
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-        import { getFirestore, doc, collection, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
+    <footer>
+        <a href="#">Termos de Uso</a>
+        <a href="#">Política de Privacidade</a>
+    </footer>
 
-        // ========================================================
-        // ==  INICIALIZAÇÃO DO FIREBASE E VARIÁVEIS GLOBAIS     ==
-        // ========================================================
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const storage = getStorage(app);
-        
-        const steps = {
-            instructions: document.getElementById('instructions-step'),
-            preparation: document.getElementById('preparation-step'),
-            writing: document.getElementById('writing-step'),
-            timesUp: document.getElementById('times-up-step'),
-            submission: document.getElementById('submission-step')
-        };
-        const understandButton = document.getElementById('understand-button');
-        const startButton = document.getElementById('start-button');
-        const studentNameInput = document.getElementById('student-name');
-        const photoInput = document.getElementById('photo-input');
-        const submissionStatus = document.getElementById('submission-status');
-        const uploadLabel = document.getElementById('upload-label');
-        
-        const studentNameDisplay = document.getElementById('student-name-display');
-        const currentDateDisplay = document.getElementById('current-date');
-        const currentTimeDisplay = document.getElementById('current-time');
-        
-        let currentTheme = null;
-        let timerInterval;
-        let currentRemainingSeconds;
-        const TOTAL_ESSAY_TIME = 10;
+    <script>
+        /* * JavaScript - Animação de Fundo e Lógica do Botão
+        */
 
-        // ========================================================
-        // ==  LÓGICA DE NAVEGAÇÃO E CONTROLE DOS PASSOS (STEPS) ==
-        // ========================================================
-        function showStep(stepName) {
-            Object.values(steps).forEach(step => step.classList.remove('active'));
-            steps[stepName].classList.add('active');
-        }
-
-        understandButton.addEventListener('click', () => showStep('preparation'));
-        
-        startButton.addEventListener('click', () => {
-            const randomTheme = themes[Math.floor(Math.random() * themes.length)];
-            startEssay(randomTheme);
+        // --- Lógica do Botão de Login ---
+        const googleLoginButton = document.getElementById('google-login-btn');
+        googleLoginButton.addEventListener('click', () => {
+            alert('Botão de login clicado! Próximo passo: Integração com o Firebase Auth.');
         });
 
-        function startEssay(theme) {
-            showStep('writing');
-            currentTheme = theme;
-            
-            document.getElementById('theme-title').innerText = theme.title;
-            document.getElementById('theme-text').innerText = theme.text;
-            
-            const mockStudentName = "Ana Flávia"; 
-            studentNameDisplay.innerText = mockStudentName;
 
-            const sessionData = {
-                creationTime: Date.now(),
-                remainingSeconds: TOTAL_ESSAY_TIME,
-                theme: theme,
-                studentName: mockStudentName
-            };
-            localStorage.setItem('essaySession', JSON.stringify(sessionData));
-
-            startTimer(TOTAL_ESSAY_TIME);
-        }
-
-        // ========================================================
-        // ==  LÓGICA DA REDAÇÃO (TEMA E TIMER)                  ==
-        // ========================================================
-        const themes = [
-            { title: "Desafios para a valorização de comunidades e povos tradicionais no Brasil", text: "“Os povos e comunidades tradicionais são grupos culturalmente diferenciados e que se reconhecem como tais, que possuem formas próprias de organização social, que ocupam e usam territórios e recursos naturais como condição para sua reprodução cultural, social, religiosa, ancestral e econômica, utilizando conhecimentos, inovações e práticas gerados e transmitidos pela tradição.” (Política Nacional de Desenvolvimento Sustentável dos Povos e Comunidades Tradicionais)" },
-            { title: "Invisibilidade e registro civil: garantia de acesso à cidadania no Brasil", text: "“Toda pessoa tem direito ao nome e ao sobrenome. Além disso, o registro de nascimento é fundamental para que um indivíduo seja reconhecido como cidadão. No Brasil, embora a certidão de nascimento seja um direito e gratuita, milhões de pessoas ainda vivem à margem desse direito, enfrentando a invisibilidade social e a negação de acesso a programas e políticas públicas.”" },
-            { title: "O estigma associado às doenças mentais na sociedade brasileira", text: "“A saúde mental é um tema que tem ganhado visibilidade, mas o estigma e o preconceito ainda são barreiras significativas. Muitas pessoas evitam buscar ajuda por medo do julgamento, o que agrava quadros clínicos e perpetua um ciclo de sofrimento e exclusão. A desinformação é um dos principais fatores que alimentam essa realidade.”" }
-        ];
-        
-        function handleTimesUp() {
-             showStep('timesUp');
-             localStorage.removeItem('essaySession');
-             setTimeout(() => { showStep('submission'); }, 4000);
-        }
-
-        const timerText = document.getElementById('timer-text');
-        const timerProgress = document.getElementById('timer-progress');
-        
-        function setProgress(percent) {
-            const radius = timerProgress.r.baseVal.value;
-            const circumference = 2 * Math.PI * radius;
-            timerProgress.style.strokeDasharray = `${circumference} ${circumference}`;
-            
-            const offset = circumference - (percent / 100) * circumference;
-            timerProgress.style.strokeDashoffset = offset;
-        }
-
-        function startTimer(duration) {
-            // CORREÇÃO: Garante que a 'duration' seja sempre um número válido.
-            let validDuration = Number(duration);
-            if (isNaN(validDuration)) {
-                console.error("startTimer foi chamado com uma duração inválida. Resetando.");
-                validDuration = 0; // Zera o tempo se o valor for inválido, para evitar NaN
-            }
-
-            clearInterval(timerInterval);
-            currentRemainingSeconds = validDuration;
-
-            const updateDisplay = () => {
-                // Previne que `currentRemainingSeconds` seja undefined ou null
-                const seconds_safe = currentRemainingSeconds || 0;
-
-                let hours = parseInt(seconds_safe / 3600, 10);
-                let minutes = parseInt((seconds_safe % 3600) / 60, 10);
-                let seconds = parseInt(seconds_safe % 60, 10);
-
-                hours = hours < 10 ? "0" + hours : hours;
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
-
-                timerText.textContent = `${hours}:${minutes}:${seconds}`;
-                const progressPercent = (seconds_safe / TOTAL_ESSAY_TIME) * 100;
-                setProgress(progressPercent);
-                
-                timerProgress.classList.remove('warning', 'danger');
-                if (seconds_safe <= 60) { timerProgress.classList.add('danger'); } 
-                else if (seconds_safe <= 300) { timerProgress.classList.add('warning'); }
-            };
-
-            updateDisplay(); // Atualiza a tela imediatamente ao iniciar
-
-            timerInterval = setInterval(() => {
-                if (--currentRemainingSeconds < 0) {
-                    clearInterval(timerInterval);
-                    handleTimesUp();
-                } else {
-                    updateDisplay();
-                }
-            }, 1000);
-        }
-
-
-        function updateDateTime() {
-            const now = new Date();
-            const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-            currentDateDisplay.textContent = now.toLocaleDateString('pt-BR', dateOptions);
-            currentTimeDisplay.textContent = now.toLocaleTimeString('pt-BR');
-        }
-        
-        setInterval(updateDateTime, 1000);
-        updateDateTime();
-
-        function restoreSession() {
-            const savedSessionJSON = localStorage.getItem('essaySession');
-            if (!savedSessionJSON) {
-                showStep('instructions');
-                return;
-            }
-
-            const sessionData = JSON.parse(savedSessionJSON);
-            const now = Date.now();
-            const threeDaysInMillis = 3 * 24 * 60 * 60 * 1000;
-
-            if (now > sessionData.creationTime + threeDaysInMillis) {
-                localStorage.removeItem('essaySession');
-                showStep('instructions');
-                return;
-            }
-
-            // CORREÇÃO: Valida se 'remainingSeconds' é um número antes de usar
-            const remainingSeconds = sessionData.remainingSeconds;
-            if (typeof remainingSeconds !== 'number' || remainingSeconds < 0) {
-                localStorage.removeItem('essaySession');
-                showStep(remainingSeconds < 0 ? 'submission' : 'instructions');
-                return;
-            }
-            
-            showStep('writing');
-            currentTheme = sessionData.theme;
-            document.getElementById('theme-title').innerText = sessionData.theme.title;
-            document.getElementById('theme-text').innerText = sessionData.theme.text;
-            studentNameDisplay.innerText = sessionData.studentName;
-            
-            startTimer(remainingSeconds);
-        }
-        
-        function saveCurrentTime() {
-            const savedSessionJSON = localStorage.getItem('essaySession');
-            if (!savedSessionJSON || !currentTheme) return;
-
-            // CORREÇÃO: Garante que está salvando um número válido
-            if (typeof currentRemainingSeconds !== 'number') return; 
-
-            const sessionData = JSON.parse(savedSessionJSON);
-            sessionData.remainingSeconds = currentRemainingSeconds;
-            localStorage.setItem('essaySession', JSON.stringify(sessionData));
-            console.log("Sessão salva com:", currentRemainingSeconds, "segundos restantes.");
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            signInAnonymously(auth).catch(error => { console.error("Erro no login anônimo:", error); });
-            
-            restoreSession();
-            
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden) {
-                    saveCurrentTime();
-                }
-            });
-            window.addEventListener('beforeunload', saveCurrentTime);
-        });
-
-        photoInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) { handlePhotoUpload(file); }
-        });
-        
-        async function getGeminiAnalysis(text) {
-            console.log("Simulando análise do Gemini...");
-            await new Promise(resolve => setTimeout(resolve, 2500));
-            const c1=Math.round(Math.random()*5)*40,c2=Math.round(Math.random()*5)*40,c3=Math.round(Math.random()*5)*40,c4=Math.round(Math.random()*5)*40,c5=Math.round(Math.random()*5)*40,total=c1+c2+c3+c4+c5;
-            return {grades:{competencia1:c1,competencia2:c2,competencia3:c3,competencia4:c4,competencia5:c5,total:total},feedback:{positive:"Excelente...",difficulties:"Problemas de coesão...",suggestions:"Revisar..."}};
-        }
-        
-        async function handlePhotoUpload(file) {
-            const studentName = studentNameInput.value.trim();
-            if (!studentName) {
-                alert('Por favor, digite seu nome completo antes de enviar a redação.');
-                return;
-            }
-            const user = auth.currentUser;
-            if (!user) {
-                alert('Erro de autenticação.');
-                return;
-            }
-
-            uploadLabel.textContent = 'Enviando...';
-            uploadLabel.style.pointerEvents = 'none';
-            submissionStatus.textContent = 'Aguarde, processando sua redação...';
-
-            try {
-                const newEssayRef = doc(collection(db, "essays"));
-                const essayId = newEssayRef.id;
-                const filePath = `essays/${user.uid}/${essayId}/${file.name}`;
-                const fileRef = ref(storage, filePath);
-                await uploadBytes(fileRef, file);
-                const fileURL = await getDownloadURL(fileRef);
-                submissionStatus.textContent = 'Analisando com a IA...';
-                
-                const simulatedTranscribedText = `(Texto simulado extraído da imagem)\n\nA questão do estigma associado às doenças mentais no Brasil é uma barreira silenciosa que impede o progresso social...`;
-                const analysis = await getGeminiAnalysis(simulatedTranscribedText);
-
-                await setDoc(newEssayRef, {
-                    id: essayId, studentName: studentName, themeTitle: currentTheme.title,
-                    essayImageURL: fileURL, storagePath: filePath, submissionDate: serverTimestamp(),
-                    status: 'corrigida', transcribedText: simulatedTranscribedText,
-                    feedback: analysis.feedback, grades: analysis.grades
-                });
-                
-                submissionStatus.innerHTML = `<strong>Sucesso!</strong> Sua redação foi enviada e corrigida.`;
-                uploadLabel.style.display = 'none';
-                studentNameInput.disabled = true;
-
-                localStorage.removeItem('essaySession');
-
-            } catch (error) {
-                console.error("Erro no envio:", error);
-                submissionStatus.textContent = 'Ocorreu um erro ao enviar.';
-                uploadLabel.textContent = 'Escolher Foto';
-                uploadLabel.style.pointerEvents = 'auto';
-            }
-        }
-        
-        const canvas = document.getElementById('constellation-background');
+        // --- Animação do Canvas ---
+        const canvas = document.getElementById('art-background');
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        const words = ['TESE', 'ARGUMENTO', 'PROPOSTA', 'REPERTÓRIO', 'COESÃO', 'ENEM', 'CIDADANIA', 'DIREITOS', 'CONTEXTO', 'INTERVENÇÃO', 'CONECTOR'];
-        let particlesArray = [];
-        class WordParticle{constructor(){this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;this.directionX=(Math.random()*.3)-.15;this.directionY=(Math.random()*.3)-.15;this.size=12;this.text=words[Math.floor(Math.random()*words.length)]}draw(){ctx.font=this.size+'px Poppins';ctx.fillStyle='rgba(122, 130, 145, 0.5)';ctx.fillText(this.text,this.x,this.y)}update(){if(this.x>canvas.width||this.x<0)this.directionX=-this.directionX;if(this.y>canvas.height||this.y<0)this.directionY=-this.directionY;this.x+=this.directionX;this.y+=this.directionY;this.draw()}}
-        function init(){particlesArray=[];let numberOfParticles=(canvas.height*canvas.width)/3e4;for(let i=0;i<numberOfParticles;i++){particlesArray.push(new WordParticle)}}
-        function connect(){let opacityValue=1;for(let a=0;a<particlesArray.length;a++){for(let b=a;b<particlesArray.length;b++){let distance=Math.sqrt(Math.pow(particlesArray[a].x-particlesArray[b].x,2)+Math.pow(particlesArray[a].y-particlesArray[b].y,2));if(distance<250){opacityValue=1-(distance/250);ctx.strokeStyle=`rgba(0, 168, 255, ${opacityValue*.2})`;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(particlesArray[a].x,particlesArray[a].y);ctx.lineTo(particlesArray[b].x,particlesArray[b].y);ctx.stroke()}}}}
-        function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);for(let i=0;i<particlesArray.length;i++){particlesArray[i].update()}connect();requestAnimationFrame(animate)}
-        window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;init()});init();animate();
+
+        let particlesArray;
+
+        // Ajusta o tamanho do canvas para a tela cheia
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        setCanvasSize();
+
+        // Classe para criar cada "risco" ou partícula
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.5 + 0.5;
+                this.speedX = Math.random() * 2 - 1;
+                this.speedY = Math.random() * 2 - 1;
+                this.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                // Faz as partículas voltarem para a tela quando saem
+                if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+                if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Inicia o array de partículas
+        function init() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 9000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+        init();
+
+        // Loop de animação
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpa a tela
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            // Desenha linhas entre partículas próximas
+            for (let i = 0; i < particlesArray.length; i++) {
+                for (let j = i; j < particlesArray.length; j++) {
+                    let dx = particlesArray[i].x - particlesArray[j].x;
+                    let dy = particlesArray[i].y - particlesArray[j].y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = particlesArray[i].color;
+                        ctx.lineWidth = 0.2;
+                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Reajusta a animação se o tamanho da janela mudar
+        window.addEventListener('resize', () => {
+            setCanvasSize();
+            init();
+        });
+
     </script>
-    </body>
+</body>
 </html>
