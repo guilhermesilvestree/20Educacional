@@ -10,30 +10,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
     <style>
-        /* * CSS - Estilo "Tecnológico Moderno"
-         * Dark mode com cores vibrantes e foco em animação.
-        */
-
-        /* Novas Variáveis de Cor (Dark Mode) */
         :root {
-            --cor-fundo: #0F0F1A;      /* Azul-marinho quase preto */
-            --cor-texto: #EAEAEA;      /* Branco suave */
-            --cor-slogan: #A0A0B0;     /* Cinza claro para o slogan */
-            --cor-primaria-btn: #1A1A2E; /* Cor do botão */
-            
-            /* Cores para a animação */
-            --cor-risco-1: #00A8FF;     /* Azul Vibrante */
-            --cor-risco-2: #9C27B0;     /* Roxo Vibrante */
-            --cor-risco-3: #00BCD4;     /* Ciano Vibrante */
+            --cor-fundo: #0F0F1A;
+            --cor-texto: #EAEAEA;
+            --cor-slogan: #A0A0B0;
+            --cor-primaria-btn: #1A1A2E;
+            --cor-risco-1: #00A8FF;
+            --cor-risco-2: #9C27B0;
+            --cor-risco-3: #00BCD4;
         }
-
-        /* Reset Básico e Estilos Globais */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
             height: 100%;
             font-family: 'Poppins', sans-serif;
@@ -44,98 +30,46 @@
             align-items: center;
             overflow: hidden; 
         }
-
-        /* NOVO: Canvas para a animação de fundo */
         #art-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; z-index: 0;
         }
-
-        /* Container Principal do Login */
         .login-container {
-            width: 100%;
-            max-width: 500px;
-            padding: 40px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            position: relative;
-            z-index: 1;
-            /* Efeito de "Glassmorphism" para o container */
-            background: rgba(26, 26, 46, 0.4); /* Fundo semi-transparente */
+            width: 100%; max-width: 500px;
+            padding: 40px; text-align: center;
+            display: flex; flex-direction: column;
+            align-items: center; gap: 15px;
+            position: relative; z-index: 1;
+            background: rgba(26, 26, 46, 0.4);
             border-radius: 16px;
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        /* Título e Slogan com nova tipografia e tamanhos */
-        .titulo {
-            font-size: 3.2rem;
-            font-weight: 600;
-        }
-
-        .slogan {
-            font-size: 1.2rem;
-            color: var(--cor-slogan);
-            font-weight: 400;
-        }
-
-        /* Botão de Login com estilo tecnológico */
+        .titulo { font-size: 3.2rem; font-weight: 600; }
+        .slogan { font-size: 1.2rem; color: var(--cor-slogan); font-weight: 400; }
         #google-login-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            width: 100%;
-            background-color: var(--cor-primaria-btn);
-            color: var(--cor-texto);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            padding: 14px 28px;
-            margin-top: 25px;
-            font-size: 1.1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 15px; width: 100%;
+            background-color: var(--cor-primaria-btn); color: var(--cor-texto);
+            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px;
+            padding: 14px 28px; margin-top: 25px;
+            font-size: 1.1rem; font-weight: 500;
+            cursor: pointer; transition: all 0.3s ease;
         }
-
         #google-login-btn:hover {
             background-color: rgba(255, 255, 255, 0.1);
             border-color: var(--cor-risco-1);
             box-shadow: 0 0 15px rgba(0, 168, 255, 0.3);
         }
-
-        #google-login-btn .google-icon {
-            width: 22px;
-            height: 22px;
-        }
-        
-        /* Rodapé com Termos e Privacidade */
+        #google-login-btn .google-icon { width: 22px; height: 22px; }
         footer {
-            position: absolute;
-            bottom: 20px;
-            font-size: 0.8rem;
-            color: var(--cor-slogan);
-            z-index: 1;
+            position: absolute; bottom: 20px;
+            font-size: 0.8rem; color: var(--cor-slogan); z-index: 1;
         }
-
-        footer a {
-            color: var(--cor-slogan);
-            text-decoration: none;
-            margin: 0 10px;
-        }
-
-        footer a:hover {
-            color: var(--cor-texto);
-        }
+        footer a { color: var(--cor-slogan); text-decoration: none; margin: 0 10px; }
+        footer a:hover { color: var(--cor-texto); }
     </style>
 </head>
 <body>
@@ -148,14 +82,12 @@
             <p class="slogan">Ensino Simples e Claro</p>
         </header>
         
-        <a href="menu.html">
         <button id="google-login-btn">
             <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
                 <path fill="#EAEAEA" d="M488 261.8C488 403.3 381.5 512 244 512 110.3 512 0 401.7 0 265.9 0 130.2 110.3 20 244 20c66.3 0 121.3 24.4 166.5 65.6l-67.5 64.8C295.5 118.8 273.5 104 244 104c-82.3 0-149.3 67.1-149.3 149.8s67 149.8 149.3 149.8c93.5 0 130.3-71.3 134-108.8H244V261.8h244z"/>
             </svg>
             <span>Entrar com o Google</span>
         </button>
-        </a>
     </main>
 
     <footer>
@@ -163,100 +95,96 @@
         <a href="#">Política de Privacidade</a>
     </footer>
 
-    <script>
-        /* * JavaScript - Animação de Fundo e Lógica do Botão
-        */
+    <script type="module">
+        // Importações do Firebase
+        import { auth, db } from './firebase/firebase-config.js';
+        import { GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // --- Lógica de Armazenamento Centralizado ---
+        const APP_STORAGE_KEY = 'perfilUser';
+
+        function saveAppData(data) {
+            try {
+                localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(data));
+            } catch (e) {
+                console.error("Falha ao salvar os dados da aplicação no localStorage", e);
+            }
+        }
 
         // --- Lógica do Botão de Login ---
         const googleLoginButton = document.getElementById('google-login-btn');
-        googleLoginButton.addEventListener('click', () => {
-            alert('Botão de login clicado! Próximo passo: Integração com o Firebase Auth.');
-        });
+        googleLoginButton.addEventListener('click', async () => { // Transformado em async
+            const provider = new GoogleAuthProvider();
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                console.log("Login realizado com sucesso:", user);
 
+                // ==================================================================
+                // == LÓGICA DE FUNÇÃO (ROLE) INTEGRADA                            ==
+                // ==================================================================
+                
+                // 1. Referência para o documento do usuário no Firestore
+                const userDocRef = doc(db, "users", user.uid);
+                
+                // 2. Tenta buscar o documento
+                const docSnap = await getDoc(userDocRef);
+                
+                let userRole = "student"; // Define a função padrão
+
+                if (docSnap.exists()) {
+                    // 3a. Se o usuário já existe no Firestore, usa a função salva
+                    console.log("Usuário existente encontrado no Firestore.");
+                    userRole = docSnap.data().role || "student"; // Garante um fallback
+                } else {
+                    // 3b. Se é o primeiro login, cria o documento no Firestore com a função padrão
+                    console.log("Primeiro login. Criando perfil do usuário no Firestore.");
+                    await setDoc(userDocRef, {
+                        name: user.displayName,
+                        email: user.email,
+                        uid: user.uid,
+                        avatar: user.photoURL, // Salva o link da imagem da conta
+                        role: "student", // Função padrão para novos usuários
+                        createdAt: serverTimestamp()
+                    });
+                }
+
+                // 4. Cria o objeto de dados limpo para o localStorage
+                const newAppData = {
+                    userData: {
+                        name: user.displayName,
+                        avatar: user.photoURL,
+                        uid: user.uid,
+                        role: userRole // << A função é incluída aqui
+                    },
+                    essaySession: null // Garante que a sessão de redação comece limpa
+                };
+                
+                // 5. Salva os dados limpos do novo usuário no localStorage
+                saveAppData(newAppData);
+                
+                // 6. Redireciona para o menu
+                window.location.href = 'menu.html';
+
+            } catch (error) {
+                console.error("Erro no login com Google:", error.code, error.message);
+                alert(`Erro ao fazer login: ${error.message}`);
+            }
+        });
 
         // --- Animação do Canvas ---
         const canvas = document.getElementById('art-background');
         const ctx = canvas.getContext('2d');
-
         let particlesArray;
-
-        // Ajusta o tamanho do canvas para a tela cheia
-        function setCanvasSize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
+        function setCanvasSize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         setCanvasSize();
-
-        // Classe para criar cada "risco" ou partícula
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 1.5 + 0.5;
-                this.speedX = Math.random() * 2 - 1;
-                this.speedY = Math.random() * 2 - 1;
-                this.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-
-                // Faz as partículas voltarem para a tela quando saem
-                if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
-                if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
-            }
-            draw() {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        // Inicia o array de partículas
-        function init() {
-            particlesArray = [];
-            let numberOfParticles = (canvas.height * canvas.width) / 9000;
-            for (let i = 0; i < numberOfParticles; i++) {
-                particlesArray.push(new Particle());
-            }
-        }
+        class Particle { constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 1.5 + 0.5; this.speedX = Math.random() * 2 - 1; this.speedY = Math.random() * 2 - 1; this.color = `hsl(${Math.random() * 360}, 70%, 50%)`; } update() { this.x += this.speedX; this.y += this.speedY; if (this.x > canvas.width || this.x < 0) this.speedX *= -1; if (this.y > canvas.height || this.y < 0) this.speedY *= -1; } draw() { ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); } }
+        function init() { particlesArray = []; let numberOfParticles = (canvas.height * canvas.width) / 9000; for (let i = 0; i < numberOfParticles; i++) { particlesArray.push(new Particle()); } }
         init();
-
-        // Loop de animação
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpa a tela
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-                particlesArray[i].draw();
-            }
-            // Desenha linhas entre partículas próximas
-            for (let i = 0; i < particlesArray.length; i++) {
-                for (let j = i; j < particlesArray.length; j++) {
-                    let dx = particlesArray[i].x - particlesArray[j].x;
-                    let dy = particlesArray[i].y - particlesArray[j].y;
-                    let distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance < 100) {
-                        ctx.beginPath();
-                        ctx.strokeStyle = particlesArray[i].color;
-                        ctx.lineWidth = 0.2;
-                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
-                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
-                        ctx.stroke();
-                        ctx.closePath();
-                    }
-                }
-            }
-            requestAnimationFrame(animate);
-        }
+        function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); particlesArray[i].draw(); } for (let i = 0; i < particlesArray.length; i++) { for (let j = i; j < particlesArray.length; j++) { let dx = particlesArray[i].x - particlesArray[j].x; let dy = particlesArray[i].y - particlesArray[j].y; let distance = Math.sqrt(dx * dx + dy * dy); if (distance < 100) { ctx.beginPath(); ctx.strokeStyle = particlesArray[i].color; ctx.lineWidth = 0.2; ctx.moveTo(particlesArray[i].x, particlesArray[i].y); ctx.lineTo(particlesArray[j].x, particlesArray[j].y); ctx.stroke(); ctx.closePath(); } } } requestAnimationFrame(animate); }
         animate();
-
-        // Reajusta a animação se o tamanho da janela mudar
-        window.addEventListener('resize', () => {
-            setCanvasSize();
-            init();
-        });
-
+        window.addEventListener('resize', () => { setCanvasSize(); init(); });
     </script>
 </body>
 </html>

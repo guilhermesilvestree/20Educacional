@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
@@ -17,8 +18,6 @@
             --cor-borda: rgba(255, 255, 255, 0.15);
             --cor-sutil: #A0A0B0;
             --cor-linguagens: #00A8FF;
-
-            /* NOVAS CORES PARA O BOTÃO VOLTAR */
             --cor-botao-fundo: #FFFFFF;
             --cor-botao-texto: #0A0A10;
         }
@@ -38,93 +37,59 @@
 
         #constellation-background {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: 0;
         }
         
-        /* BOTÃO VOLTAR REDESENHADO */
         .back-button-fixed {
-            position: fixed;
-            top: 30px;
-            left: 30px;
-            z-index: 10;
-            
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            
+            position: fixed; top: 30px; left: 30px; z-index: 10;
+            display: flex; align-items: center; gap: 8px;
             padding: 10px 15px;
-            /* Novas cores de alto contraste */
             background: var(--cor-botao-fundo);
             color: var(--cor-botao-texto);
-            
             border-radius: 50px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             border: 1px solid rgba(0, 0, 0, 0.1);
-            
             text-decoration: none;
-            font-weight: 600; /* Mais forte */
-            
+            font-weight: 600;
             transition: all 0.3s ease;
         }
         
-        .back-button-fixed .icon {
-            stroke: var(--cor-botao-texto); /* Garante que o ícone também seja preto */
-        }
-
+        .back-button-fixed .icon { stroke: var(--cor-botao-texto); }
         .back-button-fixed:hover {
             transform: scale(1.05);
-            box-shadow: 0 6px 25px rgba(255, 255, 255, 0.2); /* Brilho branco no hover */
+            box-shadow: 0 6px 25px rgba(255, 255, 255, 0.2);
         }
 
         .page-container {
-            width: 100%;
-            max-width: 600px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 1;
+            width: 100%; max-width: 600px; padding: 20px;
+            display: flex; flex-direction: column; align-items: center; z-index: 1;
         }
 
         header {
-            width: 100%;
-            text-align: center;
-            margin-bottom: 40px;
+            width: 100%; text-align: center; margin-bottom: 40px;
         }
 
         header h1 {
-            font-size: 2.8rem;
-            font-weight: 700;
+            font-size: 2.8rem; font-weight: 700;
             color: var(--cor-linguagens);
             text-shadow: 0 0 20px rgba(0, 168, 255, 0.7);
         }
         
         .subject-menu {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            width: 100%; display: flex; flex-direction: column; gap: 20px;
         }
 
         .menu-item {
-            background: var(--cor-container);
-            border-radius: 12px;
+            background: var(--cor-container); border-radius: 12px;
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid var(--cor-borda);
-            padding: 25px 30px;
-            font-size: 1.3rem;
-            font-weight: 600;
-            text-decoration: none;
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--cor-borda); padding: 25px 30px;
+            font-size: 1.3rem; font-weight: 600; text-decoration: none;
             color: var(--cor-texto);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            opacity: 0;
-            transform: translateY(20px);
+            opacity: 0; transform: translateY(20px);
             animation: fadeInSlideUp 0.5s ease forwards;
         }
         
@@ -140,16 +105,46 @@
         }
         
         @keyframes fadeInSlideUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            to { opacity: 1; transform: translateY(0); }
         }
+
+        /* ESTILOS PARA O PERFIL E DROPDOWN (COPIADOS DO MENU.HTML) */
+        .profile-container {
+            position: fixed; top: 30px; right: 30px; z-index: 100;
+        }
+        .profile-trigger {
+            display: flex; align-items: center; gap: 10px;
+            background-color: var(--cor-container); padding: 6px 12px 6px 6px;
+            border-radius: 50px; cursor: pointer; border: 1px solid var(--cor-borda);
+            transition: background-color 0.3s;
+        }
+        .profile-trigger:hover { background-color: rgba(255, 255, 255, 0.1); }
+        #user-avatar {
+            width: 36px; height: 36px; border-radius: 50%; object-fit: cover;
+        }
+        #user-name { font-weight: 600; font-size: 0.9rem; }
+        .profile-dropdown {
+            display: none; position: absolute; top: 110%; right: 0;
+            background-color: #1A1A2E; border: 1px solid var(--cor-borda);
+            border-radius: 8px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            width: 150px; overflow: hidden;
+        }
+        .profile-dropdown.show { display: block; }
+        #logout-button {
+            display: flex; align-items: center; gap: 10px;
+            background: none; border: none; color: var(--cor-texto);
+            padding: 12px 15px; width: 100%; text-align: left;
+            cursor: pointer; font-size: 0.9rem; font-family: 'Poppins', sans-serif;
+        }
+        #logout-button:hover { background-color: rgba(255, 255, 255, 0.05); }
         
         @media (max-width: 768px) {
              header h1 { font-size: 2rem; }
             .menu-item { font-size: 1.1rem; padding: 20px; }
             .back-button-fixed { top: 20px; left: 20px; padding: 8px 12px; font-size: 0.9rem; }
+            .profile-container { top: 20px; right: 20px; }
+            #user-name { display: none; }
+            .profile-trigger { padding: 5px; }
         }
     </style>
 </head>
@@ -161,6 +156,19 @@
         <span>Voltar</span>
     </a>
 
+    <div class="profile-container">
+        <div class="profile-trigger" id="profile-trigger">
+            <img id="user-avatar" src="assets/default-avatar.png" alt="Avatar">
+            <span id="user-name">Carregando...</span>
+        </div>
+        <div class="profile-dropdown" id="profile-dropdown">
+            <button id="logout-button">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Sair</span>
+            </button>
+        </div>
+    </div>
+
     <div class="page-container">
         <header>
             <h1>Linguagens e Códigos</h1>
@@ -170,13 +178,12 @@
             <a href="lingua_portuguesa.html" class="menu-item">Língua Portuguesa</a>
             <a href="literatura.html" class="menu-item">Literatura</a>
             <a href="lingua_estrangeira.html" class="menu-item">Língua Estrangeira</a>
-            <a href="/redacao/" class="menu-item">Redação</a>
+            <a href="redacao/" class="menu-item">Redação</a>
         </nav>
     </div>
 
     <script>
-        // --- ANIMAÇÃO ATUALIZADA: Constelação de Palavras Colorida ---
-        const canvas = document.getElementById('constellation-background');
+                const canvas = document.getElementById('constellation-background');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -289,6 +296,66 @@
 
         init();
         animate();
+    </script>
+    
+    <script type="module">
+        import { auth } from './firebase/firebase-config.js';
+        import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        const APP_STORAGE_KEY = 'perfilUser';
+
+        function getAppData() {
+            try {
+                const rawData = localStorage.getItem(APP_STORAGE_KEY);
+                return rawData ? JSON.parse(rawData) : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function initializePage() {
+            const appData = getAppData();
+            
+            if (!appData || !appData.userData) {
+                alert('Você não está logado. Por favor, faça o login para continuar.');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const user = appData.userData;
+            document.getElementById('user-name').textContent = user.name;
+            if (user.avatar) {
+                document.getElementById('user-avatar').src = user.avatar;
+            }
+        }
+
+        const profileTrigger = document.getElementById('profile-trigger');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        const logoutButton = document.getElementById('logout-button');
+
+        profileTrigger.addEventListener('click', (event) => {
+            event.stopPropagation();
+            profileDropdown.classList.toggle('show');
+        });
+
+        window.addEventListener('click', () => {
+            if (profileDropdown.classList.contains('show')) {
+                profileDropdown.classList.remove('show');
+            }
+        });
+
+        logoutButton.addEventListener('click', () => {
+            signOut(auth).then(() => {
+                localStorage.removeItem(APP_STORAGE_KEY);
+                console.log('Logout realizado com sucesso.');
+                window.location.href = 'index.html';
+            }).catch((error) => {
+                console.error('Erro ao fazer logout:', error);
+                alert('Ocorreu um erro ao sair. Tente novamente.');
+            });
+        });
+        
+        document.addEventListener('DOMContentLoaded', initializePage);
     </script>
 </body>
 </html>

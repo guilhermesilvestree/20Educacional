@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
@@ -59,7 +60,6 @@
             font-weight: 700;
         }
         
-        /* Grid principal para os 4 botões */
         .selection-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -69,7 +69,6 @@
             padding: 0 20px;
         }
 
-        /* Card de cada área */
         .area-card {
             background: var(--cor-container);
             border-radius: 16px;
@@ -78,25 +77,21 @@
             -webkit-backdrop-filter: blur(8px);
             border: 1px solid var(--cor-borda);
             padding: 40px 20px;
-            
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 20px;
-            
             text-decoration: none;
             color: var(--cor-texto);
-            
-            /* Transições para as animações */
             transition: transform 0.2s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            transform-style: preserve-3d; /* Habilita o 3D para o JS */
+            transform-style: preserve-3d;
         }
         
         .area-card .icon {
             width: 60px;
             height: 60px;
-            stroke-width: 1.5; /* Espessura dos ícones */
+            stroke-width: 1.5;
             transition: filter 0.3s ease;
         }
 
@@ -106,9 +101,8 @@
             text-align: center;
         }
 
-        /* Efeitos de Hover com cores específicas por área */
         .area-card:hover {
-            transform: scale(1.05) translateZ(20px); /* Efeito de profundidade */
+            transform: scale(1.05) translateZ(20px);
         }
 
         #linguagens:hover {
@@ -127,8 +121,71 @@
             border-color: var(--cor-matematica);
             box-shadow: 0 0 25px rgba(76, 175, 80, 0.5);
         }
+
+        /* ESTILOS PARA O PERFIL E DROPDOWN */
+        .profile-container {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            z-index: 100;
+        }
+        .profile-trigger {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: var(--cor-container);
+            padding: 6px 12px 6px 6px;
+            border-radius: 50px;
+            cursor: pointer;
+            border: 1px solid var(--cor-borda);
+            transition: background-color 0.3s;
+        }
+        .profile-trigger:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        #user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        #user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            top: 110%;
+            right: 0;
+            background-color: #1A1A2E;
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            width: 150px;
+            overflow: hidden;
+        }
+        .profile-dropdown.show {
+            display: block;
+        }
+        #logout-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: none;
+            border: none;
+            color: var(--cor-texto);
+            padding: 12px 15px;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        #logout-button:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
         
-        /* Responsividade para telas menores */
         @media (max-width: 768px) {
             .selection-grid {
                 grid-template-columns: 1fr;
@@ -141,12 +198,28 @@
             .area-card h2 {
                 font-size: 1.1rem;
             }
+            .profile-container { top: 15px; right: 15px; }
+            #user-name { display: none; } /* Esconde o nome em telas pequenas */
+            .profile-trigger { padding: 5px; }
         }
     </style>
 </head>
 <body>
     <canvas id="art-background"></canvas>
     
+    <div class="profile-container">
+        <div class="profile-trigger" id="profile-trigger">
+            <img id="user-avatar" src="assets/default-avatar.png" alt="Avatar">
+            <span id="user-name">Carregando...</span>
+        </div>
+        <div class="profile-dropdown" id="profile-dropdown">
+            <button id="logout-button">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Sair</span>
+            </button>
+        </div>
+    </div>
+
     <header>
         <h1>Escolha sua Missão</h1>
     </header>
@@ -172,7 +245,7 @@
             <h2>Matemática e suas Tecnologias</h2>
         </a>
     </main>
-
+    
     <script>
         // --- Animação do Canvas (Fundo) ---
         const canvas = document.getElementById('art-background');
@@ -246,5 +319,74 @@
             });
         });
     </script>
+
+    <script type="module">
+        import { auth } from './firebase/firebase-config.js';
+        import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        const APP_STORAGE_KEY = 'perfilUser';
+
+        function getAppData() {
+            try {
+                const rawData = localStorage.getItem(APP_STORAGE_KEY);
+                return rawData ? JSON.parse(rawData) : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function initializePage() {
+            const appData = getAppData();
+            
+            // 1. Verifica se o usuário está logado
+            if (!appData || !appData.userData) {
+                alert('Você não está logado. Por favor, faça o login para continuar.');
+                window.location.href = 'index.html'; // Redireciona para a página de login
+                return;
+            }
+
+            // 2. Se estiver logado, preenche os dados do perfil
+            const user = appData.userData;
+            document.getElementById('user-name').textContent = user.name;
+            if (user.avatar) {
+                document.getElementById('user-avatar').src = user.avatar;
+            }
+        }
+
+        // Elementos do DOM para o dropdown
+        const profileTrigger = document.getElementById('profile-trigger');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        const logoutButton = document.getElementById('logout-button');
+
+        // Lógica para abrir/fechar o dropdown
+        profileTrigger.addEventListener('click', (event) => {
+            event.stopPropagation(); // Impede que o clique feche o menu imediatamente
+            profileDropdown.classList.toggle('show');
+        });
+
+        // Fecha o dropdown se clicar fora dele
+        window.addEventListener('click', () => {
+            if (profileDropdown.classList.contains('show')) {
+                profileDropdown.classList.remove('show');
+            }
+        });
+
+        // Lógica de Logout
+        logoutButton.addEventListener('click', () => {
+            signOut(auth).then(() => {
+                // Logout do Firebase bem-sucedido
+                localStorage.removeItem(APP_STORAGE_KEY); // Limpa os dados do usuário
+                console.log('Logout realizado com sucesso.');
+                window.location.href = 'index.html'; // Redireciona para o login
+            }).catch((error) => {
+                console.error('Erro ao fazer logout:', error);
+                alert('Ocorreu um erro ao sair. Tente novamente.');
+            });
+        });
+        
+        // Inicia a verificação de login quando a página carrega
+        document.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+
 </body>
 </html>
