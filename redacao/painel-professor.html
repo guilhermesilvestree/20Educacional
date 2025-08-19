@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="shortcut icon" href="assets/icon.ico" type="image/x-icon">
     <style>
         :root {
             --cor-fundo: #F4F4F6;
@@ -40,16 +39,28 @@
             align-items: center;
             border-bottom: 1px solid var(--cor-borda);
             height: 81px;
+            position: relative;
+            z-index: 10;
         }
         .header h1 {
             font-size: 1.5rem;
             color: var(--cor-acento);
             margin: 0;
         }
+        .profile-container {
+            position: relative;
+        }
         .user-profile-badge {
             display: flex;
             align-items: center;
             gap: 12px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50px;
+            transition: background-color 0.2s;
+        }
+        .user-profile-badge:hover {
+            background-color: var(--cor-fundo);
         }
         #teacher-name {
             font-weight: 600;
@@ -62,6 +73,40 @@
             object-fit: cover;
             border: 2px solid var(--cor-borda);
         }
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background-color: var(--cor-container);
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 160px;
+            overflow: hidden;
+            z-index: 100;
+        }
+        .profile-dropdown.show {
+            display: block;
+        }
+        #logout-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: none;
+            border: none;
+            color: var(--cor-texto-principal);
+            padding: 12px 15px;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        #logout-button:hover {
+            background-color: var(--cor-fundo);
+        }
+        
         .dashboard-container {
             display: flex;
             height: calc(100vh - 81px);
@@ -78,34 +123,8 @@
         }
         .sidebar h2 {
             margin-top: 0;
-            margin-bottom: 10px;
+            margin-bottom: 20px; /* Aumentado o espaçamento inferior */
             font-size: 1.2rem;
-        }
-        .filter-container {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .filter-btn {
-            background-color: transparent;
-            border: 1px solid var(--cor-borda);
-            color: var(--cor-texto-sutil);
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-        .filter-btn:hover {
-            background-color: var(--cor-fundo);
-            border-color: var(--cor-texto-sutil);
-        }
-        .filter-btn.active {
-            background-color: var(--cor-acento);
-            color: white;
-            border-color: var(--cor-acento);
         }
         #essay-list {
             list-style: none;
@@ -113,16 +132,16 @@
             margin: 0;
         }
         #essay-list li {
-            padding: 12px 15px; /* Ajustado o padding */
+            padding: 12px 15px;
             border-radius: 8px;
             margin-bottom: 10px;
             cursor: pointer;
             border: 1px solid var(--cor-borda);
             transition: all 0.2s;
             border-left: 5px solid transparent;
-            display: flex; /* Adicionado para alinhar itens */
-            justify-content: space-between; /* Adicionado para alinhar itens */
-            align-items: center; /* Adicionado para alinhar itens */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         #essay-list li:hover {
             background-color: #f8f9fa;
@@ -133,8 +152,6 @@
             border-left-color: var(--cor-acento);
             box-shadow: 0 4px 15px rgba(0, 168, 255, 0.1);
         }
-
-        /* NOVO: Estilos para o conteúdo do item da lista */
         .essay-item-main {
             display: flex;
             align-items: center;
@@ -156,7 +173,7 @@
             font-weight: 600;
             color: white;
             text-transform: capitalize;
-            flex-shrink: 0; /* Impede que o status encolha */
+            flex-shrink: 0;
         }
         .status-tag.corrigida { background-color: var(--cor-sucesso); }
         .main-content {
@@ -393,18 +410,22 @@
 <body>
     <header class="header">
         <h1>Painel de Correção</h1>
-        <div class="user-profile-badge">
-            <span id="teacher-name"></span>
-            <img id="teacher-avatar" src="" alt="Avatar do Professor">
+        <div class="profile-container">
+            <div class="user-profile-badge" id="profile-trigger">
+                <span id="teacher-name"></span>
+                <img id="teacher-avatar" src="" alt="Avatar do Professor">
+            </div>
+            <div class="profile-dropdown" id="profile-dropdown">
+                <button id="logout-button">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span>Sair</span>
+                </button>
+            </div>
         </div>
     </header>
     <div class="dashboard-container">
         <aside class="sidebar">
             <h2>Redações Recebidas</h2>
-            <div class="filter-container">
-                <button class="filter-btn active" data-filter="todos">Todos</button>
-                <button class="filter-btn" data-filter="corrigida">Corrigido</button>
-            </div>
             <ul id="essay-list">
                 </ul>
         </aside>
@@ -505,7 +526,8 @@
     </div>
 
     <script type="module">
-        import { db } from '../firebase/firebase-config.js';
+        import { auth, db } from '../firebase/firebase-config.js';
+        import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         const APP_STORAGE_KEY = 'perfilUser';
@@ -523,11 +545,12 @@
         const essayList = document.getElementById('essay-list');
         const essayDetailsWrapper = document.getElementById('essay-details-wrapper');
         const placeholder = document.getElementById('placeholder');
-        const filterButtons = document.querySelectorAll('.filter-btn');
+        const profileTrigger = document.getElementById('profile-trigger');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        const logoutButton = document.getElementById('logout-button');
 
         let allEssays = [];
         let currentEssayId = null;
-        let currentFilter = 'todos';
         let unsubscribe;
 
         function listenForEssays() {
@@ -551,17 +574,13 @@
 
         function renderEssayList() {
             essayList.innerHTML = '';
-            const filteredEssays = allEssays.filter(essay => {
-                if (currentFilter === 'todos') return true;
-                return currentFilter === 'corrigida' && (essay.status === 'corrigida' || essay.status === 'corrigido-ia');
-            });
 
-            if (filteredEssays.length === 0) {
-                essayList.innerHTML = '<p style="text-align: center; color: var(--cor-texto-sutil); padding: 20px 0;">Nenhuma redação encontrada para este filtro.</p>';
+            if (allEssays.length === 0) {
+                essayList.innerHTML = '<p style="text-align: center; color: var(--cor-texto-sutil); padding: 20px 0;">Nenhuma redação foi enviada ainda.</p>';
                 return;
             }
 
-            filteredEssays.forEach(essay => {
+            allEssays.forEach(essay => {
                 const li = document.createElement('li');
                 li.dataset.id = essay.id;
                 if (essay.id === currentEssayId) li.classList.add('active');
@@ -570,10 +589,8 @@
                 const displayStatus = 'Corrigido';
                 const statusClass = 'corrigida';
                 
-                // ALTERADO: Adicionado fallback para o avatar
                 const studentAvatar = essay.studentAvatar || 'assets/default-avatar.png';
 
-                // ALTERADO: Nova estrutura do HTML para incluir o avatar
                 li.innerHTML = `
                     <div class="essay-item-main">
                         <img src="${studentAvatar}" alt="Avatar do Aluno" class="student-avatar">
@@ -632,7 +649,7 @@
             
             if (!appData || !appData.userData || appData.userData.role !== 'teacher') {
                 alert('Acesso negado. Esta página é restrita a professores.');
-                localStorage.removeItem(APP_STORAGE_KEY); // Limpa o localStorage antes de redirecionar
+                localStorage.removeItem(APP_STORAGE_KEY);
                 window.location.href = '../index.html';
                 return;
             }
@@ -644,19 +661,10 @@
             if (teacherData.avatar) {
                 document.getElementById('teacher-avatar').src = teacherData.avatar;
             } else {
-                document.getElementById('teacher-avatar').src = '.assets/default-avatar.png'; 
+                document.getElementById('teacher-avatar').src = 'assets/default-avatar.png'; 
             }
             
             listenForEssays();
-
-            filterButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                    currentFilter = button.dataset.filter;
-                    renderEssayList();
-                });
-            });
 
             const gradesHeader = document.getElementById('grades-header');
             const collapsibleGrades = document.getElementById('collapsible-grades');
@@ -666,6 +674,27 @@
                 const isExpanded = collapsibleGrades.classList.toggle('expanded');
                 toggleIcon.style.transform = isExpanded ? 'translateY(-50%) rotate(0deg)' : 'translateY(-50%) rotate(-180deg)';
                 toggleIcon.classList.toggle('collapsed', !isExpanded);
+            });
+
+            profileTrigger.addEventListener('click', (event) => {
+                event.stopPropagation();
+                profileDropdown.classList.toggle('show');
+            });
+
+            window.addEventListener('click', () => {
+                if (profileDropdown.classList.contains('show')) {
+                    profileDropdown.classList.remove('show');
+                }
+            });
+
+            logoutButton.addEventListener('click', () => {
+                signOut(auth).then(() => {
+                    localStorage.removeItem(APP_STORAGE_KEY);
+                    window.location.href = '../index.html';
+                }).catch((error) => {
+                    console.error('Erro ao fazer logout:', error);
+                    alert('Ocorreu um erro ao sair.');
+                });
             });
         }
         
