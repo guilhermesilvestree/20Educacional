@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="shortcut icon" href="assets/icon.ico" type="image/x-icon">
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
 
@@ -168,7 +168,6 @@
             font-weight: 500;
         }
         
-        /* ===== NOVO ESTILO ADICIONADO ===== */
         .user-avatar-small {
             width: 28px;
             height: 28px;
@@ -360,7 +359,7 @@
             padding: 40px 30px;
             text-align: center;
             cursor: pointer;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+            transition: background-color: 0.3s ease, border-color: 0.3s ease;
             background-color: #F9FAFB;
         }
         .upload-area:hover { 
@@ -588,36 +587,20 @@
             <button class="action-button" id="close-tips-modal">Entendi</button>
         </div>
     </div>
+
+    <!-- SCRIPT PRINCIPAL DA PÁGINA -->
     <script type="module">
-        // =================================================================
-        // ==  CONFIGURAÇÃO DO FIREBASE - SUBSTITUA COM SUAS CREDENCIAIS  ==
-        // =================================================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyD5u7IkNNqpQzwbW86paI3a4pZBPO_yjwk",
-            authDomain: "sistema-ce534.firebaseapp.com",
-            databaseURL: "https://sistema-ce534-default-rtdb.firebaseio.com",
-            projectId: "sistema-ce534",
-            storageBucket: "sistema-ce534.firebasestorage.app",
-            messagingSenderId: "839435076253",
-            appId: "1:839435076253:web:92e9485fe2ed9c95364a74"
-        };
-        
         // ========================================================
-        // == IMPORTAÇÕES DO FIREBASE V9 (SINTAXE MODULAR)       ==
+        // ==  IMPORTAÇÕES DOS MÓDULOS                          ==
         // ========================================================
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-        import { getFirestore, doc, collection, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
+        import { auth } from './firebase-config.js';
+        import { signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { gerarIdDocumento, definirDocumento, uploadArquivoCloudinary } from './firebase-services.js';
 
         // ========================================================
-        // ==  INICIALIZAÇÃO DO FIREBASE E VARIÁVEIS GLOBAIS     ==
+        // ==  VARIÁVEIS GLOBAIS E ELEMENTOS DO DOM              ==
         // ========================================================
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const storage = getStorage(app);
-        
         const steps = {
             instructions: document.getElementById('instructions-step'),
             preparation: document.getElementById('preparation-step'),
@@ -640,8 +623,8 @@
         let timerInterval;
         let currentRemainingSeconds;
         let currentStudentName = "";
-        const TOTAL_ESSAY_TIME = 0; // 2 horas em segundos
-        const MOCKED_AVATAR_URL = 'assets/gui.jpeg'; // URL centralizada
+        const TOTAL_ESSAY_TIME = 7200; // 2 horas em segundos
+        const MOCKED_AVATAR_URL = 'assets/gui.jpeg';
 
         // ========================================================
         // ==  LÓGICA DE NAVEGAÇÃO E CONTROLE DOS PASSOS (STEPS) ==
@@ -669,10 +652,7 @@
             currentStudentName = mockStudentName;
             studentNameDisplay.innerText = currentStudentName;
             
-            // ===== JAVASCRIPT MODIFICADO =====
-            // Define a imagem do avatar no painel de escrita
             document.getElementById('writing-user-avatar-img').src = MOCKED_AVATAR_URL;
-
 
             const sessionData = {
                 creationTime: Date.now(),
@@ -726,8 +706,6 @@
             if(currentTheme) {
                 document.getElementById('submission-theme-title').textContent = currentTheme.title;
             }
-
-            // Define a imagem do avatar na tela de submissão
             document.getElementById('user-avatar-img').src = MOCKED_AVATAR_URL;
         }
 
@@ -736,7 +714,7 @@
         // ========================================================
         const themes = [
             { title: "Desafios para a valorização de comunidades e povos tradicionais no Brasil", text: "“Os povos e comunidades tradicionais são grupos culturalmente diferenciados e que se reconhecem como tais, que possuem formas próprias de organização social, que ocupam e usam territórios e recursos naturais como condição para sua reprodução cultural, social, religiosa, ancestral e econômica, utilizando conhecimentos, inovações e práticas gerados e transmitidos pela tradição.” (Política Nacional de Desenvolvimento Sustentável dos Povos e Comunidades Tradicionais)" },
-            { title: "Invisibilidade e registro civil: garantia de acesso à cidadania no Brasil", text: "“Toda pessoa tem direito ao nome e ao sobrenome. Além disso, o registro de nascimento é fundamental para que um indivíduíduo seja reconhecido como cidadão. No Brasil, embora a certidão de nascimento seja um direito e gratuita, milhões de pessoas ainda vivem à margem desse direito, enfrentando a invisibilidade social e a negação de acesso a programas e políticas públicas.”" },
+            { title: "Invisibilidade e registro civil: garantia de acesso à cidadania no Brasil", text: "“Toda pessoa tem direito ao nome e ao sobrenome. Além disso, o registro de nascimento é fundamental para que um indivíduo seja reconhecido como cidadão. No Brasil, embora a certidão de nascimento seja um direito e gratuita, milhões de pessoas ainda vivem à margem desse direito, enfrentando a invisibilidade social e a negação de acesso a programas e políticas públicas.”" },
             { title: "O estigma associado às doenças mentais na sociedade brasileira", text: "“A saúde mental é um tema que tem ganhado visibilidade, mas o estigma e o preconceito ainda são barreiras significativas. Muitas pessoas evitam buscar ajuda por medo do julgamento, o que agrava quadros clínicos e perpetua um ciclo de sofrimento e exclusão. A desinformação é um dos principais fatores que alimentam essa realidade.”" }
         ];
         
@@ -856,7 +834,7 @@
             document.getElementById('theme-title').innerText = currentTheme.title;
             document.getElementById('theme-text').innerText = currentTheme.text;
             studentNameDisplay.innerText = currentStudentName;
-            document.getElementById('writing-user-avatar-img').src = MOCKED_AVATAR_URL; // Garante a imagem ao restaurar
+            document.getElementById('writing-user-avatar-img').src = MOCKED_AVATAR_URL;
             startTimer(remainingSeconds);
         }
         
@@ -870,7 +848,9 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            signInAnonymously(auth).catch(error => { console.error("Erro no login anônimo:", error); });
+            signInAnonymously(auth)
+                .then(() => console.log("Usuário autenticado anonimamente para a sessão."))
+                .catch(error => { console.error("Erro no login anônimo:", error); });
             restoreSession();
             window.addEventListener('beforeunload', saveCurrentTime);
         });
@@ -895,48 +875,116 @@
             }
         });
         
-        async function getGeminiAnalysis(text) {
-            console.log("Simulando análise do Gemini...");
-            await new Promise(resolve => setTimeout(resolve, 2500));
-            const c1=Math.round(Math.random()*5)*40,c2=Math.round(Math.random()*5)*40,c3=Math.round(Math.random()*5)*40,c4=Math.round(Math.random()*5)*40,c5=Math.round(Math.random()*5)*40,total=c1+c2+c3+c4+c5;
-            return {grades:{competencia1:c1,competencia2:c2,competencia3:c3,competencia4:c4,competencia5:c5,total:total},feedback:{positive:"Excelente...",difficulties:"Problemas de coesão...",suggestions:"Revisar..."}};
+        async function getGeminiAnalysis(theme, text) {
+            const apiKey = "AIzaSyB7ygXwm0Zw39QrS9oV6D8P1qqZ5BmRhrM";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            const schema = {
+                type: "OBJECT",
+                properties: {
+                    grades: {
+                        type: "OBJECT",
+                        properties: {
+                            competencia1: { type: "NUMBER", description: "Nota de 0 a 200 para a competência 1." },
+                            competencia2: { type: "NUMBER", description: "Nota de 0 a 200 para a competência 2." },
+                            competencia3: { type: "NUMBER", description: "Nota de 0 a 200 para a competência 3." },
+                            competencia4: { type: "NUMBER", description: "Nota de 0 a 200 para a competência 4." },
+                            competencia5: { type: "NUMBER", description: "Nota de 0 a 200 para a competência 5." },
+                            total: { type: "NUMBER", description: "Soma das 5 competências." },
+                        },
+                    },
+                    feedback: {
+                        type: "OBJECT",
+                        properties: {
+                            positive: { type: "STRING", description: "Feedback sobre os pontos positivos." },
+                            difficulties: { type: "STRING", description: "Feedback sobre as dificuldades e pontos a melhorar." },
+                            suggestions: { type: "STRING", description: "Sugestões práticas para o aluno evoluir." },
+                        },
+                    },
+                },
+            };
+
+            const prompt = `Analise a seguinte redação com o tema "${theme}". Avalie-a com base nas 5 competências do ENEM, atribuindo uma nota de 0 a 200 para cada uma, sempre em múltiplos de 40. Calcule a nota total (soma das 5 competências). Forneça também um feedback estruturado com pontos positivos, dificuldades encontradas e sugestões de melhoria. A redação é: \n\n"${text}"`;
+
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: schema,
+                },
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+
+                const result = await response.json();
+                const jsonText = result.candidates[0].content.parts[0].text;
+                return JSON.parse(jsonText);
+
+            } catch (error) {
+                console.error("Erro ao chamar a API do Gemini:", error);
+                // Fallback em caso de erro na API
+                return {
+                    grades: { competencia1: 0, competencia2: 0, competencia3: 0, competencia4: 0, competencia5: 0, total: 0 },
+                    feedback: { positive: "Não foi possível analisar.", difficulties: "Ocorreu um erro.", suggestions: "Tente novamente mais tarde." }
+                };
+            }
         }
         
         async function handlePhotoUpload(file) {
-            if (!currentStudentName) {
-                alert('Erro: Nome do estudante não encontrado.');
+            if (!currentStudentName || !currentTheme) {
+                alert('Erro: Dados da sessão (nome ou tema) não encontrados.');
                 return;
             }
             const user = auth.currentUser;
             if (!user) {
-                alert('Erro de autenticação.');
+                alert('Erro de autenticação. A página será recarregada.');
+                location.reload();
                 return;
             }
 
             submitEssayButton.disabled = true;
             submitEssayButton.textContent = 'Enviando...';
-            submissionStatus.textContent = 'Aguarde, processando sua redação...';
+            submissionStatus.textContent = 'Aguarde, enviando sua redação para o Cloudinary...';
 
             try {
-                const newEssayRef = doc(collection(db, "essays"));
-                const essayId = newEssayRef.id;
-                const filePath = `essays/${user.uid}/${essayId}/${file.name}`;
-                const fileRef = ref(storage, filePath);
-                await uploadBytes(fileRef, file);
-                const fileURL = await getDownloadURL(fileRef);
+                const essayId = gerarIdDocumento("essays");
+                const sanitizedStudentName = currentStudentName.replace(/\s+/g, '-').toLowerCase();
+                const publicFilename = `${sanitizedStudentName}-${essayId}`;
+                
+                // 1. Faz o upload para o Cloudinary com o nome de arquivo personalizado
+                const fileURL = await uploadArquivoCloudinary(file, publicFilename);
+                
                 submissionStatus.textContent = 'Analisando com a IA...';
                 
-                const simulatedTranscribedText = `(Texto simulado extraído da imagem)\n\nA questão do estigma associado às doenças mentais no Brasil é uma barreira silenciosa que impede o progresso social...`;
-                const analysis = await getGeminiAnalysis(simulatedTranscribedText);
+                // 2. Simula a transcrição e chama a análise REAL da IA
+                const simulatedTranscribedText = `(Texto simulado extraído da imagem)\n\nA questão do estigma associado às doenças mentais no Brasil é uma barreira silenciosa que impede o progresso social. É fundamental que a sociedade discuta abertamente o tema para desconstruir preconceitos e oferecer o suporte necessário a quem precisa. A proposta de intervenção deve focar na educação e na ampliação do acesso a tratamentos psicológicos pelo sistema público de saúde.`;
+                const analysis = await getGeminiAnalysis(currentTheme.title, simulatedTranscribedText);
 
-                await setDoc(newEssayRef, {
-                    id: essayId, studentName: currentStudentName, themeTitle: currentTheme.title,
-                    essayImageURL: fileURL, storagePath: filePath, submissionDate: serverTimestamp(),
-                    status: 'corrigida', transcribedText: simulatedTranscribedText,
-                    feedback: analysis.feedback, grades: analysis.grades
-                });
+                const essayData = {
+                    id: essayId,
+                    studentName: currentStudentName,
+                    themeTitle: currentTheme.title,
+                    essayImageURL: fileURL, // URL do Cloudinary
+                    submissionDate: serverTimestamp(),
+                    status: 'nao-corrigido', // Status inicial
+                    transcribedText: simulatedTranscribedText,
+                    feedback: analysis.feedback,
+                    grades: analysis.grades
+                };
+
+                // 3. Salva os dados no Firestore
+                await definirDocumento("essays", essayId, essayData);
                 
-                submissionStatus.innerHTML = `<strong>Sucesso!</strong> Sua redação foi enviada e corrigida.`;
+                submissionStatus.innerHTML = `<strong>Sucesso!</strong> Sua redação foi enviada e corrigida pela IA.`;
                 submitEssayButton.style.display = 'none';
                 document.getElementById('upload-area').style.pointerEvents = 'none';
                 document.getElementById('upload-area').style.opacity = '0.6';
@@ -944,7 +992,7 @@
                 localStorage.removeItem('essaySession');
 
             } catch (error) {
-                console.error("Erro no envio:", error);
+                console.error("Erro no processo de envio:", error);
                 submissionStatus.textContent = 'Ocorreu um erro ao enviar. Tente novamente.';
                 submitEssayButton.disabled = false;
                 submitEssayButton.textContent = 'Enviar Redação';
