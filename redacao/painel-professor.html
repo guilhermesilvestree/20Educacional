@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel do Professor</title>
+    <link rel="shortcut icon" href="assets/icon.ico" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -46,6 +47,29 @@
             font-size: 1.5rem;
             color: var(--cor-acento);
             margin: 0;
+        }
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .nav-button {
+            background: none;
+            border: 1px solid var(--cor-acento);
+            color: var(--cor-acento);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-button:hover, .nav-button.active {
+            background-color: var(--cor-acento);
+            color: white;
         }
         .profile-container {
             position: relative;
@@ -123,7 +147,7 @@
         }
         .sidebar h2 {
             margin-top: 0;
-            margin-bottom: 20px; /* Aumentado o espaçamento inferior */
+            margin-bottom: 20px;
             font-size: 1.2rem;
         }
         #essay-list {
@@ -195,6 +219,11 @@
             font-size: 4rem;
             margin-bottom: 20px;
         }
+
+        /* Estilos para a tela de correção de redações */
+        #correction-view {
+            display: none;
+        }
         #essay-details-wrapper {
             display: none;
             height: 100%;
@@ -230,13 +259,46 @@
         }
         .detail-box h3 {
             margin-top: 0;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             font-size: 1.2rem;
             border-bottom: 1px solid var(--cor-borda);
             padding-bottom: 10px;
             display: flex;
             align-items: center;
         }
+        .detail-box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--cor-borda);
+            margin-bottom: 15px;
+        }
+        .detail-box-header h3 {
+            border: none;
+            margin: 0;
+            padding: 0;
+            margin-bottom: 10px;
+        }
+
+        .transcription-button {
+            background-color: transparent;
+            border: 1px solid var(--cor-acento);
+            color: var(--cor-acento);
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+        }
+        .transcription-button:hover {
+            background-color: var(--cor-acento);
+            color: white;
+        }
+        .transcription-button i {
+            margin-right: 6px;
+        }
+
         .feedback-section { margin-top: 25px; }
         .feedback-section h4 {
             margin: 0 0 8px 0;
@@ -253,7 +315,7 @@
             background-color: #f8f9fa;
             padding: 12px;
             border-radius: 8px;
-            white-space: pre-wrap;
+            /* white-space: pre-wrap; */
         }
         .detail-box h3 i, .feedback-section h4 i {
             margin-right: 12px;
@@ -401,15 +463,270 @@
             max-height: 500px;
             margin-bottom: 15px;
         }
-        .evaluation-pane::-webkit-scrollbar { width: 8px; }
-        .evaluation-pane::-webkit-scrollbar-track { background: var(--cor-fundo); border-radius: 4px; }
-        .evaluation-pane::-webkit-scrollbar-thumb { background-color: #cdd2da; border-radius: 4px; border: 2px solid var(--cor-fundo); }
-        .evaluation-pane::-webkit-scrollbar-thumb:hover { background-color: #b0b8c5; }
+
+        /* Estilos para a tela de gerenciamento de temas */
+        #themes-view {
+            display: none;
+            height: 100%;
+            flex-direction: column;
+            padding: 0;
+        }
+        .themes-header {
+            background-color: var(--cor-container);
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border: 1px solid var(--cor-borda);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .themes-header h2 {
+            margin: 0;
+            color: var(--cor-acento);
+            font-size: 1.5rem;
+        }
+        .add-theme-btn {
+            background-color: var(--cor-acento);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .add-theme-btn:hover {
+            background-color: var(--cor-acento-hover);
+            transform: translateY(-2px);
+        }
+        .themes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+            overflow-y: auto;
+            height: calc(100vh - 250px);
+            padding-right: 10px;
+        }
+        .theme-card {
+            background-color: var(--cor-container);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--cor-borda);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .theme-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+        .theme-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        .theme-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--cor-texto-principal);
+            line-height: 1.4;
+            margin: 0;
+            flex: 1;
+            padding-right: 15px;
+        }
+        .theme-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .theme-action-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        .edit-btn {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .edit-btn:hover {
+            background-color: #ffeeba;
+        }
+        .delete-btn {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .delete-btn:hover {
+            background-color: #f1b0b7;
+        }
+        .theme-text {
+            color: var(--cor-texto-sutil);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            flex-grow: 1;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 6;
+            -webkit-box-orient: vertical;
+        }
+        .theme-date {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--cor-borda);
+            font-size: 0.8rem;
+            color: var(--cor-texto-sutil);
+        }
+
+        /* Estilos dos modais */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: var(--cor-container);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--cor-borda);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--cor-texto-sutil);
+        }
+        .modal-body {
+            overflow-y: auto;
+            line-height: 1.7;
+            /* white-space: pre-wrap; */
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--cor-texto-principal);
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.2s ease;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--cor-acento);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--cor-borda);
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        .btn-primary {
+            background-color: var(--cor-acento);
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: var(--cor-acento-hover);
+        }
+        .btn-secondary {
+            background-color: #e9ecef;
+            color: var(--cor-texto-principal);
+        }
+        .btn-secondary:hover {
+            background-color: #dee2e6;
+        }
+        .btn-danger {
+            background-color: var(--cor-perigo);
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .text-danger {
+            color: var(--cor-perigo);
+            font-weight: bold;
+        }
+
+        .evaluation-pane::-webkit-scrollbar, .themes-grid::-webkit-scrollbar { width: 8px; }
+        .evaluation-pane::-webkit-scrollbar-track, .themes-grid::-webkit-scrollbar-track { background: var(--cor-fundo); border-radius: 4px; }
+        .evaluation-pane::-webkit-scrollbar-thumb, .themes-grid::-webkit-scrollbar-thumb { background-color: #cdd2da; border-radius: 4px; border: 2px solid var(--cor-fundo); }
+        .evaluation-pane::-webkit-scrollbar-thumb:hover, .themes-grid::-webkit-scrollbar-thumb:hover { background-color: #b0b8c5; }
     </style>
 </head>
 <body>
     <header class="header">
         <h1>Painel de Correção</h1>
+        <div class="header-nav">
+            <button class="nav-button active" id="correction-nav-btn">
+                <i class="fa-solid fa-clipboard-check"></i>
+                Correções
+            </button>
+            <button class="nav-button" id="themes-nav-btn">
+                <i class="fa-solid fa-book-open"></i>
+                Gerenciar Temas
+            </button>
+        </div>
         <div class="profile-container">
             <div class="user-profile-badge" id="profile-trigger">
                 <span id="teacher-name"></span>
@@ -424,66 +741,77 @@
         </div>
     </header>
     <div class="dashboard-container">
-        <aside class="sidebar">
-            <h2>Redações Recebidas</h2>
-            <ul id="essay-list">
+        <!-- Tela de Correção de Redações -->
+        <div id="correction-view" style="display: flex; width: 100%;">
+            <aside class="sidebar">
+                <h2>Redações Recebidas</h2>
+                <ul id="essay-list">
                 </ul>
-        </aside>
-        <main class="main-content">
-            <div id="placeholder" class="placeholder">
-                <i class="fa-regular fa-file-lines"></i>
-                <p>Selecione uma redação na lista para visualizar.</p>
-            </div>
-            <div id="essay-details-wrapper">
-                <div class="essay-viewer-pane">
-                    <img id="essay-image" src="" alt="Imagem da Redação">
+            </aside>
+            <main class="main-content">
+                <div id="placeholder" class="placeholder">
+                    <i class="fa-regular fa-file-lines"></i>
+                    <p>Selecione uma redação na lista para visualizar.</p>
                 </div>
-                <div class="evaluation-pane">
-                    <div class="detail-box" id="ai-evaluation-box">
-                        <h3 id="grades-header">
-                            <i class="fa-solid fa-robot"></i>
-                            Avaliação da Inteligência Artificial
-                            <i class="fa-solid fa-chevron-down toggle-grades-btn"></i>
-                        </h3>
-                        
-                        <div class="grades-container-list">
-                            <div id="collapsible-grades">
-                                <div class="grade-item-list">
-                                    <div class="grade-label">
-                                        <i class="fa-solid fa-spell-check competency-icon"></i>
-                                        <span class="label-text">Norma Culta</span>
-                                        <i class="fa-solid fa-circle-info info-icon">
-                                            <span class="tooltip-text"><b>Competência 1:</b>Demonstrar domínio da modalidade escrita formal da Língua Portuguesa.</span>
-                                        </i>
+                <div id="essay-details-wrapper">
+                    <div class="essay-viewer-pane">
+                        <img id="essay-image" src="" alt="Imagem da Redação">
+                    </div>
+                    <div class="evaluation-pane">
+                        <div class="detail-box" id="ai-evaluation-box">
+                            <div class="detail-box-header">
+                                <h3>
+                                    <i class="fa-solid fa-robot"></i>
+                                    Avaliação da I.A.
+                                </h3>
+                                <button id="show-transcription-btn" class="transcription-button">
+                                    <i class="fa-solid fa-file-lines"></i> Ver Transcrição
+                                </button>
+                            </div>
+                            <h3 id="grades-header">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                                Notas por Competência
+                                <i class="fa-solid fa-chevron-down toggle-grades-btn"></i>
+                            </h3>
+                            
+                            <div class="grades-container-list">
+                                <div id="collapsible-grades">
+                                    <div class="grade-item-list">
+                                        <div class="grade-label">
+                                            <i class="fa-solid fa-spell-check competency-icon"></i>
+                                            <span class="label-text">Norma Culta</span>
+                                            <i class="fa-solid fa-circle-info info-icon">
+                                                <span class="tooltip-text"><b>Competência 1:</b>Demonstrar domínio da modalidade escrita formal da Língua Portuguesa.</span>
+                                            </i>
+                                        </div>
+                                        <span class="grade-value" id="ia-grade-c1">--</span>
                                     </div>
-                                    <span class="grade-value" id="ia-grade-c1">--</span>
-                                </div>
-                                <div class="grade-item-list">
-                                    <div class="grade-label">
-                                        <i class="fa-solid fa-book-open-reader competency-icon"></i>
-                                        <span class="label-text">Tema e Estrutura</span>
-                                        <i class="fa-solid fa-circle-info info-icon">
-                                            <span class="tooltip-text"><b>Competência 2:</b>Compreender o tema e aplicar conceitos das áreas de conhecimento para desenvolver o tema na estrutura dissertativo-argumentativa.</span>
-                                        </i>
+                                    <div class="grade-item-list">
+                                        <div class="grade-label">
+                                            <i class="fa-solid fa-book-open-reader competency-icon"></i>
+                                            <span class="label-text">Tema e Estrutura</span>
+                                            <i class="fa-solid fa-circle-info info-icon">
+                                                <span class="tooltip-text"><b>Competência 2:</b>Compreender o tema e aplicar conceitos das áreas de conhecimento para desenvolver o tema na estrutura dissertativo-argumentativa.</span>
+                                            </i>
+                                        </div>
+                                        <span class="grade-value" id="ia-grade-c2">--</span>
                                     </div>
-                                    <span class="grade-value" id="ia-grade-c2">--</span>
-                                </div>
-                                <div class="grade-item-list">
-                                    <div class="grade-label">
-                                        <i class="fa-solid fa-sitemap competency-icon"></i>
-                                        <span class="label-text">Argumentação</span>
-                                        <i class="fa-solid fa-circle-info info-icon">
-                                            <span class="tooltip-text"><b>Competência 3:</b>Selecionar, relacionar, organizar e interpretar informações, fatos, opiniões e argumentos em defesa de um ponto de vista.</span>
-                                        </i>
+                                    <div class="grade-item-list">
+                                        <div class="grade-label">
+                                            <i class="fa-solid fa-sitemap competency-icon"></i>
+                                            <span class="label-text">Argumentação</span>
+                                            <i class="fa-solid fa-circle-info info-icon">
+                                                <span class="tooltip-text"><b>Competência 3:</b>Selecionar, relacionar, organizar e interpretar informações, fatos, opiniões e argumentos em defesa de um ponto de vista.</span>
+                                            </i>
+                                        </div>
+                                        <span class="grade-value" id="ia-grade-c3">--</span>
                                     </div>
-                                    <span class="grade-value" id="ia-grade-c3">--</span>
-                                </div>
-                                <div class="grade-item-list">
-                                    <div class="grade-label">
-                                        <i class="fa-solid fa-link competency-icon"></i>
-                                        <span class="label-text">Coesão</span>
-                                        <i class="fa-solid fa-circle-info info-icon">
-                                            <span class="tooltip-text"><b>Competência 4:</b>Demonstrar conhecimento dos mecanismos linguísticos necessários para a construção da argumentação.</span>
+                                    <div class="grade-item-list">
+                                        <div class="grade-label">
+                                            <i class="fa-solid fa-link competency-icon"></i>
+                                            <span class="label-text">Coesão</span>
+                                            <i class="fa-solid fa-circle-info info-icon">
+                                                <span class="tooltip-text"><b>Competência 4:</b>Demonstrar conhecimento dos mecanismos linguísticos necessários para a construção da argumentação.</span>
                                         </i>
                                     </div>
                                     <span class="grade-value" id="ia-grade-c4">--</span>
@@ -523,12 +851,88 @@
                 </div>
             </div>
         </main>
+        </div>
+
+        <!-- Tela de Gerenciamento de Temas -->
+        <div id="themes-view" class="main-content">
+            <div class="themes-header">
+                <h2><i class="fa-solid fa-book-open"></i> Gerenciamento de Temas</h2>
+                <button class="add-theme-btn" id="add-theme-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    Novo Tema
+                </button>
+            </div>
+            <div class="themes-grid" id="themes-grid">
+                <!-- Os temas serão carregados dinamicamente aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Transcrição -->
+    <div id="transcription-modal" class="modal-backdrop">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Texto Transcrito</h2>
+                <button id="close-transcription-modal-btn" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="transcription-text"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Criar/Editar Tema -->
+    <div id="theme-modal" class="modal-backdrop">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="theme-modal-title">Novo Tema</h2>
+                <button id="close-theme-modal-btn" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="theme-form">
+                    <div class="form-group">
+                        <label for="theme-title-input">Título do Tema *</label>
+                        <input type="text" id="theme-title-input" required placeholder="Ex: Desafios da educação no Brasil">
+                    </div>
+                    <div class="form-group">
+                        <label for="theme-text-input">Texto Motivador *</label>
+                        <textarea id="theme-text-input" required placeholder="Insira o texto motivador que contextualizará o tema da redação..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" id="cancel-theme-btn">Cancelar</button>
+                <button type="submit" class="btn btn-primary" id="save-theme-btn">Salvar Tema</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="delete-confirmation-modal" class="modal-backdrop">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirmar Exclusão</h2>
+                <button id="close-delete-modal-btn" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir este tema?</p>
+                <p><strong id="delete-theme-title"></strong></p>
+                <p style="color: var(--cor-perigo); font-size: 0.9rem; margin-top: 15px;">
+                    <i class="fa-solid fa-exclamation-triangle"></i>
+                    Esta ação não pode ser desfeita.
+                </p>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" id="cancel-delete-btn">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirm-delete-btn">Excluir</button>
+            </div>
+        </div>
     </div>
 
     <script type="module">
         import { auth, db } from '../firebase/firebase-config.js';
         import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { collection, onSnapshot, query, orderBy, doc, setDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         const APP_STORAGE_KEY = 'perfilUser';
 
@@ -541,23 +945,78 @@
                 return null;
             }
         }
-        
+
+        // Elementos do DOM
+        const correctionNavBtn = document.getElementById('correction-nav-btn');
+        const themesNavBtn = document.getElementById('themes-nav-btn');
+        const correctionView = document.getElementById('correction-view');
+        const themesView = document.getElementById('themes-view');
         const essayList = document.getElementById('essay-list');
         const essayDetailsWrapper = document.getElementById('essay-details-wrapper');
         const placeholder = document.getElementById('placeholder');
         const profileTrigger = document.getElementById('profile-trigger');
         const profileDropdown = document.getElementById('profile-dropdown');
         const logoutButton = document.getElementById('logout-button');
+        
+        // Modal de transcrição
+        const showTranscriptionBtn = document.getElementById('show-transcription-btn');
+        const transcriptionModal = document.getElementById('transcription-modal');
+        const closeTranscriptionModalBtn = document.getElementById('close-transcription-modal-btn');
+        const transcriptionTextEl = document.getElementById('transcription-text');
+
+        // Elementos de temas
+        const addThemeBtn = document.getElementById('add-theme-btn');
+        const themesGrid = document.getElementById('themes-grid');
+        const themeModal = document.getElementById('theme-modal');
+        const themeModalTitle = document.getElementById('theme-modal-title');
+        const themeForm = document.getElementById('theme-form');
+        const themeTitleInput = document.getElementById('theme-title-input');
+        const themeTextInput = document.getElementById('theme-text-input');
+        const closeThemeModalBtn = document.getElementById('close-theme-modal-btn');
+        const cancelThemeBtn = document.getElementById('cancel-theme-btn');
+        const saveThemeBtn = document.getElementById('save-theme-btn');
+
+        // Modal de confirmação de exclusão
+        const deleteConfirmationModal = document.getElementById('delete-confirmation-modal');
+        const deleteThemeTitle = document.getElementById('delete-theme-title');
+        const closeDeleteModalBtn = document.getElementById('close-delete-modal-btn');
+        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+        const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
 
         let allEssays = [];
+        let allThemes = [];
         let currentEssayId = null;
-        let unsubscribe;
+        let currentThemeId = null;
+        let currentView = 'correction';
+        let essayUnsubscribe;
+        let themeUnsubscribe;
 
+        // Navegação entre telas
+        function switchView(viewName) {
+            currentView = viewName;
+            
+            // Atualizar botões de navegação
+            correctionNavBtn.classList.toggle('active', viewName === 'correction');
+            themesNavBtn.classList.toggle('active', viewName === 'themes');
+            
+            // Mostrar/ocultar views
+            correctionView.style.display = viewName === 'correction' ? 'flex' : 'none';
+            themesView.style.display = viewName === 'themes' ? 'flex' : 'none';
+            
+            if (viewName === 'themes' && !themeUnsubscribe) {
+                listenForThemes();
+            }
+        }
+
+        correctionNavBtn.addEventListener('click', () => switchView('correction'));
+        themesNavBtn.addEventListener('click', () => switchView('themes'));
+
+        // Funções de redações (mantidas do código original)
         function listenForEssays() {
             const essaysRef = collection(db, "essays");
             const q = query(essaysRef, orderBy("submissionDate", "desc"));
 
-            unsubscribe = onSnapshot(q, (snapshot) => {
+            essayUnsubscribe = onSnapshot(q, (snapshot) => {
                 allEssays = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderEssayList();
                 
@@ -632,6 +1091,10 @@
 
             document.getElementById('essay-image').src = essay.essayImageURL;
             
+            const transcribedText = essay.transcribedText || 'Transcrição não disponível.';
+            transcriptionTextEl.textContent = transcribedText;
+            transcriptionTextEl.classList.toggle('text-danger', transcribedText === '____');
+
             document.getElementById('ia-grade-c1').textContent = essay.grades?.competencia1 ?? '--';
             document.getElementById('ia-grade-c2').textContent = essay.grades?.competencia2 ?? '--';
             document.getElementById('ia-grade-c3').textContent = essay.grades?.competencia3 ?? '--';
@@ -643,7 +1106,194 @@
             document.getElementById('ia-feedback-difficulties').textContent = essay.feedback?.difficulties ?? 'Não disponível.';
             document.getElementById('ia-feedback-suggestions').textContent = essay.feedback?.suggestions ?? 'Não disponível.';
         }
-        
+
+        // Funções de gerenciamento de temas
+        function listenForThemes() {
+            const themesRef = collection(db, "themes");
+            const q = query(themesRef, orderBy("createdAt", "desc"));
+
+            themeUnsubscribe = onSnapshot(q, (snapshot) => {
+                allThemes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderThemesList();
+            }, (error) => console.error("Erro ao buscar temas: ", error));
+        }
+
+        function renderThemesList() {
+            themesGrid.innerHTML = '';
+
+            if (allThemes.length === 0) {
+                themesGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; color: var(--cor-texto-sutil); padding: 40px;">
+                        <i class="fa-regular fa-book-open" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                        <p>Nenhum tema cadastrado ainda.</p>
+                        <p>Clique em "Novo Tema" para começar.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            allThemes.forEach(theme => {
+                const themeCard = document.createElement('div');
+                themeCard.className = 'theme-card';
+                
+                const createdDate = theme.createdAt?.toDate().toLocaleDateString('pt-BR') || 'Data não disponível';
+                
+                themeCard.innerHTML = `
+                    <div class="theme-card-header">
+                        <h3 class="theme-title">${theme.title}</h3>
+                        <div class="theme-actions">
+                            <button class="theme-action-btn edit-btn" onclick="editTheme('${theme.id}')">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button class="theme-action-btn delete-btn" onclick="deleteTheme('${theme.id}')">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="theme-text">${theme.text}</p>
+                    <div class="theme-date">Criado em: ${createdDate}</div>
+                `;
+                
+                themesGrid.appendChild(themeCard);
+            });
+        }
+
+        // Funções de modal de temas
+        function openThemeModal(isEdit = false, themeData = null) {
+            themeModalTitle.textContent = isEdit ? 'Editar Tema' : 'Novo Tema';
+            saveThemeBtn.textContent = isEdit ? 'Salvar Alterações' : 'Salvar Tema';
+            
+            if (isEdit && themeData) {
+                currentThemeId = themeData.id;
+                themeTitleInput.value = themeData.title;
+                themeTextInput.value = themeData.text;
+            } else {
+                currentThemeId = null;
+                themeTitleInput.value = '';
+                themeTextInput.value = '';
+            }
+            
+            themeModal.style.display = 'flex';
+            themeTitleInput.focus();
+        }
+
+        function closeThemeModal() {
+            themeModal.style.display = 'none';
+            currentThemeId = null;
+            themeForm.reset();
+        }
+
+        // Funções globais para os botões dos cards
+        window.editTheme = function(themeId) {
+            const theme = allThemes.find(t => t.id === themeId);
+            if (theme) {
+                openThemeModal(true, theme);
+            }
+        };
+
+        window.deleteTheme = function(themeId) {
+            const theme = allThemes.find(t => t.id === themeId);
+            if (theme) {
+                deleteThemeTitle.textContent = theme.title;
+                currentThemeId = themeId;
+                deleteConfirmationModal.style.display = 'flex';
+            }
+        };
+
+        async function saveTheme() {
+            const title = themeTitleInput.value.trim();
+            const text = themeTextInput.value.trim();
+            
+            if (!title || !text) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+            
+            try {
+                saveThemeBtn.disabled = true;
+                saveThemeBtn.textContent = 'Salvando...';
+                
+                const themeData = {
+                    title: title,
+                    text: text,
+                    updatedAt: serverTimestamp()
+                };
+                
+                if (currentThemeId) {
+                    // Editando tema existente
+                    await setDoc(doc(db, "themes", currentThemeId), themeData, { merge: true });
+                } else {
+                    // Criando novo tema
+                    themeData.createdAt = serverTimestamp();
+                    const newThemeRef = doc(collection(db, "themes"));
+                    await setDoc(newThemeRef, themeData);
+                }
+                
+                closeThemeModal();
+                
+            } catch (error) {
+                console.error("Erro ao salvar tema:", error);
+                alert('Erro ao salvar tema. Tente novamente.');
+            } finally {
+                saveThemeBtn.disabled = false;
+                saveThemeBtn.textContent = currentThemeId ? 'Salvar Alterações' : 'Salvar Tema';
+            }
+        }
+
+        async function confirmDeleteTheme() {
+            if (!currentThemeId) return;
+            
+            try {
+                confirmDeleteBtn.disabled = true;
+                confirmDeleteBtn.textContent = 'Excluindo...';
+                
+                await deleteDoc(doc(db, "themes", currentThemeId));
+                
+                deleteConfirmationModal.style.display = 'none';
+                currentThemeId = null;
+                
+            } catch (error) {
+                console.error("Erro ao excluir tema:", error);
+                alert('Erro ao excluir tema. Tente novamente.');
+            } finally {
+                confirmDeleteBtn.disabled = false;
+                confirmDeleteBtn.textContent = 'Excluir';
+            }
+        }
+
+        // Event Listeners
+        addThemeBtn.addEventListener('click', () => openThemeModal());
+        closeThemeModalBtn.addEventListener('click', closeThemeModal);
+        cancelThemeBtn.addEventListener('click', closeThemeModal);
+        saveThemeBtn.addEventListener('click', saveTheme);
+
+        closeDeleteModalBtn.addEventListener('click', () => {
+            deleteConfirmationModal.style.display = 'none';
+            currentThemeId = null;
+        });
+        cancelDeleteBtn.addEventListener('click', () => {
+            deleteConfirmationModal.style.display = 'none';
+            currentThemeId = null;
+        });
+        confirmDeleteBtn.addEventListener('click', confirmDeleteTheme);
+
+        // Event listeners para fechar modais clicando fora
+        themeModal.addEventListener('click', (e) => {
+            if (e.target === themeModal) closeThemeModal();
+        });
+        deleteConfirmationModal.addEventListener('click', (e) => {
+            if (e.target === deleteConfirmationModal) {
+                deleteConfirmationModal.style.display = 'none';
+                currentThemeId = null;
+            }
+        });
+
+        // Submit do formulário
+        themeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            saveTheme();
+        });
+
         function initializeApp() {
             const appData = getAppData();
             
@@ -696,10 +1346,24 @@
                     alert('Ocorreu um erro ao sair.');
                 });
             });
+
+            // Event Listeners para o Modal de Transcrição
+            showTranscriptionBtn.addEventListener('click', () => {
+                transcriptionModal.style.display = 'flex';
+            });
+
+            closeTranscriptionModalBtn.addEventListener('click', () => {
+                transcriptionModal.style.display = 'none';
+            });
+
+            transcriptionModal.addEventListener('click', (event) => {
+                if (event.target === transcriptionModal) {
+                    transcriptionModal.style.display = 'none';
+                }
+            });
         }
         
         document.addEventListener('DOMContentLoaded', initializeApp);
-
     </script>
 </body>
 </html>
