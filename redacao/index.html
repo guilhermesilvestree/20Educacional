@@ -347,7 +347,6 @@
         let timerInterval;
         let currentRemainingSeconds;
         
-        // ALTERADO: Adicionado 'currentStudentUid'
         let currentStudentName = "";
         let currentAvatarUrl = "assets/gui.jpeg";
         let currentStudentUid = null;
@@ -572,17 +571,14 @@
             const appData = getAppData();
             const savedUser = appData.userData;
 
-            // ALTERADO: Adicionado verificação do UID
             if (savedUser && savedUser.name && savedUser.uid) {
-                // Se o usuário estiver logado, continua normalmente
                 currentStudentName = savedUser.name;
-                currentStudentUid = savedUser.uid; // Captura o UID
+                currentStudentUid = savedUser.uid;
                 if (savedUser.avatar) {
                     currentAvatarUrl = savedUser.avatar;
                 }
                 restoreEssaySession();
             } else {
-                // Se não estiver logado ou os dados estiverem incompletos, redireciona
                 window.location.href = '../index.html'; 
                 return; 
             }
@@ -626,7 +622,6 @@
             const base64Image = await fileToBase64(imageFile);
             const schema = { type: "OBJECT", properties: { transcribedText: { type: "STRING" }, grades: { type: "OBJECT", properties: { competencia1: { type: "NUMBER" }, competencia2: { type: "NUMBER" }, competencia3: { type: "NUMBER" }, competencia4: { type: "NUMBER" }, competencia5: { type: "NUMBER" }, total: { type: "NUMBER" } } }, feedback: { type: "OBJECT", properties: { positive: { type: "STRING" }, difficulties: { type: "STRING" }, suggestions: { type: "STRING" } } } } };
             
-            // PROMPT ATUALIZADO
             const prompt = `Sua tarefa é agir como um corretor especialista do ENEM. Realize as seguintes etapas: 1. **Transcrição:** Transcreva CUIDADOSAMENTE e fielmente o texto manuscrito da imagem. Se o texto manuscrito for ilegível ou impossível de transcrever, retorne "____" no campo 'transcribedText'. 2. **Análise e Avaliação:** Usando o texto transcrito, analise e avalie a redação com o tema "${theme}" com base nas 5 competências do ENEM. Atribua uma nota de 0 a 200 para cada uma, **obrigatoriamente em múltiplos de 40**. 3. **Cálculo da Nota:** Calcule a nota total (soma das 5 competências). 4. **Feedback Estruturado:** Forneça um feedback que seja **detalhado, direto e conciso**. Responda estritamente no formato JSON definido no schema.`;
             
             const payload = { contents: [{ parts: [ { text: prompt }, { inline_data: { mime_type: imageFile.type, data: base64Image } } ] }], generationConfig: { responseMimeType: "application/json", responseSchema: schema } };
@@ -644,7 +639,6 @@
         }
         
         async function handlePhotoUpload(file) {
-            // ALTERADO: Adicionado verificação do UID
             if (!currentStudentName || !currentTheme || !currentStudentUid) { 
                 alert('Erro: Dados da sessão do usuário não encontrados.'); 
                 return; 
@@ -667,14 +661,14 @@
                 const publicFilename = `${sanitizedStudentName}-${essayId}`;
                 const fileURL = await uploadArquivoCloudinary(file, publicFilename);
                 
-                // ALTERADO: Adicionado 'studentUid' ao objeto
                 const essayData = {
                     id: essayId, 
-                    studentUid: currentStudentUid, // <-- REFERÊNCIA SEGURA AO USUÁRIO
+                    studentUid: currentStudentUid,
                     studentName: currentStudentName, 
                     studentAvatar: currentAvatarUrl,
                     themeTitle: currentTheme.title, 
                     essayImageURL: fileURL, 
+                    essayImagePublicId: publicFilename,
                     submissionDate: serverTimestamp(),
                     status: 'corrigido-ia', 
                     transcribedText: analysis.transcribedText,

@@ -24,6 +24,8 @@
         }
         * {
             box-sizing: border-box;
+
+
         }
         body {
             font-family: 'Poppins', sans-serif;
@@ -272,6 +274,8 @@
             align-items: center;
             border-bottom: 1px solid var(--cor-borda);
             margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .detail-box-header h3 {
             border: none;
@@ -298,6 +302,18 @@
         .transcription-button i {
             margin-right: 6px;
         }
+        
+        #delete-essay-btn {
+            display: none;
+            border-color: var(--cor-perigo);
+            color: var(--cor-perigo);
+            margin-left: 10px;
+        }
+
+        #delete-essay-btn:hover {
+            background-color: var(--cor-perigo);
+            color: white;
+        }
 
         .feedback-section { margin-top: 25px; }
         .feedback-section h4 {
@@ -315,7 +331,6 @@
             background-color: #f8f9fa;
             padding: 12px;
             border-radius: 8px;
-            /* white-space: pre-wrap; */
         }
         .detail-box h3 i, .feedback-section h4 i {
             margin-right: 12px;
@@ -637,7 +652,6 @@
         .modal-body {
             overflow-y: auto;
             line-height: 1.7;
-            /* white-space: pre-wrap; */
         }
         .form-group {
             margin-bottom: 20px;
@@ -707,7 +721,37 @@
             color: var(--cor-perigo);
             font-weight: bold;
         }
-
+        
+        #transcription-modal .modal-content {
+            max-width: 850px;
+        }
+        .transcription-theme-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--cor-texto-principal);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--cor-borda);
+            line-height: 1.5;
+        }
+        .transcription-text-wrapper {
+            font-size: 1rem;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            max-height: 55vh;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid var(--cor-borda);
+            margin-bottom: 15px;
+        }
+        .transcription-text-wrapper mark {
+            background-color: rgba(255, 227, 131, 0.8);
+            border-radius: 3px;
+            padding: 0 3px;
+        }
+        
         .evaluation-pane::-webkit-scrollbar, .themes-grid::-webkit-scrollbar { width: 8px; }
         .evaluation-pane::-webkit-scrollbar-track, .themes-grid::-webkit-scrollbar-track { background: var(--cor-fundo); border-radius: 4px; }
         .evaluation-pane::-webkit-scrollbar-thumb, .themes-grid::-webkit-scrollbar-thumb { background-color: #cdd2da; border-radius: 4px; border: 2px solid var(--cor-fundo); }
@@ -741,7 +785,6 @@
         </div>
     </header>
     <div class="dashboard-container">
-        <!-- Tela de Correção de Redações -->
         <div id="correction-view" style="display: flex; width: 100%;">
             <aside class="sidebar">
                 <h2>Redações Recebidas</h2>
@@ -764,9 +807,14 @@
                                     <i class="fa-solid fa-robot"></i>
                                     Avaliação da I.A.
                                 </h3>
-                                <button id="show-transcription-btn" class="transcription-button">
-                                    <i class="fa-solid fa-file-lines"></i> Ver Transcrição
-                                </button>
+                                <div>
+                                    <button id="show-transcription-btn" class="transcription-button">
+                                        <i class="fa-solid fa-file-lines"></i> Ver Transcrição
+                                    </button>
+                                    <button id="delete-essay-btn" class="transcription-button">
+                                        <i class="fa-solid fa-trash"></i> Excluir Avaliação
+                                    </button>
+                                </div>
                             </div>
                             <h3 id="grades-header">
                                 <i class="fa-solid fa-graduation-cap"></i>
@@ -849,11 +897,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </main>
+            </main>
         </div>
 
-        <!-- Tela de Gerenciamento de Temas -->
         <div id="themes-view" class="main-content">
             <div class="themes-header">
                 <h2><i class="fa-solid fa-book-open"></i> Gerenciamento de Temas</h2>
@@ -863,25 +909,30 @@
                 </button>
             </div>
             <div class="themes-grid" id="themes-grid">
-                <!-- Os temas serão carregados dinamicamente aqui -->
-            </div>
+                </div>
         </div>
     </div>
 
-    <!-- Modal de Transcrição -->
     <div id="transcription-modal" class="modal-backdrop">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Texto Transcrito</h2>
+                <h2>Análise e Transcrição do Texto</h2>
                 <button id="close-transcription-modal-btn" class="close-btn">&times;</button>
             </div>
             <div class="modal-body">
-                <p id="transcription-text"></p>
+                <h3 class="transcription-theme-title" id="transcription-theme-title">Carregando tema...</h3>
+                <div class="transcription-text-wrapper">
+                    <p id="transcription-text"></p>
+                </div>
+            </div>
+            <div class="modal-actions">
+                 <small style="color: var(--cor-texto-sutil); margin-right: auto; text-align: left;">Selecione o texto para grifar.</small>
+                 <button type="button" class="btn btn-secondary" id="clear-highlights-btn">Remover Grifos</button>
+                 <button type="button" class="btn btn-primary" id="save-highlights-btn">Salvar Grifos</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal de Criar/Editar Tema -->
     <div id="theme-modal" class="modal-backdrop">
         <div class="modal-content">
             <div class="modal-header">
@@ -907,7 +958,6 @@
         </div>
     </div>
 
-    <!-- Modal de Confirmação de Exclusão -->
     <div id="delete-confirmation-modal" class="modal-backdrop">
         <div class="modal-content">
             <div class="modal-header">
@@ -915,7 +965,7 @@
                 <button id="close-delete-modal-btn" class="close-btn">&times;</button>
             </div>
             <div class="modal-body">
-                <p>Tem certeza que deseja excluir este tema?</p>
+                <p>Tem certeza que deseja excluir este item?</p>
                 <p><strong id="delete-theme-title"></strong></p>
                 <p style="color: var(--cor-perigo); font-size: 0.9rem; margin-top: 15px;">
                     <i class="fa-solid fa-exclamation-triangle"></i>
@@ -932,7 +982,8 @@
     <script type="module">
         import { auth, db } from '../firebase/firebase-config.js';
         import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { collection, onSnapshot, query, orderBy, doc, setDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { collection, onSnapshot, query, orderBy, doc, setDoc, deleteDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { deleteArquivoCloudinary } from '../firebase/firebase-services.js';
 
         const APP_STORAGE_KEY = 'perfilUser';
 
@@ -963,6 +1014,12 @@
         const transcriptionModal = document.getElementById('transcription-modal');
         const closeTranscriptionModalBtn = document.getElementById('close-transcription-modal-btn');
         const transcriptionTextEl = document.getElementById('transcription-text');
+        const transcriptionThemeTitle = document.getElementById('transcription-theme-title');
+        const saveHighlightsBtn = document.getElementById('save-highlights-btn');
+        const clearHighlightsBtn = document.getElementById('clear-highlights-btn');
+
+        // Botão de excluir avaliação
+        const deleteEssayBtn = document.getElementById('delete-essay-btn');
 
         // Elementos de temas
         const addThemeBtn = document.getElementById('add-theme-btn');
@@ -995,11 +1052,9 @@
         function switchView(viewName) {
             currentView = viewName;
             
-            // Atualizar botões de navegação
             correctionNavBtn.classList.toggle('active', viewName === 'correction');
             themesNavBtn.classList.toggle('active', viewName === 'themes');
             
-            // Mostrar/ocultar views
             correctionView.style.display = viewName === 'correction' ? 'flex' : 'none';
             themesView.style.display = viewName === 'themes' ? 'flex' : 'none';
             
@@ -1011,7 +1066,7 @@
         correctionNavBtn.addEventListener('click', () => switchView('correction'));
         themesNavBtn.addEventListener('click', () => switchView('themes'));
 
-        // Funções de redações (mantidas do código original)
+        // Funções de redações
         function listenForEssays() {
             const essaysRef = collection(db, "essays");
             const q = query(essaysRef, orderBy("submissionDate", "desc"));
@@ -1069,6 +1124,7 @@
             currentEssayId = null;
             placeholder.style.display = 'flex';
             essayDetailsWrapper.style.display = 'none';
+            deleteEssayBtn.style.display = 'none';
             document.querySelectorAll('#essay-list li').forEach(item => item.classList.remove('active'));
         }
 
@@ -1088,12 +1144,17 @@
 
             placeholder.style.display = 'none';
             essayDetailsWrapper.style.display = 'flex';
+            deleteEssayBtn.style.display = 'inline-block';
 
             document.getElementById('essay-image').src = essay.essayImageURL;
             
-            const transcribedText = essay.transcribedText || 'Transcrição não disponível.';
-            transcriptionTextEl.textContent = transcribedText;
-            transcriptionTextEl.classList.toggle('text-danger', transcribedText === '____');
+            const transcriptionContent = essay.highlightedTranscription || essay.transcribedText || 'Transcrição não disponível.';
+            transcriptionTextEl.innerHTML = transcriptionContent;
+            transcriptionThemeTitle.textContent = `Tema: ${essay.themeTitle || 'Não especificado'}`;
+            
+            if (essay.transcribedText === '____') {
+                transcriptionTextEl.innerHTML = `<span class="text-danger">A transcrição automática não foi possível para esta imagem.</span>`;
+            }
 
             document.getElementById('ia-grade-c1').textContent = essay.grades?.competencia1 ?? '--';
             document.getElementById('ia-grade-c2').textContent = essay.grades?.competencia2 ?? '--';
@@ -1194,9 +1255,18 @@
         window.deleteTheme = function(themeId) {
             const theme = allThemes.find(t => t.id === themeId);
             if (theme) {
-                deleteThemeTitle.textContent = theme.title;
+                const deleteModal = document.getElementById('delete-confirmation-modal');
+                deleteModal.querySelector('h2').textContent = 'Confirmar Exclusão';
+                deleteModal.querySelector('.modal-body p:first-of-type').textContent = 'Tem certeza que deseja excluir este tema?';
+                document.getElementById('delete-theme-title').textContent = theme.title;
                 currentThemeId = themeId;
-                deleteConfirmationModal.style.display = 'flex';
+                
+                const confirmBtn = document.getElementById('confirm-delete-btn');
+                const newConfirmBtn = confirmBtn.cloneNode(true);
+                confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+                newConfirmBtn.addEventListener('click', confirmDeleteTheme);
+                
+                deleteModal.style.display = 'flex';
             }
         };
 
@@ -1220,10 +1290,8 @@
                 };
                 
                 if (currentThemeId) {
-                    // Editando tema existente
                     await setDoc(doc(db, "themes", currentThemeId), themeData, { merge: true });
                 } else {
-                    // Criando novo tema
                     themeData.createdAt = serverTimestamp();
                     const newThemeRef = doc(collection(db, "themes"));
                     await setDoc(newThemeRef, themeData);
@@ -1260,6 +1328,109 @@
                 confirmDeleteBtn.textContent = 'Excluir';
             }
         }
+        
+        // --- LÓGICA DE EXCLUSÃO DE AVALIAÇÃO ---
+        deleteEssayBtn.addEventListener('click', () => {
+            if (!currentEssayId) return;
+            const essay = allEssays.find(e => e.id === currentEssayId);
+            if (!essay) return;
+            
+            const deleteModal = document.getElementById('delete-confirmation-modal');
+            deleteModal.querySelector('h2').textContent = 'Excluir Avaliação';
+            deleteModal.querySelector('.modal-body p:first-of-type').textContent = 'Tem certeza que deseja excluir esta avaliação? A imagem e todos os dados associados serão removidos permanentemente.';
+            document.getElementById('delete-theme-title').textContent = `Aluno(a): ${essay.studentName}`;
+            
+            const confirmBtn = document.getElementById('confirm-delete-btn');
+            const newConfirmBtn = confirmBtn.cloneNode(true);
+            confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+            newConfirmBtn.addEventListener('click', confirmDeleteEssay);
+            
+            deleteModal.style.display = 'flex';
+        });
+
+        async function confirmDeleteEssay() {
+            if (!currentEssayId) return;
+            const essayToDelete = allEssays.find(e => e.id === currentEssayId);
+            if (!essayToDelete) return alert('Erro: Redação não encontrada para exclusão.');
+
+            const confirmBtn = document.getElementById('confirm-delete-btn');
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Excluindo...';
+
+            try {
+                if (essayToDelete.essayImagePublicId) {
+                    await deleteArquivoCloudinary(essayToDelete.essayImagePublicId);
+                } else {
+                    console.warn('Não foi encontrado public_id para a imagem. Pulando a exclusão do Cloudinary.');
+                }
+                await deleteDoc(doc(db, "essays", currentEssayId));
+                document.getElementById('delete-confirmation-modal').style.display = 'none';
+                showPlaceholder();
+            } catch (error) {
+                console.error("Erro ao excluir avaliação:", error);
+                alert('Ocorreu um erro ao excluir a avaliação.');
+            } finally {
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = 'Excluir';
+            }
+        }
+
+        // --- LÓGICA PARA GRIFAR TEXTO ---
+        function handleTextHighlight() {
+            const selection = window.getSelection();
+            if (!selection.rangeCount || selection.isCollapsed) return;
+            const range = selection.getRangeAt(0);
+            if (range.toString().trim() === '') return;
+            
+            try {
+                const mark = document.createElement('mark');
+                range.surroundContents(mark);
+            } catch (e) {
+                console.warn("Não foi possível usar surroundContents.", e);
+            }
+            selection.removeAllRanges();
+        }
+        transcriptionTextEl.addEventListener('mouseup', handleTextHighlight);
+
+        async function saveHighlights() {
+            if (!currentEssayId) return;
+            
+            const updatedHTML = transcriptionTextEl.innerHTML;
+            const essayRef = doc(db, "essays", currentEssayId);
+            
+            saveHighlightsBtn.disabled = true;
+            saveHighlightsBtn.textContent = 'Salvando...';
+
+            try {
+                await updateDoc(essayRef, { highlightedTranscription: updatedHTML });
+                saveHighlightsBtn.textContent = 'Salvo!';
+                setTimeout(() => {
+                    saveHighlightsBtn.disabled = false;
+                    saveHighlightsBtn.textContent = 'Salvar Grifos';
+                }, 1500);
+            } catch (error) {
+                console.error("Erro ao salvar grifos:", error);
+                alert("Não foi possível salvar os grifos.");
+                saveHighlightsBtn.disabled = false;
+                saveHighlightsBtn.textContent = 'Salvar Grifos';
+            }
+        }
+        saveHighlightsBtn.addEventListener('click', saveHighlights);
+
+        async function clearHighlights() {
+            if (!currentEssayId) return;
+            const essay = allEssays.find(e => e.id === currentEssayId);
+            if (!essay) return;
+            
+            transcriptionTextEl.innerHTML = essay.transcribedText || 'Transcrição não disponível.';
+            const essayRef = doc(db, "essays", currentEssayId);
+            try {
+                await updateDoc(essayRef, { highlightedTranscription: null });
+            } catch (error) {
+                console.error("Erro ao limpar grifos no banco de dados:", error);
+            }
+        }
+        clearHighlightsBtn.addEventListener('click', clearHighlights);
 
         // Event Listeners
         addThemeBtn.addEventListener('click', () => openThemeModal());
@@ -1275,9 +1446,7 @@
             deleteConfirmationModal.style.display = 'none';
             currentThemeId = null;
         });
-        confirmDeleteBtn.addEventListener('click', confirmDeleteTheme);
 
-        // Event listeners para fechar modais clicando fora
         themeModal.addEventListener('click', (e) => {
             if (e.target === themeModal) closeThemeModal();
         });
@@ -1287,8 +1456,6 @@
                 currentThemeId = null;
             }
         });
-
-        // Submit do formulário
         themeForm.addEventListener('submit', (e) => {
             e.preventDefault();
             saveTheme();
@@ -1347,15 +1514,12 @@
                 });
             });
 
-            // Event Listeners para o Modal de Transcrição
             showTranscriptionBtn.addEventListener('click', () => {
                 transcriptionModal.style.display = 'flex';
             });
-
             closeTranscriptionModalBtn.addEventListener('click', () => {
                 transcriptionModal.style.display = 'none';
             });
-
             transcriptionModal.addEventListener('click', (event) => {
                 if (event.target === transcriptionModal) {
                     transcriptionModal.style.display = 'none';
