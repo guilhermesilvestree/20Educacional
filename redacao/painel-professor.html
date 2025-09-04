@@ -21,11 +21,13 @@
             --cor-sucesso: #28a745;
             --cor-alerta: #ffc107;
             --cor-perigo: #dc3545;
+            /* Cores de grifo */
+            --highlight-yellow: rgba(255, 227, 131, 0.8);
+            --highlight-blue: rgba(173, 216, 230, 0.8); /* Azul claro */
+            --highlight-red: rgba(255, 99, 71, 0.5); /* Vermelho tomate */
         }
         * {
             box-sizing: border-box;
-
-
         }
         body {
             font-family: 'Poppins', sans-serif;
@@ -36,7 +38,7 @@
         }
         .header {
             background-color: var(--cor-container);
-            padding: 20px 40px;
+            padding: 0 40px; /* Padding ajustado para alinhamento vertical */
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -44,10 +46,20 @@
             height: 81px;
             position: relative;
             z-index: 10;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Sombra para elevação */
+        }
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--cor-acento);
+        }
+        .header-logo i {
+            font-size: 1.5rem;
         }
         .header h1 {
             font-size: 1.5rem;
-            color: var(--cor-acento);
+            color: var(--cor-texto-principal);
             margin: 0;
         }
         .header-nav {
@@ -55,23 +67,38 @@
             align-items: center;
             gap: 20px;
         }
+        .nav-pills {
+            display: flex;
+            background-color: var(--cor-fundo);
+            padding: 6px;
+            border-radius: 50px;
+            gap: 6px; /* Adiciona um espaço entre os botões */
+        }
         .nav-button {
             background: none;
-            border: 1px solid var(--cor-acento);
-            color: var(--cor-acento);
-            padding: 8px 16px;
+            border: none; /* Borda removida */
+            color: var(--cor-texto-sutil); /* Cor sutil para o inativo */
+            padding: 10px 20px;
             border-radius: 20px;
             cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s ease;
+            font-weight: 600; /* Aumenta o peso da fonte */
+            transition: all 0.3s ease;
             font-size: 0.9rem;
             display: flex;
             align-items: center;
             gap: 8px;
         }
         .nav-button:hover, .nav-button.active {
-            background-color: var(--cor-acento);
-            color: white;
+            background-color: var(--cor-container); /* Fundo branco para o ativo */
+            color: var(--cor-acento); /* Cor de acento para o ativo */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .nav-button.active i {
+            color: var(--cor-acento);
+        }
+        .nav-button i {
+            color: var(--cor-texto-sutil); /* Ícones sutis para inativos */
+            transition: color 0.3s ease;
         }
         .profile-container {
             position: relative;
@@ -132,6 +159,9 @@
         #logout-button:hover {
             background-color: var(--cor-fundo);
         }
+        #logout-button i {
+            color: var(--cor-acento); /* Ícone azul para logout */
+        }
         
         .dashboard-container {
             display: flex;
@@ -147,50 +177,154 @@
             display: flex;
             flex-direction: column;
         }
-        .sidebar h2 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
+        .sidebar-section {
+            border-bottom: 1px solid var(--cor-borda);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
         }
-        #essay-list {
+        .sidebar-section:last-child {
+            border-bottom: none;
+        }
+        .sidebar-section-toggle {
+            background: none;
+            border: none;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 5px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            color: var(--cor-texto-principal);
+        }
+        .sidebar-section-toggle .toggle-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar-section-toggle .toggle-title i {
+            color: var(--cor-acento);
+        }
+        .sidebar-section-toggle .count-badge {
+            background-color: var(--cor-acento);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-right: 10px;
+        }
+        .sidebar-section-toggle .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+        .sidebar-section-toggle.expanded .toggle-icon {
+            transform: rotate(180deg);
+        }
+        .sidebar-list-wrapper {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out;
+        }
+        .sidebar-list-wrapper.expanded {
+            max-height: 100vh; /* Valor alto para permitir expansão total */
+            margin-top: 15px;
+        }
+        #active-essay-list, #archived-essay-list {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-        #essay-list li {
+        .essay-item {
             padding: 12px 15px;
             border-radius: 8px;
             margin-bottom: 10px;
             cursor: pointer;
             border: 1px solid var(--cor-borda);
             transition: all 0.2s;
-            border-left: 5px solid transparent;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        #essay-list li:hover {
+        .essay-item:hover {
             background-color: #f8f9fa;
             transform: translateX(5px);
         }
-        #essay-list li.active {
+        .essay-item.active {
             background-color: #eef8ff;
-            border-left-color: var(--cor-acento);
+            padding-left: 10px;
             box-shadow: 0 4px 15px rgba(0, 168, 255, 0.1);
         }
         .essay-item-main {
             display: flex;
             align-items: center;
             gap: 12px;
+            flex-grow: 1;
+            min-width: 0;
         }
         .student-avatar {
             width: 38px;
             height: 38px;
             border-radius: 50%;
             object-fit: cover;
+            flex-shrink: 0;
         }
-        .student-info .student-name { font-weight: 600; }
-        .student-info .submission-date { font-size: 0.8rem; color: var(--cor-texto-sutil); margin-top: 2px; }
+        .student-info {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            min-width: 0;
+        }
+        .student-info .student-name { 
+            font-weight: 600; 
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .student-info .submission-date { 
+            font-size: 0.8rem; 
+            color: var(--cor-texto-sutil); 
+            margin-top: 2px; 
+        }
+        .essay-item-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .essay-actions {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            opacity: 0;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            transform: translateX(10px);
+            pointer-events: none;
+        }
+        .essay-item:hover .essay-actions {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+        .action-btn {
+            background-color: var(--cor-fundo);
+            border: 1px solid var(--cor-borda);
+            color: var(--cor-texto-sutil);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .action-btn:hover {
+            background-color: var(--cor-acento);
+            color: white;
+            border-color: var(--cor-acento);
+        }
         
         .status-tag {
             padding: 4px 10px;
@@ -198,10 +332,9 @@
             font-size: 0.75rem;
             font-weight: 600;
             color: white;
-            text-transform: capitalize;
-            flex-shrink: 0;
         }
-        .status-tag.corrigida { background-color: var(--cor-sucesso); }
+        .status-tag.concluido { background-color: var(--cor-sucesso); }
+        
         .main-content {
             flex-grow: 1;
             padding: 20px;
@@ -220,6 +353,7 @@
         .placeholder i {
             font-size: 4rem;
             margin-bottom: 20px;
+            color: var(--cor-acento); /* Ícone azul */
         }
 
         /* Estilos para a tela de correção de redações */
@@ -238,6 +372,9 @@
             border-radius: 16px;
             padding: 15px;
             border: 1px solid var(--cor-borda);
+            display: flex; /* Adicionado para layout vertical */
+            flex-direction: column; /* Adicionado */
+            gap: 15px; /* Espaço entre header e imagem */
         }
         #essay-image {
             width: 100%;
@@ -283,6 +420,9 @@
             padding: 0;
             margin-bottom: 10px;
         }
+        .detail-box-header h3 i {
+            color: var(--cor-acento); /* Ícones azuis nos títulos do detail-box */
+        }
 
         .transcription-button {
             background-color: transparent;
@@ -301,17 +441,26 @@
         }
         .transcription-button i {
             margin-right: 6px;
+            color: var(--cor-acento); /* Ícone azul */
+            transition: color 0.2s ease;
+        }
+        .transcription-button:hover i {
+            color: white;
         }
         
         #delete-essay-btn {
-            display: none;
             border-color: var(--cor-perigo);
             color: var(--cor-perigo);
             margin-left: 10px;
         }
-
         #delete-essay-btn:hover {
             background-color: var(--cor-perigo);
+            color: white;
+        }
+        #delete-essay-btn i {
+            color: var(--cor-perigo); /* Ícone vermelho */
+        }
+        #delete-essay-btn:hover i {
             color: white;
         }
 
@@ -336,6 +485,7 @@
             margin-right: 12px;
             width: 22px;
             text-align: center;
+            color: var(--cor-acento); /* Ícones azuis por padrão */
         }
         .detail-box h3 .fa-robot { color: var(--cor-acento); }
         .feedback-section .fa-thumbs-up { color: var(--cor-sucesso); }
@@ -463,7 +613,7 @@
             width: 20px;
             text-align: center;
             margin-right: 5px;
-            color: var(--cor-texto-sutil);
+            color: var(--cor-acento); /* Ícones azuis para competências */
         }
         #collapsible-grades {
             display: flex;
@@ -500,6 +650,9 @@
             margin: 0;
             color: var(--cor-acento);
             font-size: 1.5rem;
+        }
+        .themes-header h2 i {
+            color: var(--cor-acento); /* Ícone azul */
         }
         .add-theme-btn {
             background-color: var(--cor-acento);
@@ -576,14 +729,14 @@
         }
         .edit-btn {
             background-color: #fff3cd;
-            color: #856404;
+            color: var(--cor-acento); /* Ícone azul */
         }
         .edit-btn:hover {
             background-color: #ffeeba;
         }
         .delete-btn {
             background-color: #f8d7da;
-            color: #721c24;
+            color: var(--cor-perigo);
         }
         .delete-btn:hover {
             background-color: #f1b0b7;
@@ -629,6 +782,7 @@
             max-height: 80vh;
             display: flex;
             flex-direction: column;
+            position: relative; /* Para o balão de grifo */
         }
         .modal-header {
             display: flex;
@@ -641,6 +795,12 @@
         .modal-header h2 {
             margin: 0;
             font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .modal-header h2 i {
+            color: var(--cor-acento); /* Ícones azuis nos títulos do modal */
         }
         .close-btn {
             background: none;
@@ -682,10 +842,54 @@
         .modal-actions {
             display: flex;
             justify-content: flex-end;
+            align-items: center;
             gap: 12px;
             margin-top: 20px;
             padding-top: 20px;
             border-top: 1px solid var(--cor-borda);
+        }
+
+        .viewer-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--cor-borda);
+            flex-shrink: 0; /* Impede que o header encolha */
+        }
+        #viewer-student-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .viewer-student-details {
+            display: flex;
+            flex-direction: column;
+        }
+        #viewer-student-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        #viewer-submission-date {
+            font-size: 0.85rem;
+            color: var(--cor-texto-sutil);
+        }
+        #essay-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            min-height: 0; /* Essencial para o flexbox ajustar a imagem corretamente */
+        }
+        .detail-box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline; /* Alterado para alinhar pela base do texto */
+            border-bottom: 1px solid var(--cor-borda);
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .btn {
             padding: 10px 20px;
@@ -695,6 +899,12 @@
             font-weight: 600;
             font-size: 0.9rem;
             transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn .fa-spin {
+            margin-right: 4px;
         }
         .btn-primary {
             background-color: var(--cor-acento);
@@ -703,12 +913,18 @@
         .btn-primary:hover {
             background-color: var(--cor-acento-hover);
         }
+        .btn-primary i {
+            color: white; /* Ícone branco */
+        }
         .btn-secondary {
             background-color: #e9ecef;
             color: var(--cor-texto-principal);
         }
         .btn-secondary:hover {
             background-color: #dee2e6;
+        }
+        .btn-secondary i {
+            color: var(--cor-acento); /* Ícone azul */
         }
         .btn-danger {
             background-color: var(--cor-perigo);
@@ -717,59 +933,160 @@
         .btn-danger:hover {
             background-color: #c82333;
         }
+        .btn-danger i {
+            color: white; /* Ícone branco */
+        }
         .text-danger {
             color: var(--cor-perigo);
             font-weight: bold;
         }
         
         #transcription-modal .modal-content {
-            max-width: 850px;
+            max-width: 950px; /* Mais largo */
+            max-height: 90vh; /* Aumenta a altura */
+            padding: 30px; /* Mais padding para um visual mais aberto */
+        }
+        .transcription-header {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--cor-borda);
+        }
+        .transcription-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
         }
         .transcription-theme-title {
             font-size: 1.1rem;
             font-weight: 600;
             color: var(--cor-texto-principal);
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid var(--cor-borda);
             line-height: 1.5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+        .transcription-theme-title i {
+            color: var(--cor-acento); /* Ícone azul */
         }
         .transcription-text-wrapper {
             font-size: 1rem;
             line-height: 1.8;
             white-space: pre-wrap;
-            max-height: 55vh;
+            max-height: 60vh; /* Ajustado para mais espaço */
             overflow-y: auto;
             padding: 15px;
             background-color: #f8f9fa;
             border-radius: 8px;
             border: 1px solid var(--cor-borda);
             margin-bottom: 15px;
+            position: relative; /* Para o balão de grifo */
         }
         .transcription-text-wrapper mark {
-            background-color: rgba(255, 227, 131, 0.8);
             border-radius: 3px;
             padding: 0 3px;
         }
+        .transcription-text-wrapper mark.highlight-yellow {
+            background-color: var(--highlight-yellow);
+        }
+        .transcription-text-wrapper mark.highlight-blue {
+            background-color: var(--highlight-blue);
+        }
+        .transcription-text-wrapper mark.highlight-red {
+            background-color: var(--highlight-red);
+        }
+
+        .highlight-instructions {
+            margin-right: auto;
+            color: var(--cor-texto-sutil);
+            font-size: 0.9rem;
+        }
         
-        .evaluation-pane::-webkit-scrollbar, .themes-grid::-webkit-scrollbar { width: 8px; }
-        .evaluation-pane::-webkit-scrollbar-track, .themes-grid::-webkit-scrollbar-track { background: var(--cor-fundo); border-radius: 4px; }
-        .evaluation-pane::-webkit-scrollbar-thumb, .themes-grid::-webkit-scrollbar-thumb { background-color: #cdd2da; border-radius: 4px; border: 2px solid var(--cor-fundo); }
-        .evaluation-pane::-webkit-scrollbar-thumb:hover, .themes-grid::-webkit-scrollbar-thumb:hover { background-color: #b0b8c5; }
+        /* ======================================= */
+        /* == CORREÇÃO DE FONTE PARA BOTÕES ====== */
+        /* ======================================= */
+        .nav-button, .btn, .theme-action-btn, .transcription-button {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .evaluation-pane::-webkit-scrollbar, .themes-grid::-webkit-scrollbar, .transcription-text-wrapper::-webkit-scrollbar, .sidebar::-webkit-scrollbar, #archived-list-wrapper::-webkit-scrollbar { width: 8px; }
+        .evaluation-pane::-webkit-scrollbar-track, .themes-grid::-webkit-scrollbar-track, .transcription-text-wrapper::-webkit-scrollbar-track, .sidebar::-webkit-scrollbar-track, #archived-list-wrapper::-webkit-scrollbar-track { background: var(--cor-fundo); border-radius: 4px; }
+        .evaluation-pane::-webkit-scrollbar-thumb, .themes-grid::-webkit-scrollbar-thumb, .transcription-text-wrapper::-webkit-scrollbar-thumb, .sidebar::-webkit-scrollbar-thumb, #archived-list-wrapper::-webkit-scrollbar-thumb { background-color: #cdd2da; border-radius: 4px; border: 2px solid var(--cor-fundo); }
+        .evaluation-pane::-webkit-scrollbar-thumb:hover, .themes-grid::-webkit-scrollbar-thumb:hover, .transcription-text-wrapper::-webkit-scrollbar-thumb:hover, .sidebar::-webkit-scrollbar-thumb:hover, #archived-list-wrapper::-webkit-scrollbar-thumb:hover { background-color: #b0b8c5; }
+
+        /* Estilos para o balão de grifo */
+        #highlight-tooltip {
+            position: absolute;
+            background-color: var(--cor-container);
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            padding: 8px 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 6px;
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+            transform: translateY(-10px);
+            pointer-events: none; /* Inicia com pointer-events none para não bloquear seleção */
+        }
+        #highlight-tooltip.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            pointer-events: auto; /* Habilita pointer-events quando visível */
+        }
+        .color-option {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .color-option:hover {
+            border-color: var(--cor-acento);
+        }
+        .color-option.yellow { background-color: var(--highlight-yellow); }
+        .color-option.blue { background-color: var(--highlight-blue); }
+        .color-option.red { background-color: var(--highlight-red); }
+        .color-option.remove { 
+            background-color: #f8d7da; /* Fundo leve para o botão de remover */
+            color: var(--cor-perigo); 
+            font-size: 1rem;
+            width: 32px;
+            height: 32px;
+        }
+        .color-option.remove:hover {
+            border-color: var(--cor-perigo);
+        }
     </style>
 </head>
 <body>
     <header class="header">
-        <h1>Painel de Correção</h1>
+        <div class="header-logo">
+            <i class="fa-solid fa-feather-pointed"></i>
+            <h1>Painel de Correção</h1>
+        </div>
         <div class="header-nav">
-            <button class="nav-button active" id="correction-nav-btn">
-                <i class="fa-solid fa-clipboard-check"></i>
-                Correções
-            </button>
-            <button class="nav-button" id="themes-nav-btn">
-                <i class="fa-solid fa-book-open"></i>
-                Gerenciar Temas
-            </button>
+            <div class="nav-pills">
+                <button class="nav-button active" id="correction-nav-btn">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                    Correções
+                </button>
+                <button class="nav-button" id="themes-nav-btn">
+                    <i class="fa-solid fa-book-open"></i>
+                    Gerenciar Temas
+                </button>
+            </div>
         </div>
         <div class="profile-container">
             <div class="user-profile-badge" id="profile-trigger">
@@ -787,9 +1104,36 @@
     <div class="dashboard-container">
         <div id="correction-view" style="display: flex; width: 100%;">
             <aside class="sidebar">
-                <h2>Redações Recebidas</h2>
-                <ul id="essay-list">
-                </ul>
+                <div class="sidebar-section">
+                    <button class="sidebar-section-toggle expanded" data-target="active-list-wrapper">
+                        <div class="toggle-title">
+                            <i class="fa-solid fa-inbox"></i>
+                            <span>Redações Ativas</span>
+                        </div>
+                        <div>
+                            <span class="count-badge" id="active-count">0</span>
+                            <i class="fa-solid fa-chevron-down toggle-icon"></i>
+                        </div>
+                    </button>
+                    <div class="sidebar-list-wrapper expanded" id="active-list-wrapper">
+                        <ul id="active-essay-list"></ul>
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <button class="sidebar-section-toggle" data-target="archived-list-wrapper">
+                        <div class="toggle-title">
+                            <i class="fa-solid fa-box-archive"></i>
+                            <span>Redações Arquivadas</span>
+                        </div>
+                        <div>
+                            <span class="count-badge" id="archived-count">0</span>
+                            <i class="fa-solid fa-chevron-down toggle-icon"></i>
+                        </div>
+                    </button>
+                    <div class="sidebar-list-wrapper" id="archived-list-wrapper">
+                        <ul id="archived-essay-list"></ul>
+                    </div>
+                </div>
             </aside>
             <main class="main-content">
                 <div id="placeholder" class="placeholder">
@@ -798,6 +1142,13 @@
                 </div>
                 <div id="essay-details-wrapper">
                     <div class="essay-viewer-pane">
+                        <div class="viewer-header">
+                            <img id="viewer-student-avatar" src="" alt="Avatar do Aluno">
+                            <div class="viewer-student-details">
+                                <span id="viewer-student-name">Carregando...</span>
+                                <span id="viewer-submission-date">Enviado em: --/--/----</span>
+                            </div>
+                        </div>
                         <img id="essay-image" src="" alt="Imagem da Redação">
                     </div>
                     <div class="evaluation-pane">
@@ -915,20 +1266,37 @@
 
     <div id="transcription-modal" class="modal-backdrop">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>Análise e Transcrição do Texto</h2>
-                <button id="close-transcription-modal-btn" class="close-btn">&times;</button>
+            <div class="transcription-header">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2><i class="fa-solid fa-file-lines"></i> Análise e Transcrição do Texto</h2>
+                    <button id="close-transcription-modal-btn" class="close-btn">&times;</button>
+                </div>
+                <h3 class="transcription-theme-title" id="transcription-theme-title">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Carregando tema...</span>
+                </h3>
             </div>
             <div class="modal-body">
-                <h3 class="transcription-theme-title" id="transcription-theme-title">Carregando tema...</h3>
-                <div class="transcription-text-wrapper">
+                <div class="transcription-text-wrapper" id="transcription-text-wrapper">
                     <p id="transcription-text"></p>
+                    <div id="highlight-tooltip">
+                        <div class="color-option yellow" data-color="yellow"></div>
+                        <div class="color-option blue" data-color="blue"></div>
+                        <div class="color-option red" data-color="red"></div>
+                        <div class="color-option remove" data-color="remove"><i class="fa-solid fa-xmark"></i></div>
+                    </div>
                 </div>
             </div>
             <div class="modal-actions">
-                 <small style="color: var(--cor-texto-sutil); margin-right: auto; text-align: left;">Selecione o texto para grifar.</small>
-                 <button type="button" class="btn btn-secondary" id="clear-highlights-btn">Remover Grifos</button>
-                 <button type="button" class="btn btn-primary" id="save-highlights-btn">Salvar Grifos</button>
+                 <span class="highlight-instructions">Selecione o texto para grifar.</span>
+                 <button type="button" class="btn btn-secondary" id="clear-all-highlights-btn">
+                    <i class="fa-solid fa-eraser"></i>
+                    Remover Todos Grifos
+                </button>
+                 <button type="button" class="btn btn-primary" id="save-highlights-btn">
+                    <i class="fa-solid fa-save"></i>
+                    Salvar Grifos
+                </button>
             </div>
         </div>
     </div>
@@ -936,7 +1304,7 @@
     <div id="theme-modal" class="modal-backdrop">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="theme-modal-title">Novo Tema</h2>
+                <h2 id="theme-modal-title"><i class="fa-solid fa-book"></i> Novo Tema</h2>
                 <button id="close-theme-modal-btn" class="close-btn">&times;</button>
             </div>
             <div class="modal-body">
@@ -961,12 +1329,12 @@
     <div id="delete-confirmation-modal" class="modal-backdrop">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Confirmar Exclusão</h2>
+                <h2><i class="fa-solid fa-triangle-exclamation"></i> Confirmar Exclusão</h2>
                 <button id="close-delete-modal-btn" class="close-btn">&times;</button>
             </div>
             <div class="modal-body">
                 <p>Tem certeza que deseja excluir este item?</p>
-                <p><strong id="delete-theme-title"></strong></p>
+                <p><strong id="delete-item-title"></strong></p>
                 <p style="color: var(--cor-perigo); font-size: 0.9rem; margin-top: 15px;">
                     <i class="fa-solid fa-exclamation-triangle"></i>
                     Esta ação não pode ser desfeita.
@@ -1002,7 +1370,8 @@
         const themesNavBtn = document.getElementById('themes-nav-btn');
         const correctionView = document.getElementById('correction-view');
         const themesView = document.getElementById('themes-view');
-        const essayList = document.getElementById('essay-list');
+        const activeEssayList = document.getElementById('active-essay-list');
+        const archivedEssayList = document.getElementById('archived-essay-list');
         const essayDetailsWrapper = document.getElementById('essay-details-wrapper');
         const placeholder = document.getElementById('placeholder');
         const profileTrigger = document.getElementById('profile-trigger');
@@ -1014,9 +1383,11 @@
         const transcriptionModal = document.getElementById('transcription-modal');
         const closeTranscriptionModalBtn = document.getElementById('close-transcription-modal-btn');
         const transcriptionTextEl = document.getElementById('transcription-text');
-        const transcriptionThemeTitle = document.getElementById('transcription-theme-title');
+        const transcriptionThemeTitle = document.getElementById('transcription-theme-title').querySelector('span');
+        const transcriptionWrapper = document.getElementById('transcription-text-wrapper');
         const saveHighlightsBtn = document.getElementById('save-highlights-btn');
-        const clearHighlightsBtn = document.getElementById('clear-highlights-btn');
+        const clearAllHighlightsBtn = document.getElementById('clear-all-highlights-btn');
+        const highlightTooltip = document.getElementById('highlight-tooltip');
 
         // Botão de excluir avaliação
         const deleteEssayBtn = document.getElementById('delete-essay-btn');
@@ -1035,18 +1406,21 @@
 
         // Modal de confirmação de exclusão
         const deleteConfirmationModal = document.getElementById('delete-confirmation-modal');
-        const deleteThemeTitle = document.getElementById('delete-theme-title');
+        const deleteItemTitle = document.getElementById('delete-item-title');
         const closeDeleteModalBtn = document.getElementById('close-delete-modal-btn');
         const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
         const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
 
         let allEssays = [];
+        let activeEssays = [];
+        let archivedEssays = [];
         let allThemes = [];
         let currentEssayId = null;
         let currentThemeId = null;
         let currentView = 'correction';
         let essayUnsubscribe;
         let themeUnsubscribe;
+        let activeSelectionRange = null;
 
         // Navegação entre telas
         function switchView(viewName) {
@@ -1073,7 +1447,11 @@
 
             essayUnsubscribe = onSnapshot(q, (snapshot) => {
                 allEssays = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                renderEssayList();
+                
+                activeEssays = allEssays.filter(essay => essay.status !== 'archived');
+                archivedEssays = allEssays.filter(essay => essay.status === 'archived');
+
+                renderEssayLists();
                 
                 if (currentEssayId) {
                     const updatedEssay = allEssays.find(e => e.id === currentEssayId);
@@ -1086,38 +1464,62 @@
             }, (error) => console.error("Erro ao buscar redações: ", error));
         }
 
-        function renderEssayList() {
-            essayList.innerHTML = '';
-
-            if (allEssays.length === 0) {
-                essayList.innerHTML = '<p style="text-align: center; color: var(--cor-texto-sutil); padding: 20px 0;">Nenhuma redação foi enviada ainda.</p>';
-                return;
-            }
-
-            allEssays.forEach(essay => {
-                const li = document.createElement('li');
-                li.dataset.id = essay.id;
-                if (essay.id === currentEssayId) li.classList.add('active');
-                
+        function renderEssayLists() {
+            const createEssayItemHTML = (essay, isArchived = false) => {
                 const date = essay.submissionDate?.toDate().toLocaleDateString('pt-BR') || 'Data indisponível';
-                const displayStatus = 'Corrigido';
-                const statusClass = 'corrigida';
-                
                 const studentAvatar = essay.studentAvatar || 'assets/default-avatar.png';
+                const actionIcon = isArchived ? 'fa-arrow-up-from-bracket' : 'fa-box-archive';
+                const actionTitle = isArchived ? 'Desarquivar' : 'Arquivar';
+                const actionData = isArchived ? 'unarchive' : 'archive';
 
-                li.innerHTML = `
-                    <div class="essay-item-main">
-                        <img src="${studentAvatar}" alt="Avatar do Aluno" class="student-avatar">
-                        <div class="student-info">
-                            <div class="student-name">${essay.studentName}</div>
-                            <div class="submission-date">Enviado em: ${date}</div>
+                return `
+                    <li class="essay-item ${essay.id === currentEssayId ? 'active' : ''}" data-id="${essay.id}">
+                        <div class="essay-item-main">
+                            <img src="${studentAvatar}" alt="Avatar do Aluno" class="student-avatar">
+                            <div class="student-info">
+                                <div class="student-name">${essay.studentName}</div>
+                                <div class="submission-date">Enviado em: ${date}</div>
+                            </div>
                         </div>
-                    </div>
-                    <span class="status-tag ${statusClass}">${displayStatus}</span>
+                        <div class="essay-item-right">
+                            <span class="status-tag concluido">Concluído</span>
+                            <div class="essay-actions">
+                                <button class="action-btn" data-action="${actionData}" data-id="${essay.id}" title="${actionTitle}">
+                                    <i class="fa-solid ${actionIcon}"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </li>
                 `;
-                li.addEventListener('click', () => displayEssayDetails(essay.id));
-                essayList.appendChild(li);
-            });
+            };
+
+            activeEssayList.innerHTML = activeEssays.map(essay => createEssayItemHTML(essay, false)).join('');
+            archivedEssayList.innerHTML = archivedEssays.map(essay => createEssayItemHTML(essay, true)).join('');
+            
+            document.getElementById('active-count').textContent = activeEssays.length;
+            document.getElementById('archived-count').textContent = archivedEssays.length;
+
+            if(activeEssays.length === 0) {
+                activeEssayList.innerHTML = '<p style="text-align: center; color: var(--cor-texto-sutil); padding: 20px 0;">Nenhuma redação ativa.</p>';
+            }
+             if(archivedEssays.length === 0) {
+                archivedEssayList.innerHTML = '<p style="text-align: center; color: var(--cor-texto-sutil); padding: 20px 0;">Nenhuma redação arquivada.</p>';
+            }
+        }
+
+        async function toggleArchiveStatus(essayId, newStatus) {
+            const essayRef = doc(db, "essays", essayId);
+            try {
+                await updateDoc(essayRef, {
+                    status: newStatus
+                });
+                if(currentEssayId === essayId && newStatus === 'archived') {
+                    showPlaceholder();
+                }
+            } catch (error) {
+                console.error("Erro ao atualizar status da redação:", error);
+                alert("Não foi possível arquivar/desarquivar a redação.");
+            }
         }
         
         function showPlaceholder() {
@@ -1125,7 +1527,7 @@
             placeholder.style.display = 'flex';
             essayDetailsWrapper.style.display = 'none';
             deleteEssayBtn.style.display = 'none';
-            document.querySelectorAll('#essay-list li').forEach(item => item.classList.remove('active'));
+            document.querySelectorAll('.essay-item').forEach(item => item.classList.remove('active'));
         }
 
         function displayEssayDetails(id, scrollIntoView = true) {
@@ -1133,12 +1535,12 @@
             const essay = allEssays.find(e => e.id === id);
             if (!essay) return;
 
-            document.querySelectorAll('#essay-list li').forEach(item => {
+            document.querySelectorAll('.essay-item').forEach(item => {
                 item.classList.toggle('active', item.dataset.id === id);
             });
             
             if (scrollIntoView) {
-                const activeItem = document.querySelector(`#essay-list li[data-id="${id}"]`);
+                const activeItem = document.querySelector(`.essay-item[data-id="${id}"]`);
                 activeItem?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
 
@@ -1146,16 +1548,23 @@
             essayDetailsWrapper.style.display = 'flex';
             deleteEssayBtn.style.display = 'inline-block';
 
+            // Preenche o novo header da redação
+            const submissionDate = essay.submissionDate?.toDate().toLocaleDateString('pt-BR') || 'Data indisponível';
+            document.getElementById('viewer-student-avatar').src = essay.studentAvatar || 'assets/default-avatar.png';
+            document.getElementById('viewer-student-name').textContent = essay.studentName;
+            document.getElementById('viewer-submission-date').textContent = `Enviado em: ${submissionDate}`;
             document.getElementById('essay-image').src = essay.essayImageURL;
             
+            // Preenche o modal de transcrição
             const transcriptionContent = essay.highlightedTranscription || essay.transcribedText || 'Transcrição não disponível.';
             transcriptionTextEl.innerHTML = transcriptionContent;
-            transcriptionThemeTitle.textContent = `Tema: ${essay.themeTitle || 'Não especificado'}`;
+            transcriptionThemeTitle.textContent = `${essay.themeTitle || 'Tema não especificado'}`;
             
             if (essay.transcribedText === '____') {
                 transcriptionTextEl.innerHTML = `<span class="text-danger">A transcrição automática não foi possível para esta imagem.</span>`;
             }
 
+            // Preenche as notas e feedbacks
             document.getElementById('ia-grade-c1').textContent = essay.grades?.competencia1 ?? '--';
             document.getElementById('ia-grade-c2').textContent = essay.grades?.competencia2 ?? '--';
             document.getElementById('ia-grade-c3').textContent = essay.grades?.competencia3 ?? '--';
@@ -1221,7 +1630,7 @@
 
         // Funções de modal de temas
         function openThemeModal(isEdit = false, themeData = null) {
-            themeModalTitle.textContent = isEdit ? 'Editar Tema' : 'Novo Tema';
+            themeModalTitle.innerHTML = isEdit ? '<i class="fa-solid fa-book"></i> Editar Tema' : '<i class="fa-solid fa-book"></i> Novo Tema';
             saveThemeBtn.textContent = isEdit ? 'Salvar Alterações' : 'Salvar Tema';
             
             if (isEdit && themeData) {
@@ -1255,18 +1664,16 @@
         window.deleteTheme = function(themeId) {
             const theme = allThemes.find(t => t.id === themeId);
             if (theme) {
-                const deleteModal = document.getElementById('delete-confirmation-modal');
-                deleteModal.querySelector('h2').textContent = 'Confirmar Exclusão';
-                deleteModal.querySelector('.modal-body p:first-of-type').textContent = 'Tem certeza que deseja excluir este tema?';
-                document.getElementById('delete-theme-title').textContent = theme.title;
+                deleteConfirmationModal.querySelector('h2').innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Confirmar Exclusão';
+                deleteConfirmationModal.querySelector('.modal-body p:first-of-type').textContent = 'Tem certeza que deseja excluir este tema?';
+                deleteItemTitle.textContent = theme.title;
                 currentThemeId = themeId;
                 
-                const confirmBtn = document.getElementById('confirm-delete-btn');
-                const newConfirmBtn = confirmBtn.cloneNode(true);
-                confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-                newConfirmBtn.addEventListener('click', confirmDeleteTheme);
+                const confirmBtnClone = confirmDeleteBtn.cloneNode(true);
+                confirmDeleteBtn.parentNode.replaceChild(confirmBtnClone, confirmDeleteBtn);
+                confirmBtnClone.addEventListener('click', confirmDeleteTheme);
                 
-                deleteModal.style.display = 'flex';
+                deleteConfirmationModal.style.display = 'flex';
             }
         };
 
@@ -1281,7 +1688,7 @@
             
             try {
                 saveThemeBtn.disabled = true;
-                saveThemeBtn.textContent = 'Salvando...';
+                saveThemeBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
                 
                 const themeData = {
                     title: title,
@@ -1304,7 +1711,7 @@
                 alert('Erro ao salvar tema. Tente novamente.');
             } finally {
                 saveThemeBtn.disabled = false;
-                saveThemeBtn.textContent = currentThemeId ? 'Salvar Alterações' : 'Salvar Tema';
+                saveThemeBtn.innerHTML = currentThemeId ? '<i class="fa-solid fa-save"></i> Salvar Alterações' : '<i class="fa-solid fa-save"></i> Salvar Tema';
             }
         }
 
@@ -1313,7 +1720,7 @@
             
             try {
                 confirmDeleteBtn.disabled = true;
-                confirmDeleteBtn.textContent = 'Excluindo...';
+                confirmDeleteBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Excluindo...';
                 
                 await deleteDoc(doc(db, "themes", currentThemeId));
                 
@@ -1325,7 +1732,7 @@
                 alert('Erro ao excluir tema. Tente novamente.');
             } finally {
                 confirmDeleteBtn.disabled = false;
-                confirmDeleteBtn.textContent = 'Excluir';
+                confirmDeleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i> Excluir';
             }
         }
         
@@ -1335,17 +1742,15 @@
             const essay = allEssays.find(e => e.id === currentEssayId);
             if (!essay) return;
             
-            const deleteModal = document.getElementById('delete-confirmation-modal');
-            deleteModal.querySelector('h2').textContent = 'Excluir Avaliação';
-            deleteModal.querySelector('.modal-body p:first-of-type').textContent = 'Tem certeza que deseja excluir esta avaliação? A imagem e todos os dados associados serão removidos permanentemente.';
-            document.getElementById('delete-theme-title').textContent = `Aluno(a): ${essay.studentName}`;
+            deleteConfirmationModal.querySelector('h2').innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Excluir Avaliação';
+            deleteConfirmationModal.querySelector('.modal-body p:first-of-type').textContent = 'Tem certeza que deseja excluir esta avaliação? A imagem e todos os dados associados serão removidos permanentemente.';
+            deleteItemTitle.textContent = `Aluno(a): ${essay.studentName}`;
             
-            const confirmBtn = document.getElementById('confirm-delete-btn');
-            const newConfirmBtn = confirmBtn.cloneNode(true);
-            confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-            newConfirmBtn.addEventListener('click', confirmDeleteEssay);
+            const confirmBtnClone = confirmDeleteBtn.cloneNode(true);
+            confirmDeleteBtn.parentNode.replaceChild(confirmBtnClone, confirmDeleteBtn);
+            confirmBtnClone.addEventListener('click', confirmDeleteEssay);
             
-            deleteModal.style.display = 'flex';
+            deleteConfirmationModal.style.display = 'flex';
         });
 
         async function confirmDeleteEssay() {
@@ -1353,9 +1758,8 @@
             const essayToDelete = allEssays.find(e => e.id === currentEssayId);
             if (!essayToDelete) return alert('Erro: Redação não encontrada para exclusão.');
 
-            const confirmBtn = document.getElementById('confirm-delete-btn');
-            confirmBtn.disabled = true;
-            confirmBtn.textContent = 'Excluindo...';
+            confirmDeleteBtn.disabled = true;
+            confirmDeleteBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Excluindo...';
 
             try {
                 if (essayToDelete.essayImagePublicId) {
@@ -1364,34 +1768,108 @@
                     console.warn('Não foi encontrado public_id para a imagem. Pulando a exclusão do Cloudinary.');
                 }
                 await deleteDoc(doc(db, "essays", currentEssayId));
-                document.getElementById('delete-confirmation-modal').style.display = 'none';
+                deleteConfirmationModal.style.display = 'none';
                 showPlaceholder();
             } catch (error) {
                 console.error("Erro ao excluir avaliação:", error);
                 alert('Ocorreu um erro ao excluir a avaliação.');
             } finally {
-                confirmBtn.disabled = false;
-                confirmBtn.textContent = 'Excluir';
+                confirmDeleteBtn.disabled = false;
+                confirmDeleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i> Excluir';
             }
         }
 
-        // --- LÓGICA PARA GRIFAR TEXTO ---
-        function handleTextHighlight() {
-            const selection = window.getSelection();
-            if (!selection.rangeCount || selection.isCollapsed) return;
+        // --- LÓGICA PARA GRIFAR TEXTO (MELHORADA COM BALÃO) ---
+
+        function getSelectionCoords(selection) {
             const range = selection.getRangeAt(0);
-            if (range.toString().trim() === '') return;
-            
-            try {
-                const mark = document.createElement('mark');
-                range.surroundContents(mark);
-            } catch (e) {
-                console.warn("Não foi possível usar surroundContents.", e);
-            }
-            selection.removeAllRanges();
-        }
-        transcriptionTextEl.addEventListener('mouseup', handleTextHighlight);
+            const rect = range.getBoundingClientRect();
+            const wrapperRect = transcriptionWrapper.getBoundingClientRect();
 
+            return {
+                left: rect.left - wrapperRect.left + transcriptionWrapper.scrollLeft,
+                top: rect.top - wrapperRect.top + transcriptionWrapper.scrollTop,
+                width: rect.width,
+                height: rect.height
+            };
+        }
+
+        function showHighlightTooltip(coords) {
+            highlightTooltip.style.left = `${coords.left + coords.width / 2 - highlightTooltip.offsetWidth / 2}px`;
+            highlightTooltip.style.top = `${coords.top - highlightTooltip.offsetHeight - 10}px`; // 10px acima da seleção
+            highlightTooltip.classList.add('show');
+        }
+
+        function hideHighlightTooltip() {
+            highlightTooltip.classList.remove('show');
+            activeSelectionRange = null;
+            window.getSelection().removeAllRanges();
+        }
+
+        transcriptionTextEl.addEventListener('mouseup', () => {
+            const selection = window.getSelection();
+            
+            if (selection.rangeCount > 0 && !selection.isCollapsed) {
+                const range = selection.getRangeAt(0);
+                
+                if (transcriptionTextEl.contains(range.commonAncestorContainer)) {
+                    activeSelectionRange = range;
+                    showHighlightTooltip(getSelectionCoords(selection));
+                } else {
+                    hideHighlightTooltip();
+                }
+            } else {
+                // Atraso para permitir o clique no balão antes de escondê-lo
+                setTimeout(() => {
+                    if (!highlightTooltip.matches(':hover')) {
+                        hideHighlightTooltip();
+                    }
+                }, 100);
+            }
+        });
+
+        transcriptionModal.addEventListener('mousedown', (event) => {
+            if (!highlightTooltip.contains(event.target) && !transcriptionTextEl.contains(event.target)) {
+                hideHighlightTooltip();
+            }
+        });
+
+        highlightTooltip.addEventListener('mousedown', (event) => {
+            event.stopPropagation();
+        });
+
+        function applyHighlight(color) {
+            if (!activeSelectionRange) return;
+
+            document.execCommand('removeFormat', false, null);
+
+            if (color !== 'remove') {
+                // A melhor abordagem é usar surroundContents para aplicar uma classe
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(activeSelectionRange);
+
+                if (selection.rangeCount > 0) {
+                    const range = selection.getRangeAt(0);
+                    const mark = document.createElement('mark');
+                    mark.className = `highlight-${color}`;
+                    try {
+                        range.surroundContents(mark);
+                    } catch (e) { console.error("Erro ao aplicar grifo:", e) }
+                }
+            }
+            
+            hideHighlightTooltip();
+            transcriptionTextEl.normalize();
+        }
+
+        highlightTooltip.querySelectorAll('.color-option').forEach(option => {
+            option.addEventListener('click', (event) => {
+                const color = event.currentTarget.dataset.color;
+                applyHighlight(color);
+            });
+        });
+        
         async function saveHighlights() {
             if (!currentEssayId) return;
             
@@ -1399,25 +1877,26 @@
             const essayRef = doc(db, "essays", currentEssayId);
             
             saveHighlightsBtn.disabled = true;
-            saveHighlightsBtn.textContent = 'Salvando...';
+            saveHighlightsBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
 
             try {
                 await updateDoc(essayRef, { highlightedTranscription: updatedHTML });
-                saveHighlightsBtn.textContent = 'Salvo!';
+                saveHighlightsBtn.innerHTML = '<i class="fa-solid fa-check"></i> Salvo!';
+                
                 setTimeout(() => {
                     saveHighlightsBtn.disabled = false;
-                    saveHighlightsBtn.textContent = 'Salvar Grifos';
+                    saveHighlightsBtn.innerHTML = '<i class="fa-solid fa-save"></i> Salvar Grifos';
                 }, 1500);
             } catch (error) {
                 console.error("Erro ao salvar grifos:", error);
                 alert("Não foi possível salvar os grifos.");
                 saveHighlightsBtn.disabled = false;
-                saveHighlightsBtn.textContent = 'Salvar Grifos';
+                saveHighlightsBtn.innerHTML = '<i class="fa-solid fa-save"></i> Salvar Grifos';
             }
         }
         saveHighlightsBtn.addEventListener('click', saveHighlights);
 
-        async function clearHighlights() {
+        async function clearAllHighlights() {
             if (!currentEssayId) return;
             const essay = allEssays.find(e => e.id === currentEssayId);
             if (!essay) return;
@@ -1430,7 +1909,7 @@
                 console.error("Erro ao limpar grifos no banco de dados:", error);
             }
         }
-        clearHighlightsBtn.addEventListener('click', clearHighlights);
+        clearAllHighlightsBtn.addEventListener('click', clearAllHighlights);
 
         // Event Listeners
         addThemeBtn.addEventListener('click', () => openThemeModal());
@@ -1461,6 +1940,25 @@
             saveTheme();
         });
 
+        // Event Delegation para Sidebar
+        document.querySelector('.sidebar').addEventListener('click', (event) => {
+            const essayItem = event.target.closest('.essay-item');
+            const actionButton = event.target.closest('.action-btn');
+
+            if (actionButton) {
+                event.stopPropagation(); // Impede que o clique no botão selecione a redação
+                const id = actionButton.dataset.id;
+                const action = actionButton.dataset.action;
+                if (action === 'archive') {
+                    toggleArchiveStatus(id, 'archived');
+                } else if (action === 'unarchive') {
+                    toggleArchiveStatus(id, 'active');
+                }
+            } else if (essayItem) {
+                displayEssayDetails(essayItem.dataset.id);
+            }
+        });
+
         function initializeApp() {
             const appData = getAppData();
             
@@ -1482,6 +1980,33 @@
             }
             
             listenForEssays();
+
+            // Lógica do Acordeão da Sidebar
+            const toggles = document.querySelectorAll('.sidebar-section-toggle');
+            toggles.forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const targetId = toggle.dataset.target;
+                    const targetWrapper = document.getElementById(targetId);
+                    const isExpanded = toggle.classList.contains('expanded');
+
+                    // Fecha todos os outros
+                    toggles.forEach(t => {
+                        if (t !== toggle) {
+                            t.classList.remove('expanded');
+                            document.getElementById(t.dataset.target).classList.remove('expanded');
+                        }
+                    });
+
+                    // Abre ou fecha o clicado
+                    if (!isExpanded) {
+                        toggle.classList.add('expanded');
+                        targetWrapper.classList.add('expanded');
+                    } else {
+                         toggle.classList.remove('expanded');
+                         targetWrapper.classList.remove('expanded');
+                    }
+                });
+            });
 
             const gradesHeader = document.getElementById('grades-header');
             const collapsibleGrades = document.getElementById('collapsible-grades');
@@ -1516,13 +2041,16 @@
 
             showTranscriptionBtn.addEventListener('click', () => {
                 transcriptionModal.style.display = 'flex';
+                hideHighlightTooltip(); 
             });
             closeTranscriptionModalBtn.addEventListener('click', () => {
                 transcriptionModal.style.display = 'none';
+                hideHighlightTooltip();
             });
             transcriptionModal.addEventListener('click', (event) => {
                 if (event.target === transcriptionModal) {
                     transcriptionModal.style.display = 'none';
+                    hideHighlightTooltip();
                 }
             });
         }
