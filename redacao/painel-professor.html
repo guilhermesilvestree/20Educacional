@@ -23,8 +23,8 @@
             --cor-perigo: #dc3545;
             /* Cores de grifo */
             --highlight-yellow: rgba(255, 227, 131, 0.8);
-            --highlight-blue: rgba(173, 216, 230, 0.8); /* Azul claro */
-            --highlight-red: rgba(255, 99, 71, 0.5); /* Vermelho tomate */
+            --highlight-blue: rgba(173, 216, 230, 0.8);
+            --highlight-red: rgba(255, 99, 71, 0.5);
         }
         * {
             box-sizing: border-box;
@@ -38,7 +38,7 @@
         }
         .header {
             background-color: var(--cor-container);
-            padding: 0 40px; /* Padding ajustado para alinhamento vertical */
+            padding: 0 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -46,7 +46,7 @@
             height: 81px;
             position: relative;
             z-index: 10;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Sombra para elevação */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
         .header-logo {
             display: flex;
@@ -72,16 +72,16 @@
             background-color: var(--cor-fundo);
             padding: 6px;
             border-radius: 50px;
-            gap: 6px; /* Adiciona um espaço entre os botões */
+            gap: 6px;
         }
         .nav-button {
             background: none;
-            border: none; /* Borda removida */
-            color: var(--cor-texto-sutil); /* Cor sutil para o inativo */
+            border: none;
+            color: var(--cor-texto-sutil);
             padding: 10px 20px;
             border-radius: 20px;
             cursor: pointer;
-            font-weight: 600; /* Aumenta o peso da fonte */
+            font-weight: 600;
             transition: all 0.3s ease;
             font-size: 0.9rem;
             display: flex;
@@ -89,15 +89,15 @@
             gap: 8px;
         }
         .nav-button:hover, .nav-button.active {
-            background-color: var(--cor-container); /* Fundo branco para o ativo */
-            color: var(--cor-acento); /* Cor de acento para o ativo */
+            background-color: var(--cor-container);
+            color: var(--cor-acento);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         .nav-button.active i {
             color: var(--cor-acento);
         }
         .nav-button i {
-            color: var(--cor-texto-sutil); /* Ícones sutis para inativos */
+            color: var(--cor-texto-sutil);
             transition: color 0.3s ease;
         }
         .profile-container {
@@ -160,9 +160,8 @@
             background-color: var(--cor-fundo);
         }
         #logout-button i {
-            color: var(--cor-acento); /* Ícone azul para logout */
+            color: var(--cor-acento);
         }
-        
         .dashboard-container {
             display: flex;
             height: calc(100vh - 81px);
@@ -227,7 +226,7 @@
             transition: max-height 0.4s ease-in-out;
         }
         .sidebar-list-wrapper.expanded {
-            max-height: 100vh; /* Valor alto para permitir expansão total */
+            max-height: 100vh;
             margin-top: 15px;
         }
         #active-essay-list, #archived-essay-list {
@@ -252,6 +251,7 @@
         }
         .essay-item.active {
             background-color: #eef8ff;
+            border-left: 5px solid var(--cor-acento);
             padding-left: 10px;
             box-shadow: 0 4px 15px rgba(0, 168, 255, 0.1);
         }
@@ -292,19 +292,22 @@
             align-items: center;
             gap: 10px;
             flex-shrink: 0;
+            transition: gap 0.3s ease;
         }
         .essay-actions {
             display: flex;
             align-items: center;
             gap: 5px;
             opacity: 0;
-            transition: opacity 0.2s ease, transform 0.2s ease;
-            transform: translateX(10px);
+            max-width: 0;
+            overflow: hidden;
+            white-space: nowrap;
+            transition: opacity 0.2s ease, max-width 0.3s ease 0.1s;
             pointer-events: none;
         }
         .essay-item:hover .essay-actions {
             opacity: 1;
-            transform: translateX(0);
+            max-width: 50px;
             pointer-events: auto;
         }
         .action-btn {
@@ -325,7 +328,6 @@
             color: white;
             border-color: var(--cor-acento);
         }
-        
         .status-tag {
             padding: 4px 10px;
             border-radius: 15px;
@@ -334,7 +336,6 @@
             color: white;
         }
         .status-tag.concluido { background-color: var(--cor-sucesso); }
-        
         .main-content {
             flex-grow: 1;
             padding: 20px;
@@ -353,10 +354,8 @@
         .placeholder i {
             font-size: 4rem;
             margin-bottom: 20px;
-            color: var(--cor-acento); /* Ícone azul */
+            color: var(--cor-acento);
         }
-
-        /* Estilos para a tela de correção de redações */
         #correction-view {
             display: none;
         }
@@ -372,15 +371,42 @@
             border-radius: 16px;
             padding: 15px;
             border: 1px solid var(--cor-borda);
-            display: flex; /* Adicionado para layout vertical */
-            flex-direction: column; /* Adicionado */
-            gap: 15px; /* Espaço entre header e imagem */
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .viewer-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--cor-borda);
+            flex-shrink: 0;
+        }
+        #viewer-student-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .viewer-student-details {
+            display: flex;
+            flex-direction: column;
+        }
+        #viewer-student-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        #viewer-submission-date {
+            font-size: 0.85rem;
+            color: var(--cor-texto-sutil);
         }
         #essay-image {
             width: 100%;
             height: 100%;
             object-fit: contain;
             border-radius: 8px;
+            min-height: 0;
         }
         .evaluation-pane {
             flex: 1;
@@ -408,7 +434,7 @@
         .detail-box-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: baseline;
             border-bottom: 1px solid var(--cor-borda);
             margin-bottom: 15px;
             flex-wrap: wrap;
@@ -421,9 +447,8 @@
             margin-bottom: 10px;
         }
         .detail-box-header h3 i {
-            color: var(--cor-acento); /* Ícones azuis nos títulos do detail-box */
+            color: var(--cor-acento);
         }
-
         .transcription-button {
             background-color: transparent;
             border: 1px solid var(--cor-acento);
@@ -441,13 +466,12 @@
         }
         .transcription-button i {
             margin-right: 6px;
-            color: var(--cor-acento); /* Ícone azul */
+            color: var(--cor-acento);
             transition: color 0.2s ease;
         }
         .transcription-button:hover i {
             color: white;
         }
-        
         #delete-essay-btn {
             border-color: var(--cor-perigo);
             color: var(--cor-perigo);
@@ -458,12 +482,11 @@
             color: white;
         }
         #delete-essay-btn i {
-            color: var(--cor-perigo); /* Ícone vermelho */
+            color: var(--cor-perigo);
         }
         #delete-essay-btn:hover i {
             color: white;
         }
-
         .feedback-section { margin-top: 25px; }
         .feedback-section h4 {
             margin: 0 0 8px 0;
@@ -485,13 +508,12 @@
             margin-right: 12px;
             width: 22px;
             text-align: center;
-            color: var(--cor-acento); /* Ícones azuis por padrão */
+            color: var(--cor-acento);
         }
         .detail-box h3 .fa-robot { color: var(--cor-acento); }
         .feedback-section .fa-thumbs-up { color: var(--cor-sucesso); }
         .feedback-section .fa-magnifying-glass-chart { color: var(--cor-perigo); }
         .feedback-section .fa-lightbulb { color: var(--cor-alerta); }
-        
         .grades-container-list {
             display: flex;
             flex-direction: column;
@@ -593,7 +615,6 @@
             opacity: 1;
             transform: translateY(-50%) translateX(10px);
         }
-        
         #grades-header {
             position: relative;
             cursor: pointer;
@@ -613,7 +634,7 @@
             width: 20px;
             text-align: center;
             margin-right: 5px;
-            color: var(--cor-acento); /* Ícones azuis para competências */
+            color: var(--cor-acento);
         }
         #collapsible-grades {
             display: flex;
@@ -628,31 +649,61 @@
             max-height: 500px;
             margin-bottom: 15px;
         }
-
-        /* Estilos para a tela de gerenciamento de temas */
         #themes-view {
             display: none;
             height: 100%;
             flex-direction: column;
-            padding: 0;
+            padding: 20px;
         }
         .themes-header {
             background-color: var(--cor-container);
-            padding: 25px;
+            padding: 20px 25px;
             border-radius: 16px;
             margin-bottom: 20px;
             border: 1px solid var(--cor-borda);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
-        .themes-header h2 {
-            margin: 0;
+        .themes-header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             color: var(--cor-acento);
+        }
+        .themes-header-title h2 {
+            margin: 0;
             font-size: 1.5rem;
         }
-        .themes-header h2 i {
-            color: var(--cor-acento); /* Ícone azul */
+        .themes-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .search-container {
+            position: relative;
+        }
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--cor-texto-sutil);
+        }
+        #theme-search-input {
+            padding: 12px 15px 12px 40px;
+            border-radius: 25px;
+            border: 1px solid var(--cor-borda);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            width: 300px;
+            transition: all 0.2s ease;
+        }
+        #theme-search-input:focus {
+            outline: none;
+            border-color: var(--cor-acento);
+            box-shadow: 0 0 0 3px rgba(0, 168, 255, 0.15);
         }
         .add-theme-btn {
             background-color: var(--cor-acento);
@@ -671,68 +722,84 @@
         .add-theme-btn:hover {
             background-color: var(--cor-acento-hover);
             transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 168, 255, 0.2);
         }
-        .themes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-            gap: 20px;
-            overflow-y: auto;
-            height: calc(100vh - 250px);
-            padding-right: 10px;
-        }
-        .theme-card {
+        .table-container {
+            flex-grow: 1;
             background-color: var(--cor-container);
             border-radius: 16px;
-            padding: 25px;
             border: 1px solid var(--cor-borda);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-            transition: all 0.2s ease;
-            position: relative;
-            display: flex;
-            flex-direction: column;
+            overflow-y: auto;
+            padding: 15px 30px 30px 30px;
         }
-        .theme-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        .themes-table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        .theme-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
+        .themes-table th, .themes-table td {
+            padding: 20px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--cor-borda);
+            vertical-align: middle;
         }
-        .theme-title {
-            font-size: 1.1rem;
+        .themes-table thead th {
+            font-size: 0.8rem;
             font-weight: 600;
-            color: var(--cor-texto-principal);
-            line-height: 1.4;
-            margin: 0;
-            flex: 1;
-            padding-right: 15px;
+            color: var(--cor-texto-sutil);
+            text-transform: uppercase;
+            border-bottom-width: 2px;
         }
-        .theme-actions {
+        .themes-table tbody tr:last-child th,
+        .themes-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .themes-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        .themes-table td {
+            color: var(--cor-texto-principal);
+            font-size: 0.95rem;
+        }
+        .themes-table .theme-title-cell {
+            font-weight: 600;
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .themes-table .theme-text-cell {
+            max-width: 400px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--cor-texto-sutil);
+        }
+        .themes-table .theme-actions-cell {
             display: flex;
-            gap: 8px;
-            flex-shrink: 0;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        #themes-placeholder {
+            display: none;
         }
         .theme-action-btn {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border: none;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            font-size: 1rem;
             transition: all 0.2s ease;
         }
         .edit-btn {
-            background-color: #fff3cd;
-            color: var(--cor-acento); /* Ícone azul */
+            background-color: #eef8ff;
+            color: var(--cor-acento);
         }
         .edit-btn:hover {
-            background-color: #ffeeba;
+            background-color: #d1ecff;
         }
         .delete-btn {
             background-color: #f8d7da;
@@ -741,25 +808,6 @@
         .delete-btn:hover {
             background-color: #f1b0b7;
         }
-        .theme-text {
-            color: var(--cor-texto-sutil);
-            font-size: 0.9rem;
-            line-height: 1.6;
-            flex-grow: 1;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 6;
-            -webkit-box-orient: vertical;
-        }
-        .theme-date {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid var(--cor-borda);
-            font-size: 0.8rem;
-            color: var(--cor-texto-sutil);
-        }
-
-        /* Estilos dos modais */
         .modal-backdrop {
             display: none;
             position: fixed;
@@ -782,7 +830,7 @@
             max-height: 80vh;
             display: flex;
             flex-direction: column;
-            position: relative; /* Para o balão de grifo */
+            position: relative;
         }
         .modal-header {
             display: flex;
@@ -800,7 +848,7 @@
             gap: 12px;
         }
         .modal-header h2 i {
-            color: var(--cor-acento); /* Ícones azuis nos títulos do modal */
+            color: var(--cor-acento);
         }
         .close-btn {
             background: none;
@@ -848,49 +896,6 @@
             padding-top: 20px;
             border-top: 1px solid var(--cor-borda);
         }
-
-        .viewer-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--cor-borda);
-            flex-shrink: 0; /* Impede que o header encolha */
-        }
-        #viewer-student-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .viewer-student-details {
-            display: flex;
-            flex-direction: column;
-        }
-        #viewer-student-name {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-        #viewer-submission-date {
-            font-size: 0.85rem;
-            color: var(--cor-texto-sutil);
-        }
-        #essay-image {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 8px;
-            min-height: 0; /* Essencial para o flexbox ajustar a imagem corretamente */
-        }
-        .detail-box-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline; /* Alterado para alinhar pela base do texto */
-            border-bottom: 1px solid var(--cor-borda);
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
         .btn {
             padding: 10px 20px;
             border: none;
@@ -914,7 +919,7 @@
             background-color: var(--cor-acento-hover);
         }
         .btn-primary i {
-            color: white; /* Ícone branco */
+            color: white;
         }
         .btn-secondary {
             background-color: #e9ecef;
@@ -924,7 +929,7 @@
             background-color: #dee2e6;
         }
         .btn-secondary i {
-            color: var(--cor-acento); /* Ícone azul */
+            color: var(--cor-acento);
         }
         .btn-danger {
             background-color: var(--cor-perigo);
@@ -934,17 +939,16 @@
             background-color: #c82333;
         }
         .btn-danger i {
-            color: white; /* Ícone branco */
+            color: white;
         }
         .text-danger {
             color: var(--cor-perigo);
             font-weight: bold;
         }
-        
         #transcription-modal .modal-content {
-            max-width: 950px; /* Mais largo */
-            max-height: 90vh; /* Aumenta a altura */
-            padding: 30px; /* Mais padding para um visual mais aberto */
+            max-width: 950px;
+            max-height: 90vh;
+            padding: 30px;
         }
         .transcription-header {
             display: flex;
@@ -971,20 +975,20 @@
             border: none;
         }
         .transcription-theme-title i {
-            color: var(--cor-acento); /* Ícone azul */
+            color: var(--cor-acento);
         }
         .transcription-text-wrapper {
             font-size: 1rem;
             line-height: 1.8;
             white-space: pre-wrap;
-            max-height: 60vh; /* Ajustado para mais espaço */
+            max-height: 60vh;
             overflow-y: auto;
             padding: 15px;
             background-color: #f8f9fa;
             border-radius: 8px;
             border: 1px solid var(--cor-borda);
             margin-bottom: 15px;
-            position: relative; /* Para o balão de grifo */
+            position: relative;
         }
         .transcription-text-wrapper mark {
             border-radius: 3px;
@@ -999,26 +1003,18 @@
         .transcription-text-wrapper mark.highlight-red {
             background-color: var(--highlight-red);
         }
-
         .highlight-instructions {
             margin-right: auto;
             color: var(--cor-texto-sutil);
             font-size: 0.9rem;
         }
-        
-        /* ======================================= */
-        /* == CORREÇÃO DE FONTE PARA BOTÕES ====== */
-        /* ======================================= */
         .nav-button, .btn, .theme-action-btn, .transcription-button {
             font-family: 'Poppins', sans-serif;
         }
-        
         .evaluation-pane::-webkit-scrollbar, .themes-grid::-webkit-scrollbar, .transcription-text-wrapper::-webkit-scrollbar, .sidebar::-webkit-scrollbar, #archived-list-wrapper::-webkit-scrollbar { width: 8px; }
         .evaluation-pane::-webkit-scrollbar-track, .themes-grid::-webkit-scrollbar-track, .transcription-text-wrapper::-webkit-scrollbar-track, .sidebar::-webkit-scrollbar-track, #archived-list-wrapper::-webkit-scrollbar-track { background: var(--cor-fundo); border-radius: 4px; }
         .evaluation-pane::-webkit-scrollbar-thumb, .themes-grid::-webkit-scrollbar-thumb, .transcription-text-wrapper::-webkit-scrollbar-thumb, .sidebar::-webkit-scrollbar-thumb, #archived-list-wrapper::-webkit-scrollbar-thumb { background-color: #cdd2da; border-radius: 4px; border: 2px solid var(--cor-fundo); }
         .evaluation-pane::-webkit-scrollbar-thumb:hover, .themes-grid::-webkit-scrollbar-thumb:hover, .transcription-text-wrapper::-webkit-scrollbar-thumb:hover, .sidebar::-webkit-scrollbar-thumb:hover, #archived-list-wrapper::-webkit-scrollbar-thumb:hover { background-color: #b0b8c5; }
-
-        /* Estilos para o balão de grifo */
         #highlight-tooltip {
             position: absolute;
             background-color: var(--cor-container);
@@ -1033,13 +1029,13 @@
             visibility: hidden;
             transition: opacity 0.2s, visibility 0.2s;
             transform: translateY(-10px);
-            pointer-events: none; /* Inicia com pointer-events none para não bloquear seleção */
+            pointer-events: none;
         }
         #highlight-tooltip.show {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
-            pointer-events: auto; /* Habilita pointer-events quando visível */
+            pointer-events: auto;
         }
         .color-option {
             width: 28px;
@@ -1059,7 +1055,7 @@
         .color-option.blue { background-color: var(--highlight-blue); }
         .color-option.red { background-color: var(--highlight-red); }
         .color-option.remove { 
-            background-color: #f8d7da; /* Fundo leve para o botão de remover */
+            background-color: #f8d7da;
             color: var(--cor-perigo); 
             font-size: 1rem;
             width: 32px;
@@ -1067,6 +1063,59 @@
         }
         .color-option.remove:hover {
             border-color: var(--cor-perigo);
+        }
+        .ai-generator-prompt {
+            text-align: center;
+            padding: 10px;
+            background-color: #eef8ff;
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        .ai-generator-prompt i {
+            color: var(--cor-acento);
+            margin-right: 8px;
+        }
+        .ai-generator-prompt a {
+            color: var(--cor-acento);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .ai-generator-prompt a:hover {
+            text-decoration: underline;
+        }
+        #generator-results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 45vh;
+            overflow-y: auto;
+            padding: 5px;
+        }
+        .generated-theme-item {
+            background-color: var(--cor-fundo);
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+        }
+        .generated-theme-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 5px;
+            flex-shrink: 0;
+        }
+        .generated-theme-item .content h4 {
+            margin: 0 0 5px 0;
+            font-size: 1rem;
+        }
+        .generated-theme-item .content p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--cor-texto-sutil);
+            line-height: 1.6;
         }
     </style>
 </head>
@@ -1253,14 +1302,39 @@
 
         <div id="themes-view" class="main-content">
             <div class="themes-header">
-                <h2><i class="fa-solid fa-book-open"></i> Gerenciamento de Temas</h2>
-                <button class="add-theme-btn" id="add-theme-btn">
-                    <i class="fa-solid fa-plus"></i>
-                    Novo Tema
-                </button>
-            </div>
-            <div class="themes-grid" id="themes-grid">
+                <div class="themes-header-title">
+                    <i class="fa-solid fa-book-open"></i>
+                    <h2>Gerenciamento de Temas</h2>
                 </div>
+                <div class="themes-header-actions">
+                    <div class="search-container">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="search" id="theme-search-input" placeholder="Buscar por título ou conteúdo...">
+                    </div>
+                    <button class="add-theme-btn" id="add-theme-btn">
+                        <i class="fa-solid fa-plus"></i>
+                        Novo Tema
+                    </button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table class="themes-table">
+                    <thead>
+                        <tr>
+                            <th>Título do Tema</th>
+                            <th>Início do Texto Motivador</th>
+                            <th>Criado em</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="themes-table-body">
+                        </tbody>
+                </table>
+                <div id="themes-placeholder" class="placeholder" style="display: none;">
+                    <i class="fa-regular fa-folder-open"></i>
+                    <p>Nenhum tema encontrado.</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1308,6 +1382,10 @@
                 <button id="close-theme-modal-btn" class="close-btn">&times;</button>
             </div>
             <div class="modal-body">
+                 <div class="ai-generator-prompt">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Sem ideias? <a href="#" id="open-generator-btn">Gerar temas com I.A.</a></span>
+                </div>
                 <form id="theme-form">
                     <div class="form-group">
                         <label for="theme-title-input">Título do Tema *</label>
@@ -1322,6 +1400,54 @@
             <div class="modal-actions">
                 <button type="button" class="btn btn-secondary" id="cancel-theme-btn">Cancelar</button>
                 <button type="submit" class="btn btn-primary" id="save-theme-btn">Salvar Tema</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="theme-generator-modal" class="modal-backdrop">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-wand-magic-sparkles"></i> Gerador de Temas com I.A.</h2>
+                <button id="close-generator-modal-btn" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="generator-form-view">
+                    <p>Descreva o tipo de tema que você deseja e a quantidade. A I.A. criará títulos e textos motivadores para você.</p>
+                    <form id="generator-form">
+                        <div class="form-group">
+                            <label for="generator-description">Descrição dos temas</label>
+                            <textarea id="generator-description" rows="3" placeholder="Ex: temas sobre meio ambiente e sustentabilidade no Brasil, com foco em soluções para o desmatamento." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="generator-quantity">Quantidade de temas a gerar</label>
+                            <input type="number" id="generator-quantity" value="3" min="1" max="5" required>
+                        </div>
+                        <div class="modal-actions" style="border-top: none; padding-top: 0;">
+                            <button type="submit" class="btn btn-primary" id="generate-btn">
+                                <i class="fa-solid fa-bolt"></i>
+                                Gerar Temas
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="generator-loading-view" class="placeholder" style="display: none;">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    <p>Gerando temas... Isso pode levar alguns segundos.</p>
+                </div>
+
+                <div id="generator-results-view" style="display: none;">
+                    <p>Revise os temas gerados. Selecione os que deseja adicionar ao seu painel.</p>
+                    <div id="generator-results-list">
+                    </div>
+                     <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" id="back-to-generator-form-btn">Voltar</button>
+                        <button type="button" class="btn btn-primary" id="add-selected-themes-btn">
+                            <i class="fa-solid fa-plus"></i>
+                            Adicionar Selecionados
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1377,8 +1503,6 @@
         const profileTrigger = document.getElementById('profile-trigger');
         const profileDropdown = document.getElementById('profile-dropdown');
         const logoutButton = document.getElementById('logout-button');
-        
-        // Modal de transcrição
         const showTranscriptionBtn = document.getElementById('show-transcription-btn');
         const transcriptionModal = document.getElementById('transcription-modal');
         const closeTranscriptionModalBtn = document.getElementById('close-transcription-modal-btn');
@@ -1388,13 +1512,8 @@
         const saveHighlightsBtn = document.getElementById('save-highlights-btn');
         const clearAllHighlightsBtn = document.getElementById('clear-all-highlights-btn');
         const highlightTooltip = document.getElementById('highlight-tooltip');
-
-        // Botão de excluir avaliação
         const deleteEssayBtn = document.getElementById('delete-essay-btn');
-
-        // Elementos de temas
         const addThemeBtn = document.getElementById('add-theme-btn');
-        const themesGrid = document.getElementById('themes-grid');
         const themeModal = document.getElementById('theme-modal');
         const themeModalTitle = document.getElementById('theme-modal-title');
         const themeForm = document.getElementById('theme-form');
@@ -1403,79 +1522,60 @@
         const closeThemeModalBtn = document.getElementById('close-theme-modal-btn');
         const cancelThemeBtn = document.getElementById('cancel-theme-btn');
         const saveThemeBtn = document.getElementById('save-theme-btn');
-
-        // Modal de confirmação de exclusão
+        const openGeneratorBtn = document.getElementById('open-generator-btn');
+        const themeGeneratorModal = document.getElementById('theme-generator-modal');
+        const closeGeneratorModalBtn = document.getElementById('close-generator-modal-btn');
+        const generatorForm = document.getElementById('generator-form');
+        const generatorFormView = document.getElementById('generator-form-view');
+        const generatorLoadingView = document.getElementById('generator-loading-view');
+        const generatorResultsView = document.getElementById('generator-results-view');
+        const generatorResultsList = document.getElementById('generator-results-list');
+        const addSelectedThemesBtn = document.getElementById('add-selected-themes-btn');
+        const backToGeneratorFormBtn = document.getElementById('back-to-generator-form-btn');
         const deleteConfirmationModal = document.getElementById('delete-confirmation-modal');
         const deleteItemTitle = document.getElementById('delete-item-title');
         const closeDeleteModalBtn = document.getElementById('close-delete-modal-btn');
         const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
         const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
 
-        let allEssays = [];
-        let activeEssays = [];
-        let archivedEssays = [];
-        let allThemes = [];
-        let currentEssayId = null;
-        let currentThemeId = null;
-        let currentView = 'correction';
-        let essayUnsubscribe;
-        let themeUnsubscribe;
+        let allEssays = [], activeEssays = [], archivedEssays = [], allThemes = [];
+        let currentEssayId = null, currentThemeId = null, itemToDelete = null;
+        let essayUnsubscribe, themeUnsubscribe;
         let activeSelectionRange = null;
 
-        // Navegação entre telas
         function switchView(viewName) {
-            currentView = viewName;
-            
             correctionNavBtn.classList.toggle('active', viewName === 'correction');
             themesNavBtn.classList.toggle('active', viewName === 'themes');
-            
             correctionView.style.display = viewName === 'correction' ? 'flex' : 'none';
             themesView.style.display = viewName === 'themes' ? 'flex' : 'none';
-            
-            if (viewName === 'themes' && !themeUnsubscribe) {
-                listenForThemes();
-            }
+            if (viewName === 'themes' && !themeUnsubscribe) listenForThemes();
         }
 
-        correctionNavBtn.addEventListener('click', () => switchView('correction'));
-        themesNavBtn.addEventListener('click', () => switchView('themes'));
-
-        // Funções de redações
         function listenForEssays() {
             const essaysRef = collection(db, "essays");
             const q = query(essaysRef, orderBy("submissionDate", "desc"));
-
             essayUnsubscribe = onSnapshot(q, (snapshot) => {
                 allEssays = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                
-                activeEssays = allEssays.filter(essay => essay.status !== 'archived');
-                archivedEssays = allEssays.filter(essay => essay.status === 'archived');
-
+                activeEssays = allEssays.filter(e => e.status !== 'archived');
+                archivedEssays = allEssays.filter(e => e.status === 'archived');
                 renderEssayLists();
-                
-                if (currentEssayId) {
-                    const updatedEssay = allEssays.find(e => e.id === currentEssayId);
-                    if (updatedEssay) {
-                        displayEssayDetails(currentEssayId, false);
-                    } else {
-                        showPlaceholder();
-                    }
+                if (currentEssayId && !allEssays.some(e => e.id === currentEssayId)) {
+                    showPlaceholder();
                 }
             }, (error) => console.error("Erro ao buscar redações: ", error));
         }
 
         function renderEssayLists() {
-            const createEssayItemHTML = (essay, isArchived = false) => {
+            const createHTML = (essay, isArchived) => {
                 const date = essay.submissionDate?.toDate().toLocaleDateString('pt-BR') || 'Data indisponível';
-                const studentAvatar = essay.studentAvatar || 'assets/default-avatar.png';
+                const avatar = essay.studentAvatar || 'assets/default-avatar.png';
                 const actionIcon = isArchived ? 'fa-arrow-up-from-bracket' : 'fa-box-archive';
                 const actionTitle = isArchived ? 'Desarquivar' : 'Arquivar';
                 const actionData = isArchived ? 'unarchive' : 'archive';
-
                 return `
                     <li class="essay-item ${essay.id === currentEssayId ? 'active' : ''}" data-id="${essay.id}">
                         <div class="essay-item-main">
-                            <img src="${studentAvatar}" alt="Avatar do Aluno" class="student-avatar">
+                            <img src="${avatar}" alt="Avatar" class="student-avatar">
                             <div class="student-info">
                                 <div class="student-name">${essay.studentName}</div>
                                 <div class="submission-date">Enviado em: ${date}</div>
@@ -1489,36 +1589,22 @@
                                 </button>
                             </div>
                         </div>
-                    </li>
-                `;
+                    </li>`;
             };
-
-            activeEssayList.innerHTML = activeEssays.map(essay => createEssayItemHTML(essay, false)).join('');
-            archivedEssayList.innerHTML = archivedEssays.map(essay => createEssayItemHTML(essay, true)).join('');
-            
+            activeEssayList.innerHTML = activeEssays.map(e => createHTML(e, false)).join('') || '<p class="empty-list-msg">Nenhuma redação ativa.</p>';
+            archivedEssayList.innerHTML = archivedEssays.map(e => createHTML(e, true)).join('') || '<p class="empty-list-msg">Nenhuma redação arquivada.</p>';
             document.getElementById('active-count').textContent = activeEssays.length;
             document.getElementById('archived-count').textContent = archivedEssays.length;
-
-            if(activeEssays.length === 0) {
-                activeEssayList.innerHTML = '<p style="text-align: center; color: var(--cor-texto-sutil); padding: 20px 0;">Nenhuma redação ativa.</p>';
-            }
-             if(archivedEssays.length === 0) {
-                archivedEssayList.innerHTML = '<p style="text-align: center; color: var(--cor-texto-sutil); padding: 20px 0;">Nenhuma redação arquivada.</p>';
-            }
         }
 
-        async function toggleArchiveStatus(essayId, newStatus) {
+        async function toggleArchiveStatus(essayId, status) {
             const essayRef = doc(db, "essays", essayId);
             try {
-                await updateDoc(essayRef, {
-                    status: newStatus
-                });
-                if(currentEssayId === essayId && newStatus === 'archived') {
-                    showPlaceholder();
-                }
+                await updateDoc(essayRef, { status });
+                if (currentEssayId === essayId && status === 'archived') showPlaceholder();
             } catch (error) {
-                console.error("Erro ao atualizar status da redação:", error);
-                alert("Não foi possível arquivar/desarquivar a redação.");
+                console.error("Erro ao atualizar status:", error);
+                alert("Não foi possível alterar o status da redação.");
             }
         }
         
@@ -1526,266 +1612,209 @@
             currentEssayId = null;
             placeholder.style.display = 'flex';
             essayDetailsWrapper.style.display = 'none';
-            deleteEssayBtn.style.display = 'none';
             document.querySelectorAll('.essay-item').forEach(item => item.classList.remove('active'));
         }
 
-        function displayEssayDetails(id, scrollIntoView = true) {
+        function displayEssayDetails(id) {
             currentEssayId = id;
             const essay = allEssays.find(e => e.id === id);
             if (!essay) return;
-
-            document.querySelectorAll('.essay-item').forEach(item => {
-                item.classList.toggle('active', item.dataset.id === id);
-            });
-            
-            if (scrollIntoView) {
-                const activeItem = document.querySelector(`.essay-item[data-id="${id}"]`);
-                activeItem?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-
+            document.querySelectorAll('.essay-item').forEach(item => item.classList.toggle('active', item.dataset.id === id));
             placeholder.style.display = 'none';
             essayDetailsWrapper.style.display = 'flex';
-            deleteEssayBtn.style.display = 'inline-block';
-
-            // Preenche o novo header da redação
-            const submissionDate = essay.submissionDate?.toDate().toLocaleDateString('pt-BR') || 'Data indisponível';
+            const date = essay.submissionDate?.toDate().toLocaleDateString('pt-BR') || 'Data indisponível';
             document.getElementById('viewer-student-avatar').src = essay.studentAvatar || 'assets/default-avatar.png';
             document.getElementById('viewer-student-name').textContent = essay.studentName;
-            document.getElementById('viewer-submission-date').textContent = `Enviado em: ${submissionDate}`;
+            document.getElementById('viewer-submission-date').textContent = `Enviado em: ${date}`;
             document.getElementById('essay-image').src = essay.essayImageURL;
-            
-            // Preenche o modal de transcrição
-            const transcriptionContent = essay.highlightedTranscription || essay.transcribedText || 'Transcrição não disponível.';
-            transcriptionTextEl.innerHTML = transcriptionContent;
-            transcriptionThemeTitle.textContent = `${essay.themeTitle || 'Tema não especificado'}`;
-            
-            if (essay.transcribedText === '____') {
-                transcriptionTextEl.innerHTML = `<span class="text-danger">A transcrição automática não foi possível para esta imagem.</span>`;
-            }
-
-            // Preenche as notas e feedbacks
+            transcriptionTextEl.innerHTML = essay.highlightedTranscription || essay.transcribedText || 'Transcrição não disponível.';
+            transcriptionThemeTitle.textContent = essay.themeTitle || 'Tema não especificado';
             document.getElementById('ia-grade-c1').textContent = essay.grades?.competencia1 ?? '--';
             document.getElementById('ia-grade-c2').textContent = essay.grades?.competencia2 ?? '--';
             document.getElementById('ia-grade-c3').textContent = essay.grades?.competencia3 ?? '--';
             document.getElementById('ia-grade-c4').textContent = essay.grades?.competencia4 ?? '--';
             document.getElementById('ia-grade-c5').textContent = essay.grades?.competencia5 ?? '--';
             document.getElementById('ia-grade-total').textContent = essay.grades?.total ?? '--';
-            
             document.getElementById('ia-feedback-positive').textContent = essay.feedback?.positive ?? 'Não disponível.';
             document.getElementById('ia-feedback-difficulties').textContent = essay.feedback?.difficulties ?? 'Não disponível.';
             document.getElementById('ia-feedback-suggestions').textContent = essay.feedback?.suggestions ?? 'Não disponível.';
         }
 
-        // Funções de gerenciamento de temas
         function listenForThemes() {
             const themesRef = collection(db, "themes");
             const q = query(themesRef, orderBy("createdAt", "desc"));
-
             themeUnsubscribe = onSnapshot(q, (snapshot) => {
                 allThemes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                renderThemesList();
+                renderThemesTable(allThemes);
             }, (error) => console.error("Erro ao buscar temas: ", error));
         }
 
-        function renderThemesList() {
-            themesGrid.innerHTML = '';
-
-            if (allThemes.length === 0) {
-                themesGrid.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align: center; color: var(--cor-texto-sutil); padding: 40px;">
-                        <i class="fa-regular fa-book-open" style="font-size: 3rem; margin-bottom: 20px;"></i>
-                        <p>Nenhum tema cadastrado ainda.</p>
-                        <p>Clique em "Novo Tema" para começar.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            allThemes.forEach(theme => {
-                const themeCard = document.createElement('div');
-                themeCard.className = 'theme-card';
-                
-                const createdDate = theme.createdAt?.toDate().toLocaleDateString('pt-BR') || 'Data não disponível';
-                
-                themeCard.innerHTML = `
-                    <div class="theme-card-header">
-                        <h3 class="theme-title">${theme.title}</h3>
-                        <div class="theme-actions">
-                            <button class="theme-action-btn edit-btn" onclick="editTheme('${theme.id}')">
-                                <i class="fa-solid fa-pen"></i>
-                            </button>
-                            <button class="theme-action-btn delete-btn" onclick="deleteTheme('${theme.id}')">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <p class="theme-text">${theme.text}</p>
-                    <div class="theme-date">Criado em: ${createdDate}</div>
-                `;
-                
-                themesGrid.appendChild(themeCard);
+        function renderThemesTable(themes) {
+            const tableBody = document.getElementById('themes-table-body');
+            const placeholder = document.getElementById('themes-placeholder');
+            tableBody.innerHTML = '';
+            placeholder.style.display = themes.length === 0 ? 'flex' : 'none';
+            themes.forEach(theme => {
+                const date = theme.createdAt?.toDate().toLocaleDateString('pt-BR') || 'Data indisponível';
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="theme-title-cell" title="${theme.title}">${theme.title}</td>
+                    <td class="theme-text-cell" title="${theme.text}">${theme.text.substring(0, 80)}...</td>
+                    <td>${date}</td>
+                    <td class="theme-actions-cell">
+                        <button class="theme-action-btn edit-btn" data-id="${theme.id}" title="Editar Tema"><i class="fa-solid fa-pen"></i></button>
+                        <button class="theme-action-btn delete-btn" data-id="${theme.id}" title="Excluir Tema"><i class="fa-solid fa-trash"></i></button>
+                    </td>`;
+                tableBody.appendChild(tr);
             });
         }
-
-        // Funções de modal de temas
+        
         function openThemeModal(isEdit = false, themeData = null) {
-            themeModalTitle.innerHTML = isEdit ? '<i class="fa-solid fa-book"></i> Editar Tema' : '<i class="fa-solid fa-book"></i> Novo Tema';
-            saveThemeBtn.textContent = isEdit ? 'Salvar Alterações' : 'Salvar Tema';
-            
+            themeModalTitle.innerHTML = `<i class="fa-solid fa-book"></i> ${isEdit ? 'Editar Tema' : 'Novo Tema'}`;
+            themeForm.reset();
+            currentThemeId = null;
             if (isEdit && themeData) {
                 currentThemeId = themeData.id;
                 themeTitleInput.value = themeData.title;
                 themeTextInput.value = themeData.text;
-            } else {
-                currentThemeId = null;
-                themeTitleInput.value = '';
-                themeTextInput.value = '';
             }
-            
             themeModal.style.display = 'flex';
-            themeTitleInput.focus();
         }
-
-        function closeThemeModal() {
-            themeModal.style.display = 'none';
-            currentThemeId = null;
-            themeForm.reset();
-        }
-
-        // Funções globais para os botões dos cards
-        window.editTheme = function(themeId) {
-            const theme = allThemes.find(t => t.id === themeId);
-            if (theme) {
-                openThemeModal(true, theme);
-            }
-        };
-
-        window.deleteTheme = function(themeId) {
-            const theme = allThemes.find(t => t.id === themeId);
-            if (theme) {
-                deleteConfirmationModal.querySelector('h2').innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Confirmar Exclusão';
-                deleteConfirmationModal.querySelector('.modal-body p:first-of-type').textContent = 'Tem certeza que deseja excluir este tema?';
-                deleteItemTitle.textContent = theme.title;
-                currentThemeId = themeId;
-                
-                const confirmBtnClone = confirmDeleteBtn.cloneNode(true);
-                confirmDeleteBtn.parentNode.replaceChild(confirmBtnClone, confirmDeleteBtn);
-                confirmBtnClone.addEventListener('click', confirmDeleteTheme);
-                
-                deleteConfirmationModal.style.display = 'flex';
-            }
-        };
 
         async function saveTheme() {
             const title = themeTitleInput.value.trim();
             const text = themeTextInput.value.trim();
-            
-            if (!title || !text) {
-                alert('Por favor, preencha todos os campos obrigatórios.');
-                return;
-            }
-            
+            if (!title || !text) return alert('Por favor, preencha todos os campos.');
+            saveThemeBtn.disabled = true;
+            saveThemeBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+            const data = { title, text, updatedAt: serverTimestamp() };
             try {
-                saveThemeBtn.disabled = true;
-                saveThemeBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
-                
-                const themeData = {
-                    title: title,
-                    text: text,
-                    updatedAt: serverTimestamp()
-                };
-                
                 if (currentThemeId) {
-                    await setDoc(doc(db, "themes", currentThemeId), themeData, { merge: true });
+                    await setDoc(doc(db, "themes", currentThemeId), data, { merge: true });
                 } else {
-                    themeData.createdAt = serverTimestamp();
-                    const newThemeRef = doc(collection(db, "themes"));
-                    await setDoc(newThemeRef, themeData);
+                    data.createdAt = serverTimestamp();
+                    await setDoc(doc(collection(db, "themes")), data);
                 }
-                
-                closeThemeModal();
-                
-            } catch (error) {
-                console.error("Erro ao salvar tema:", error);
-                alert('Erro ao salvar tema. Tente novamente.');
+                themeModal.style.display = 'none';
+            } catch (e) {
+                console.error("Erro ao salvar tema:", e);
+                alert('Erro ao salvar tema.');
             } finally {
                 saveThemeBtn.disabled = false;
-                saveThemeBtn.innerHTML = currentThemeId ? '<i class="fa-solid fa-save"></i> Salvar Alterações' : '<i class="fa-solid fa-save"></i> Salvar Tema';
+                saveThemeBtn.innerHTML = 'Salvar Tema';
             }
         }
 
-        async function confirmDeleteTheme() {
-            if (!currentThemeId) return;
-            
+        function setupDeleteModal(type, id) {
+            itemToDelete = { type, id };
+            const item = type === 'theme' ? allThemes.find(t => t.id === id) : allEssays.find(e => e.id === id);
+            if (!item) return;
+            const title = type === 'theme' ? item.title : `Redação de ${item.studentName}`;
+            deleteItemTitle.textContent = title;
+            deleteConfirmationModal.style.display = 'flex';
+        }
+
+        async function confirmDelete() {
+            if (!itemToDelete) return;
+            const { type, id } = itemToDelete;
+            confirmDeleteBtn.disabled = true;
+            confirmDeleteBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Excluindo...';
             try {
-                confirmDeleteBtn.disabled = true;
-                confirmDeleteBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Excluindo...';
-                
-                await deleteDoc(doc(db, "themes", currentThemeId));
-                
+                if (type === 'theme') {
+                    await deleteDoc(doc(db, "themes", id));
+                } else if (type === 'essay') {
+                    const essay = allEssays.find(e => e.id === id);
+                    if (essay.essayImagePublicId) await deleteArquivoCloudinary(essay.essayImagePublicId);
+                    await deleteDoc(doc(db, "essays", id));
+                    if(id === currentEssayId) showPlaceholder();
+                }
                 deleteConfirmationModal.style.display = 'none';
-                currentThemeId = null;
-                
-            } catch (error) {
-                console.error("Erro ao excluir tema:", error);
-                alert('Erro ao excluir tema. Tente novamente.');
+            } catch (e) {
+                console.error(`Erro ao excluir ${type}:`, e);
+                alert(`Erro ao excluir ${type}.`);
             } finally {
                 confirmDeleteBtn.disabled = false;
-                confirmDeleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i> Excluir';
+                confirmDeleteBtn.innerHTML = 'Excluir';
+                itemToDelete = null;
             }
         }
         
-        // --- LÓGICA DE EXCLUSÃO DE AVALIAÇÃO ---
-        deleteEssayBtn.addEventListener('click', () => {
-            if (!currentEssayId) return;
-            const essay = allEssays.find(e => e.id === currentEssayId);
-            if (!essay) return;
-            
-            deleteConfirmationModal.querySelector('h2').innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Excluir Avaliação';
-            deleteConfirmationModal.querySelector('.modal-body p:first-of-type').textContent = 'Tem certeza que deseja excluir esta avaliação? A imagem e todos os dados associados serão removidos permanentemente.';
-            deleteItemTitle.textContent = `Aluno(a): ${essay.studentName}`;
-            
-            const confirmBtnClone = confirmDeleteBtn.cloneNode(true);
-            confirmDeleteBtn.parentNode.replaceChild(confirmBtnClone, confirmDeleteBtn);
-            confirmBtnClone.addEventListener('click', confirmDeleteEssay);
-            
-            deleteConfirmationModal.style.display = 'flex';
-        });
+        async function handleThemeGeneration(event) {
+            event.preventDefault();
+            const description = document.getElementById('generator-description').value;
+            const quantity = document.getElementById('generator-quantity').value;
+            const generateBtn = document.getElementById('generate-btn');
 
-        async function confirmDeleteEssay() {
-            if (!currentEssayId) return;
-            const essayToDelete = allEssays.find(e => e.id === currentEssayId);
-            if (!essayToDelete) return alert('Erro: Redação não encontrada para exclusão.');
-
-            confirmDeleteBtn.disabled = true;
-            confirmDeleteBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Excluindo...';
+            generatorFormView.style.display = 'none';
+            generatorResultsView.style.display = 'none';
+            generatorLoadingView.style.display = 'flex';
+            generateBtn.disabled = true;
 
             try {
-                if (essayToDelete.essayImagePublicId) {
-                    await deleteArquivoCloudinary(essayToDelete.essayImagePublicId);
-                } else {
-                    console.warn('Não foi encontrado public_id para a imagem. Pulando a exclusão do Cloudinary.');
-                }
-                await deleteDoc(doc(db, "essays", currentEssayId));
-                deleteConfirmationModal.style.display = 'none';
-                showPlaceholder();
+                const apiKey = "AIzaSyB7ygXwm0Zw39QrS9oV6D8P1qqZ5BmRhrM";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+                const schema = {type: "OBJECT",properties: {themes: {type: "ARRAY",items: {type: "OBJECT",properties: {title: { type: "STRING" },text: { type: "STRING" },},required: ["title", "text"],},},},};
+                const prompt = `Sua tarefa é gerar ${quantity} temas de redação no estilo ENEM, baseados na seguinte descrição: "${description}". Os temas devem ser relevantes para a sociedade brasileira. Cada tema precisa obrigatoriamente de um "title" (título conciso e impactante) e um "text" (texto motivador curto com 2-4 frases que contextualize o problema). Responda estritamente no formato JSON definido no schema.`;
+                const payload = {contents: [{ parts: [{ text: prompt }] }],generationConfig: {responseMimeType: "application/json",responseSchema: schema,},};
+                const response = await fetch(apiUrl, {method: 'POST',headers: { 'Content-Type': 'application/json' },body: JSON.stringify(payload)});
+                if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+                const result = await response.json();
+                const generatedData = JSON.parse(result.candidates[0].content.parts[0].text);
+                displayGeneratedThemes(generatedData.themes || []);
             } catch (error) {
-                console.error("Erro ao excluir avaliação:", error);
-                alert('Ocorreu um erro ao excluir a avaliação.');
+                console.error("Erro ao gerar temas com a I.A.:", error);
+                alert("Ocorreu um erro ao gerar os temas. Por favor, tente novamente.");
+                generatorFormView.style.display = 'block';
             } finally {
-                confirmDeleteBtn.disabled = false;
-                confirmDeleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i> Excluir';
+                generatorLoadingView.style.display = 'none';
+                generateBtn.disabled = false;
             }
         }
 
-        // --- LÓGICA PARA GRIFAR TEXTO (MELHORADA COM BALÃO) ---
+        function displayGeneratedThemes(themes) {
+            generatorResultsList.innerHTML = themes.length > 0 ? themes.map((theme, index) => `
+                <div class="generated-theme-item">
+                    <input type="checkbox" id="theme-check-${index}" checked>
+                    <div class="content">
+                        <h4 data-title="${theme.title}">${theme.title}</h4>
+                        <p data-text="${theme.text}">${theme.text}</p>
+                    </div>
+                </div>`).join('') : '<p>A I.A. não retornou temas. Tente refinar sua descrição.</p>';
+            generatorResultsView.style.display = 'block';
+        }
 
-        function getSelectionCoords(selection) {
+        async function saveSelectedThemes() {
+            const selectedItems = generatorResultsList.querySelectorAll('input[type="checkbox"]:checked');
+            if (selectedItems.length === 0) return alert("Selecione ao menos um tema para adicionar.");
+            addSelectedThemesBtn.disabled = true;
+            addSelectedThemesBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Adicionando...';
+            try {
+                const promises = Array.from(selectedItems).map(item => {
+                    const contentDiv = item.nextElementSibling;
+                    const title = contentDiv.querySelector('h4').dataset.title;
+                    const text = contentDiv.querySelector('p').dataset.text;
+                    const themeData = { title, text, createdAt: serverTimestamp(), updatedAt: serverTimestamp() };
+                    return setDoc(doc(collection(db, "themes")), themeData);
+                });
+                await Promise.all(promises);
+                alert(`${selectedItems.length} tema(s) adicionado(s) com sucesso!`);
+                themeGeneratorModal.style.display = 'none';
+                themeModal.style.display = 'none';
+            } catch (error) {
+                console.error("Erro ao salvar temas:", error);
+                alert("Ocorreu um erro ao salvar os temas.");
+            } finally {
+                addSelectedThemesBtn.disabled = false;
+                addSelectedThemesBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Adicionar Selecionados';
+            }
+        }
+        
+        function getSelectionCoords() {
+            const selection = window.getSelection();
+            if (selection.rangeCount === 0) return null;
             const range = selection.getRangeAt(0);
             const rect = range.getBoundingClientRect();
             const wrapperRect = transcriptionWrapper.getBoundingClientRect();
-
             return {
                 left: rect.left - wrapperRect.left + transcriptionWrapper.scrollLeft,
                 top: rect.top - wrapperRect.top + transcriptionWrapper.scrollTop,
@@ -1796,263 +1825,147 @@
 
         function showHighlightTooltip(coords) {
             highlightTooltip.style.left = `${coords.left + coords.width / 2 - highlightTooltip.offsetWidth / 2}px`;
-            highlightTooltip.style.top = `${coords.top - highlightTooltip.offsetHeight - 10}px`; // 10px acima da seleção
+            highlightTooltip.style.top = `${coords.top - highlightTooltip.offsetHeight - 10}px`;
             highlightTooltip.classList.add('show');
         }
 
         function hideHighlightTooltip() {
             highlightTooltip.classList.remove('show');
             activeSelectionRange = null;
-            window.getSelection().removeAllRanges();
         }
-
-        transcriptionTextEl.addEventListener('mouseup', () => {
-            const selection = window.getSelection();
-            
-            if (selection.rangeCount > 0 && !selection.isCollapsed) {
-                const range = selection.getRangeAt(0);
-                
-                if (transcriptionTextEl.contains(range.commonAncestorContainer)) {
-                    activeSelectionRange = range;
-                    showHighlightTooltip(getSelectionCoords(selection));
-                } else {
-                    hideHighlightTooltip();
-                }
-            } else {
-                // Atraso para permitir o clique no balão antes de escondê-lo
-                setTimeout(() => {
-                    if (!highlightTooltip.matches(':hover')) {
-                        hideHighlightTooltip();
-                    }
-                }, 100);
-            }
-        });
-
-        transcriptionModal.addEventListener('mousedown', (event) => {
-            if (!highlightTooltip.contains(event.target) && !transcriptionTextEl.contains(event.target)) {
-                hideHighlightTooltip();
-            }
-        });
-
-        highlightTooltip.addEventListener('mousedown', (event) => {
-            event.stopPropagation();
-        });
 
         function applyHighlight(color) {
             if (!activeSelectionRange) return;
-
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(activeSelectionRange);
             document.execCommand('removeFormat', false, null);
-
             if (color !== 'remove') {
-                // A melhor abordagem é usar surroundContents para aplicar uma classe
-                const selection = window.getSelection();
-                selection.removeAllRanges();
-                selection.addRange(activeSelectionRange);
-
-                if (selection.rangeCount > 0) {
-                    const range = selection.getRangeAt(0);
-                    const mark = document.createElement('mark');
-                    mark.className = `highlight-${color}`;
-                    try {
-                        range.surroundContents(mark);
-                    } catch (e) { console.error("Erro ao aplicar grifo:", e) }
-                }
+                const mark = document.createElement('mark');
+                mark.className = `highlight-${color}`;
+                try {
+                    activeSelectionRange.surroundContents(mark);
+                } catch (e) { console.error("Erro ao aplicar grifo:", e) }
             }
-            
             hideHighlightTooltip();
-            transcriptionTextEl.normalize();
+            selection.removeAllRanges();
         }
-
-        highlightTooltip.querySelectorAll('.color-option').forEach(option => {
-            option.addEventListener('click', (event) => {
-                const color = event.currentTarget.dataset.color;
-                applyHighlight(color);
-            });
-        });
         
         async function saveHighlights() {
             if (!currentEssayId) return;
-            
-            const updatedHTML = transcriptionTextEl.innerHTML;
-            const essayRef = doc(db, "essays", currentEssayId);
-            
             saveHighlightsBtn.disabled = true;
             saveHighlightsBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
-
             try {
-                await updateDoc(essayRef, { highlightedTranscription: updatedHTML });
+                await updateDoc(doc(db, "essays", currentEssayId), { highlightedTranscription: transcriptionTextEl.innerHTML });
                 saveHighlightsBtn.innerHTML = '<i class="fa-solid fa-check"></i> Salvo!';
-                
-                setTimeout(() => {
-                    saveHighlightsBtn.disabled = false;
-                    saveHighlightsBtn.innerHTML = '<i class="fa-solid fa-save"></i> Salvar Grifos';
-                }, 1500);
-            } catch (error) {
-                console.error("Erro ao salvar grifos:", error);
+                setTimeout(() => saveHighlightsBtn.innerHTML = '<i class="fa-solid fa-save"></i> Salvar Grifos', 1500);
+            } catch (e) {
+                console.error("Erro ao salvar grifos:", e);
                 alert("Não foi possível salvar os grifos.");
+            } finally {
                 saveHighlightsBtn.disabled = false;
-                saveHighlightsBtn.innerHTML = '<i class="fa-solid fa-save"></i> Salvar Grifos';
             }
         }
-        saveHighlightsBtn.addEventListener('click', saveHighlights);
 
         async function clearAllHighlights() {
             if (!currentEssayId) return;
             const essay = allEssays.find(e => e.id === currentEssayId);
             if (!essay) return;
-            
             transcriptionTextEl.innerHTML = essay.transcribedText || 'Transcrição não disponível.';
-            const essayRef = doc(db, "essays", currentEssayId);
             try {
-                await updateDoc(essayRef, { highlightedTranscription: null });
-            } catch (error) {
-                console.error("Erro ao limpar grifos no banco de dados:", error);
-            }
+                await updateDoc(doc(db, "essays", currentEssayId), { highlightedTranscription: null });
+            } catch (e) { console.error("Erro ao limpar grifos:", e); }
         }
-        clearAllHighlightsBtn.addEventListener('click', clearAllHighlights);
-
-        // Event Listeners
-        addThemeBtn.addEventListener('click', () => openThemeModal());
-        closeThemeModalBtn.addEventListener('click', closeThemeModal);
-        cancelThemeBtn.addEventListener('click', closeThemeModal);
-        saveThemeBtn.addEventListener('click', saveTheme);
-
-        closeDeleteModalBtn.addEventListener('click', () => {
-            deleteConfirmationModal.style.display = 'none';
-            currentThemeId = null;
-        });
-        cancelDeleteBtn.addEventListener('click', () => {
-            deleteConfirmationModal.style.display = 'none';
-            currentThemeId = null;
-        });
-
-        themeModal.addEventListener('click', (e) => {
-            if (e.target === themeModal) closeThemeModal();
-        });
-        deleteConfirmationModal.addEventListener('click', (e) => {
-            if (e.target === deleteConfirmationModal) {
-                deleteConfirmationModal.style.display = 'none';
-                currentThemeId = null;
-            }
-        });
-        themeForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            saveTheme();
-        });
-
-        // Event Delegation para Sidebar
-        document.querySelector('.sidebar').addEventListener('click', (event) => {
-            const essayItem = event.target.closest('.essay-item');
-            const actionButton = event.target.closest('.action-btn');
-
-            if (actionButton) {
-                event.stopPropagation(); // Impede que o clique no botão selecione a redação
-                const id = actionButton.dataset.id;
-                const action = actionButton.dataset.action;
-                if (action === 'archive') {
-                    toggleArchiveStatus(id, 'archived');
-                } else if (action === 'unarchive') {
-                    toggleArchiveStatus(id, 'active');
-                }
-            } else if (essayItem) {
-                displayEssayDetails(essayItem.dataset.id);
-            }
-        });
 
         function initializeApp() {
             const appData = getAppData();
-            
             if (!appData || !appData.userData || appData.userData.role !== 'teacher') {
-                alert('Acesso negado. Esta página é restrita a professores.');
-                localStorage.removeItem(APP_STORAGE_KEY);
+                alert('Acesso negado.');
                 window.location.href = '../index.html';
                 return;
             }
-
-            console.log("Acesso de professor autorizado.");
-            
-            const teacherData = appData.userData;
-            document.getElementById('teacher-name').textContent = teacherData.name;
-            if (teacherData.avatar) {
-                document.getElementById('teacher-avatar').src = teacherData.avatar;
-            } else {
-                document.getElementById('teacher-avatar').src = 'assets/default-avatar.png'; 
-            }
+            document.getElementById('teacher-name').textContent = appData.userData.name;
+            document.getElementById('teacher-avatar').src = appData.userData.avatar || 'assets/default-avatar.png';
             
             listenForEssays();
-
-            // Lógica do Acordeão da Sidebar
-            const toggles = document.querySelectorAll('.sidebar-section-toggle');
-            toggles.forEach(toggle => {
+            
+            // Event Listeners
+            correctionNavBtn.addEventListener('click', () => switchView('correction'));
+            themesNavBtn.addEventListener('click', () => switchView('themes'));
+            document.querySelector('.sidebar').addEventListener('click', (event) => {
+                const essayItem = event.target.closest('.essay-item');
+                const actionButton = event.target.closest('.action-btn');
+                if (actionButton) {
+                    event.stopPropagation();
+                    const { id, action } = actionButton.dataset;
+                    toggleArchiveStatus(id, action === 'archive' ? 'archived' : 'active');
+                } else if (essayItem) {
+                    displayEssayDetails(essayItem.dataset.id);
+                }
+            });
+            document.getElementById('themes-table-body').addEventListener('click', (event) => {
+                const editBtn = event.target.closest('.edit-btn');
+                const deleteBtn = event.target.closest('.delete-btn');
+                if (editBtn) openThemeModal(true, allThemes.find(t => t.id === editBtn.dataset.id));
+                if (deleteBtn) setupDeleteModal('theme', deleteBtn.dataset.id);
+            });
+            document.querySelectorAll('.sidebar-section-toggle').forEach(toggle => {
                 toggle.addEventListener('click', () => {
-                    const targetId = toggle.dataset.target;
-                    const targetWrapper = document.getElementById(targetId);
-                    const isExpanded = toggle.classList.contains('expanded');
-
-                    // Fecha todos os outros
-                    toggles.forEach(t => {
+                    const targetWrapper = document.getElementById(toggle.dataset.target);
+                    const isExpanded = toggle.classList.toggle('expanded');
+                    targetWrapper.classList.toggle('expanded');
+                    document.querySelectorAll('.sidebar-section-toggle').forEach(t => {
                         if (t !== toggle) {
                             t.classList.remove('expanded');
                             document.getElementById(t.dataset.target).classList.remove('expanded');
                         }
                     });
+                });
+            });
+            
+            deleteEssayBtn.addEventListener('click', () => {
+                if(currentEssayId) setupDeleteModal('essay', currentEssayId);
+            });
+            confirmDeleteBtn.addEventListener('click', confirmDelete);
 
-                    // Abre ou fecha o clicado
-                    if (!isExpanded) {
-                        toggle.classList.add('expanded');
-                        targetWrapper.classList.add('expanded');
-                    } else {
-                         toggle.classList.remove('expanded');
-                         targetWrapper.classList.remove('expanded');
+            document.getElementById('theme-search-input').addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const filtered = allThemes.filter(t => t.title.toLowerCase().includes(term) || t.text.toLowerCase().includes(term));
+                renderThemesTable(filtered);
+            });
+            document.getElementById('grades-header').addEventListener('click', () => {
+                document.getElementById('collapsible-grades').classList.toggle('expanded');
+                document.querySelector('#grades-header .toggle-grades-btn').classList.toggle('collapsed');
+            });
+            profileTrigger.addEventListener('click', (e) => { e.stopPropagation(); profileDropdown.classList.toggle('show'); });
+            window.addEventListener('click', () => profileDropdown.classList.remove('show'));
+            logoutButton.addEventListener('click', () => signOut(auth).then(() => { localStorage.removeItem(APP_STORAGE_KEY); window.location.href = '../index.html'; }));
+            showTranscriptionBtn.addEventListener('click', () => { transcriptionModal.style.display = 'flex'; hideHighlightTooltip(); });
+            [closeTranscriptionModalBtn, transcriptionModal].forEach(el => el.addEventListener('click', (e) => { if (e.target === el) { transcriptionModal.style.display = 'none'; hideHighlightTooltip(); } }));
+            addThemeBtn.addEventListener('click', () => openThemeModal());
+            [closeThemeModalBtn, cancelThemeBtn, themeModal].forEach(el => el.addEventListener('click', (e) => { if (e.currentTarget === el) themeModal.style.display = 'none'; }));
+            themeForm.addEventListener('submit', (e) => { e.preventDefault(); saveTheme(); });
+            [closeDeleteModalBtn, cancelDeleteBtn, deleteConfirmationModal].forEach(el => el.addEventListener('click', (e) => { if (e.currentTarget === el) deleteConfirmationModal.style.display = 'none'; }));
+            openGeneratorBtn.addEventListener('click', (e) => { e.preventDefault(); generatorForm.reset(); generatorFormView.style.display = 'block'; generatorLoadingView.style.display = 'none'; generatorResultsView.style.display = 'none'; themeGeneratorModal.style.display = 'flex'; });
+            [closeGeneratorModalBtn, themeGeneratorModal].forEach(el => el.addEventListener('click', (e) => { if (e.currentTarget === el) themeGeneratorModal.style.display = 'none'; }));
+            generatorForm.addEventListener('submit', handleThemeGeneration);
+            addSelectedThemesBtn.addEventListener('click', saveSelectedThemes);
+            backToGeneratorFormBtn.addEventListener('click', () => { generatorFormView.style.display = 'block'; generatorResultsView.style.display = 'none'; });
+            transcriptionTextEl.addEventListener('mouseup', () => {
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0 && !selection.isCollapsed) {
+                    const range = selection.getRangeAt(0);
+                    if (transcriptionTextEl.contains(range.commonAncestorContainer)) {
+                        activeSelectionRange = range.cloneRange();
+                        showHighlightTooltip(getSelectionCoords(selection));
                     }
-                });
-            });
-
-            const gradesHeader = document.getElementById('grades-header');
-            const collapsibleGrades = document.getElementById('collapsible-grades');
-            const toggleIcon = gradesHeader.querySelector('.toggle-grades-btn');
-
-            gradesHeader.addEventListener('click', () => {
-                const isExpanded = collapsibleGrades.classList.toggle('expanded');
-                toggleIcon.style.transform = isExpanded ? 'translateY(-50%) rotate(0deg)' : 'translateY(-50%) rotate(-180deg)';
-                toggleIcon.classList.toggle('collapsed', !isExpanded);
-            });
-
-            profileTrigger.addEventListener('click', (event) => {
-                event.stopPropagation();
-                profileDropdown.classList.toggle('show');
-            });
-
-            window.addEventListener('click', () => {
-                if (profileDropdown.classList.contains('show')) {
-                    profileDropdown.classList.remove('show');
                 }
             });
-
-            logoutButton.addEventListener('click', () => {
-                signOut(auth).then(() => {
-                    localStorage.removeItem(APP_STORAGE_KEY);
-                    window.location.href = '../index.html';
-                }).catch((error) => {
-                    console.error('Erro ao fazer logout:', error);
-                    alert('Ocorreu um erro ao sair.');
-                });
-            });
-
-            showTranscriptionBtn.addEventListener('click', () => {
-                transcriptionModal.style.display = 'flex';
-                hideHighlightTooltip(); 
-            });
-            closeTranscriptionModalBtn.addEventListener('click', () => {
-                transcriptionModal.style.display = 'none';
-                hideHighlightTooltip();
-            });
-            transcriptionModal.addEventListener('click', (event) => {
-                if (event.target === transcriptionModal) {
-                    transcriptionModal.style.display = 'none';
-                    hideHighlightTooltip();
-                }
-            });
+            transcriptionModal.addEventListener('mousedown', (e) => { if (!highlightTooltip.contains(e.target) && !transcriptionTextEl.contains(e.target)) hideHighlightTooltip(); });
+            highlightTooltip.addEventListener('mousedown', (e) => e.stopPropagation());
+            highlightTooltip.querySelectorAll('.color-option').forEach(option => option.addEventListener('click', (e) => applyHighlight(e.currentTarget.dataset.color)));
+            saveHighlightsBtn.addEventListener('click', saveHighlights);
+            clearAllHighlightsBtn.addEventListener('click', clearAllHighlights);
         }
         
         document.addEventListener('DOMContentLoaded', initializeApp);
