@@ -23,5 +23,3 @@ const app = initializeApp(firebaseConfig);
 // Inicializa e exporta os serviços do Firebase para serem usados em outros arquivos
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-
-console.log("Serviços do Firebase (Auth, Firestore) inicializados com sucesso a partir do módulo!");

@@ -175,6 +175,7 @@
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
+            scrollbar-gutter: stable; /* Adicionado para evitar o "salto" do conteúdo */
         }
         .sidebar-section {
             border-bottom: 1px solid var(--cor-borda);
@@ -196,7 +197,7 @@
             font-size: 1.2rem;
             font-weight: 600;
             font-family: 'Poppins', sans-serif;
-            color: var(--cor-texto-principal);
+            color: var(--cor-acento);
         }
         .sidebar-section-toggle .toggle-title {
             display: flex;
@@ -216,6 +217,7 @@
         }
         .sidebar-section-toggle .toggle-icon {
             transition: transform 0.3s ease;
+            color: var(--cor-texto-sutil);
         }
         .sidebar-section-toggle.expanded .toggle-icon {
             transform: rotate(180deg);
@@ -244,10 +246,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative; /* Essencial para posicionar o botão de ação */
+            overflow: hidden; /* Garante que o botão não vaze para fora */
         }
         .essay-item:hover {
             background-color: #f8f9fa;
-            transform: translateX(5px);
+            padding-left: 20px; /* Altera o padding para criar o efeito de deslocamento */
         }
         .essay-item.active {
             background-color: #eef8ff;
@@ -295,19 +299,20 @@
             transition: gap 0.3s ease;
         }
         .essay-actions {
+            position: absolute;
+            top: 5px; /* Movido mais para cima */
+            right: 8px;
             display: flex;
             align-items: center;
             gap: 5px;
             opacity: 0;
-            max-width: 0;
-            overflow: hidden;
-            white-space: nowrap;
-            transition: opacity 0.2s ease, max-width 0.3s ease 0.1s;
+            transform: translateY(-10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
             pointer-events: none;
         }
         .essay-item:hover .essay-actions {
             opacity: 1;
-            max-width: 50px;
+            transform: translateY(0);
             pointer-events: auto;
         }
         .action-btn {
@@ -654,12 +659,12 @@
             height: 100%;
             flex-direction: column;
             padding: 20px;
+            gap: 20px;
         }
         .themes-header {
             background-color: var(--cor-container);
             padding: 20px 25px;
             border-radius: 16px;
-            margin-bottom: 20px;
             border: 1px solid var(--cor-borda);
             display: flex;
             justify-content: space-between;
@@ -724,20 +729,48 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(0, 168, 255, 0.2);
         }
-        .table-container {
+        .themes-body-container {
+            display: flex;
+            gap: 20px;
             flex-grow: 1;
+            overflow: hidden;
+        }
+        .table-container {
+            flex: 2;
             background-color: var(--cor-container);
             border-radius: 16px;
             border: 1px solid var(--cor-borda);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            overflow: hidden;
+        }
+        .container-title {
+            margin: 0 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--cor-acento);
+            font-size: 1.2rem;
+            font-weight: 600;
+            flex-shrink: 0;
+            padding-bottom: 15px; /* Adicionado para separar do conteúdo abaixo */
+            border-bottom: 1px solid var(--cor-borda); /* Adicionado para separar */
+        }
+        .table-wrapper {
+            flex-grow: 1;
+            border: 2px dashed var(--cor-borda);
+            border-radius: 12px;
+            padding: 15px;
             overflow-y: auto;
-            padding: 15px 30px 30px 30px;
         }
         .themes-table {
             width: 100%;
             border-collapse: collapse;
         }
         .themes-table th, .themes-table td {
-            padding: 20px 15px;
+            padding: 16px 15px;
             text-align: left;
             border-bottom: 1px solid var(--cor-borda);
             vertical-align: middle;
@@ -756,9 +789,21 @@
         .themes-table tbody tr:hover {
             background-color: #f8f9fa;
         }
+        .themes-table tbody tr.dragging {
+            opacity: 0.4;
+            background-color: #eef8ff;
+        }
         .themes-table td {
             color: var(--cor-texto-principal);
             font-size: 0.95rem;
+        }
+        .drag-header-cell { width: 40px; }
+        .actions-header-cell { text-align: right; width: 80px; }
+        .drag-handle-cell {
+            width: 40px;
+            text-align: center;
+            color: var(--cor-texto-sutil);
+            cursor: grab;
         }
         .themes-table .theme-title-cell {
             font-weight: 600;
@@ -775,38 +820,213 @@
             color: var(--cor-texto-sutil);
         }
         .themes-table .theme-actions-cell {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
+            position: relative;
+            text-align: right;
+            width: 80px;
         }
         #themes-placeholder {
             display: none;
         }
-        .theme-action-btn {
+        .kebab-menu-btn {
+            background-color: transparent;
+            border: none;
+            color: var(--cor-texto-sutil);
             width: 36px;
             height: 36px;
-            border: none;
             border-radius: 50%;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: background-color 0.2s;
+        }
+        .kebab-menu-btn:hover, .kebab-menu-btn.active {
+            background-color: #eef8ff;
+            color: var(--cor-acento);
+        }
+        .actions-popup {
+            position: absolute;
+            right: 40px;
+            top: 45px;
+            background-color: var(--cor-container);
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 150px;
+            z-index: 10;
+            overflow: hidden;
+            display: none;
+        }
+        .actions-popup.show {
+            display: block;
+        }
+        .popup-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: none;
+            border: none;
+            width: 100%;
+            padding: 12px 15px;
+            text-align: left;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: var(--cor-texto-principal);
+        }
+        .popup-action-btn:hover {
+            background-color: var(--cor-fundo);
+        }
+        .popup-action-btn.edit i { color: var(--cor-acento); }
+        .popup-action-btn.delete i { color: var(--cor-perigo); }
+        .current-week-container {
+            flex: 1;
+            background-color: var(--cor-container);
+            border-radius: 16px;
+            border: 1px solid var(--cor-borda);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+        .weekly-planning-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+            /* Removido: padding-bottom e border-bottom */
+        }
+        .weekly-planning-main-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        #week-title {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            font-size: 1.1rem; /* Tamanho ajustado para subtítulo */
+            color: var(--cor-texto-principal);
+            font-weight: 600; /* Reduzido o peso da fonte */
+            margin: 0;
+        }
+        #week-dates {
+            font-size: 0.9rem;
+            color: var(--cor-texto-sutil);
+            font-weight: 500;
+        }
+        #week-status-tag {
+            font-size: 0.75rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background-color: var(--cor-sucesso);
+            color: white;
+            display: none; /* Inicia oculto */
+            align-items: center;
+            gap: 5px;
+        }
+        #week-status-tag.active {
+            display: inline-flex;
+        }
+        #week-status-tag::before {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+        }
+        .week-nav-btn {
+            background: none;
+            border: 1px solid var(--cor-borda);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            color: var(--cor-texto-sutil);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
             transition: all 0.2s ease;
         }
-        .edit-btn {
-            background-color: #eef8ff;
+        .week-nav-btn:hover {
             color: var(--cor-acento);
+            border-color: var(--cor-acento);
         }
-        .edit-btn:hover {
-            background-color: #d1ecff;
+        .week-nav-btn:disabled {
+            color: var(--cor-borda);
+            cursor: not-allowed;
+            border-color: var(--cor-borda);
         }
-        .delete-btn {
+        .dropzone {
+            flex-grow: 1;
+            border: 2px dashed var(--cor-borda);
+            border-radius: 12px;
+            padding: 15px;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+        .dropzone.drag-over {
+            background-color: #eef8ff;
+            border-color: var(--cor-acento);
+        }
+        .dropzone-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--cor-texto-sutil);
+            font-size: 0.9rem;
+            flex-grow: 1;
+        }
+        .weekly-theme-item {
+            background-color: var(--cor-fundo);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--cor-borda);
+            animation: fadeIn 0.3s ease;
+            gap: 10px;
+        }
+        .weekly-theme-content {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            min-width: 0;
+        }
+        .weekly-theme-item p {
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .theme-item-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .theme-item-snippet {
+            font-size: 0.8rem;
+            color: var(--cor-texto-sutil);
+        }
+        .weekly-theme-item button {
+            background: none;
+            border: none;
+            color: var(--cor-texto-sutil);
+            cursor: pointer;
+            font-size: 1rem;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .weekly-theme-item button:hover {
             background-color: #f8d7da;
             color: var(--cor-perigo);
-        }
-        .delete-btn:hover {
-            background-color: #f1b0b7;
         }
         .modal-backdrop {
             display: none;
@@ -827,7 +1047,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             width: 90%;
             max-width: 600px;
-            max-height: 80vh;
+            max-height: 90vh;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -1011,10 +1231,10 @@
         .nav-button, .btn, .theme-action-btn, .transcription-button {
             font-family: 'Poppins', sans-serif;
         }
-        .evaluation-pane::-webkit-scrollbar, .themes-grid::-webkit-scrollbar, .transcription-text-wrapper::-webkit-scrollbar, .sidebar::-webkit-scrollbar, #archived-list-wrapper::-webkit-scrollbar { width: 8px; }
-        .evaluation-pane::-webkit-scrollbar-track, .themes-grid::-webkit-scrollbar-track, .transcription-text-wrapper::-webkit-scrollbar-track, .sidebar::-webkit-scrollbar-track, #archived-list-wrapper::-webkit-scrollbar-track { background: var(--cor-fundo); border-radius: 4px; }
-        .evaluation-pane::-webkit-scrollbar-thumb, .themes-grid::-webkit-scrollbar-thumb, .transcription-text-wrapper::-webkit-scrollbar-thumb, .sidebar::-webkit-scrollbar-thumb, #archived-list-wrapper::-webkit-scrollbar-thumb { background-color: #cdd2da; border-radius: 4px; border: 2px solid var(--cor-fundo); }
-        .evaluation-pane::-webkit-scrollbar-thumb:hover, .themes-grid::-webkit-scrollbar-thumb:hover, .transcription-text-wrapper::-webkit-scrollbar-thumb:hover, .sidebar::-webkit-scrollbar-thumb:hover, #archived-list-wrapper::-webkit-scrollbar-thumb:hover { background-color: #b0b8c5; }
+        .evaluation-pane::-webkit-scrollbar, .themes-grid::-webkit-scrollbar, .transcription-text-wrapper::-webkit-scrollbar, .sidebar::-webkit-scrollbar, #archived-list-wrapper::-webkit-scrollbar, .dropzone::-webkit-scrollbar, .table-wrapper::-webkit-scrollbar, .weekly-planning-accordion::-webkit-scrollbar { width: 8px; }
+        .evaluation-pane::-webkit-scrollbar-track, .themes-grid::-webkit-scrollbar-track, .transcription-text-wrapper::-webkit-scrollbar-track, .sidebar::-webkit-scrollbar-track, #archived-list-wrapper::-webkit-scrollbar-track, .dropzone::-webkit-scrollbar-track, .table-wrapper::-webkit-scrollbar-track, .weekly-planning-accordion::-webkit-scrollbar-track { background: var(--cor-fundo); border-radius: 4px; }
+        .evaluation-pane::-webkit-scrollbar-thumb, .themes-grid::-webkit-scrollbar-thumb, .transcription-text-wrapper::-webkit-scrollbar-thumb, .sidebar::-webkit-scrollbar-thumb, #archived-list-wrapper::-webkit-scrollbar-thumb, .dropzone::-webkit-scrollbar-thumb, .table-wrapper::-webkit-scrollbar-thumb, .weekly-planning-accordion::-webkit-scrollbar-thumb { background-color: #cdd2da; border-radius: 4px; border: 2px solid var(--cor-fundo); }
+        .evaluation-pane::-webkit-scrollbar-thumb:hover, .themes-grid::-webkit-scrollbar-thumb:hover, .transcription-text-wrapper::-webkit-scrollbar-thumb:hover, .sidebar::-webkit-scrollbar-thumb:hover, #archived-list-wrapper::-webkit-scrollbar-thumb:hover, .dropzone::-webkit-scrollbar-thumb:hover, .table-wrapper::-webkit-scrollbar-thumb:hover, .weekly-planning-accordion::-webkit-scrollbar-thumb:hover { background-color: #b0b8c5; }
         #highlight-tooltip {
             position: absolute;
             background-color: var(--cor-container);
@@ -1116,6 +1336,11 @@
             font-size: 0.9rem;
             color: var(--cor-texto-sutil);
             line-height: 1.6;
+        }
+        .empty-list-msg {
+            text-align: center; 
+            color: var(--cor-texto-sutil); 
+            padding: 20px 0;
         }
     </style>
 </head>
@@ -1317,22 +1542,46 @@
                     </button>
                 </div>
             </div>
-            <div class="table-container">
-                <table class="themes-table">
-                    <thead>
-                        <tr>
-                            <th>Título do Tema</th>
-                            <th>Início do Texto Motivador</th>
-                            <th>Criado em</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="themes-table-body">
-                        </tbody>
-                </table>
-                <div id="themes-placeholder" class="placeholder" style="display: none;">
-                    <i class="fa-regular fa-folder-open"></i>
-                    <p>Nenhum tema encontrado.</p>
+            <div class="themes-body-container">
+                <div class="table-container">
+                    <h3 class="container-title"><i class="fa-solid fa-database"></i> Temas Disponíveis</h3>
+                    <div class="table-wrapper">
+                        <table class="themes-table">
+                            <thead>
+                                <tr>
+                                    <th class="drag-header-cell"></th>
+                                    <th>Título do Tema</th>
+                                    <th>Início do Texto Motivador</th>
+                                    <th>Criado em</th>
+                                    <th class="actions-header-cell">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="themes-table-body">
+                            </tbody>
+                        </table>
+                        <div id="themes-placeholder" class="placeholder" style="display: none;">
+                            <i class="fa-regular fa-folder-open"></i>
+                            <p>Nenhum tema encontrado.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="current-week-container">
+                    <h3 class="container-title"><i class="fa-solid fa-calendar-week"></i> Planejamento Semanal</h3>
+                    <div class="weekly-planning-header">
+                        <button id="prev-week-btn" class="week-nav-btn" title="Semana Anterior">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <div class="weekly-planning-main-info">
+                            <h4 id="week-title">Semana 1 <span id="week-dates">01/01 - 07/01</span></h4>
+                            <span class="status-badge" id="week-status-tag">SEMANA ATIVA</span>
+                        </div>
+                        <button id="next-week-btn" class="week-nav-btn" title="Próxima Semana">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div id="weekly-themes-dropzone" class="dropzone" data-week="1">
+                        <p class="dropzone-placeholder">Arraste os temas da tabela para cá.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1491,7 +1740,7 @@
             }
         }
 
-        // Elementos do DOM
+        // --- Variáveis Globais ---
         const correctionNavBtn = document.getElementById('correction-nav-btn');
         const themesNavBtn = document.getElementById('themes-nav-btn');
         const correctionView = document.getElementById('correction-view');
@@ -1542,6 +1791,9 @@
         let currentEssayId = null, currentThemeId = null, itemToDelete = null;
         let essayUnsubscribe, themeUnsubscribe;
         let activeSelectionRange = null;
+        let displayedWeek = 1;
+
+        // --- Funções Principais ---
 
         function switchView(viewName) {
             correctionNavBtn.classList.toggle('active', viewName === 'correction');
@@ -1583,11 +1835,11 @@
                         </div>
                         <div class="essay-item-right">
                             <span class="status-tag concluido">Concluído</span>
-                            <div class="essay-actions">
-                                <button class="action-btn" data-action="${actionData}" data-id="${essay.id}" title="${actionTitle}">
-                                    <i class="fa-solid ${actionIcon}"></i>
-                                </button>
-                            </div>
+                        </div>
+                        <div class="essay-actions">
+                            <button class="action-btn" data-action="${actionData}" data-id="${essay.id}" title="${actionTitle}">
+                                <i class="fa-solid ${actionIcon}"></i>
+                            </button>
                         </div>
                     </li>`;
             };
@@ -1641,34 +1893,109 @@
         }
 
         function listenForThemes() {
-            const themesRef = collection(db, "themes");
-            const q = query(themesRef, orderBy("createdAt", "desc"));
-            themeUnsubscribe = onSnapshot(q, (snapshot) => {
-                allThemes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                renderThemesTable(allThemes);
-            }, (error) => console.error("Erro ao buscar temas: ", error));
+            const configRef = doc(db, "configuracao", "semanal");
+            onSnapshot(configRef, (configDoc) => {
+                const activeWeek = configDoc.exists() ? configDoc.data().semanaAtiva : 1;
+                const themesRef = collection(db, "themes");
+                const q = query(themesRef, orderBy("createdAt", "desc"));
+                if (themeUnsubscribe) themeUnsubscribe();
+                themeUnsubscribe = onSnapshot(q, (snapshot) => {
+                    allThemes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    renderThemesTable(allThemes);
+                    updateWeeklyPlannerView(activeWeek);
+                }, (error) => console.error("Erro ao buscar temas: ", error));
+            }, (error) => console.error("Erro ao buscar configuração da semana: ", error));
         }
 
         function renderThemesTable(themes) {
             const tableBody = document.getElementById('themes-table-body');
             const placeholder = document.getElementById('themes-placeholder');
+            const searchTerm = document.getElementById('theme-search-input').value.toLowerCase();
+            const themesToRender = themes.filter(theme => 
+                theme.title.toLowerCase().includes(searchTerm) || 
+                theme.text.toLowerCase().includes(searchTerm)
+            );
             tableBody.innerHTML = '';
-            placeholder.style.display = themes.length === 0 ? 'flex' : 'none';
-            themes.forEach(theme => {
+            placeholder.style.display = themesToRender.length === 0 ? 'flex' : 'none';
+            themesToRender.forEach(theme => {
                 const date = theme.createdAt?.toDate().toLocaleDateString('pt-BR') || 'Data indisponível';
                 const tr = document.createElement('tr');
+                tr.draggable = true;
+                tr.dataset.id = theme.id;
+                tr.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', theme.id);
+                    e.currentTarget.classList.add('dragging');
+                });
+                tr.addEventListener('dragend', (e) => e.currentTarget.classList.remove('dragging'));
                 tr.innerHTML = `
+                    <td class="drag-handle-cell"><i class="fa-solid fa-grip-lines"></i></td>
                     <td class="theme-title-cell" title="${theme.title}">${theme.title}</td>
                     <td class="theme-text-cell" title="${theme.text}">${theme.text.substring(0, 80)}...</td>
                     <td>${date}</td>
                     <td class="theme-actions-cell">
-                        <button class="theme-action-btn edit-btn" data-id="${theme.id}" title="Editar Tema"><i class="fa-solid fa-pen"></i></button>
-                        <button class="theme-action-btn delete-btn" data-id="${theme.id}" title="Excluir Tema"><i class="fa-solid fa-trash"></i></button>
+                        <button class="kebab-menu-btn" title="Ações">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                        <div class="actions-popup">
+                            <button class="popup-action-btn edit" data-id="${theme.id}">
+                                <i class="fa-solid fa-pen"></i> Editar
+                            </button>
+                            <button class="popup-action-btn delete" data-id="${theme.id}">
+                                <i class="fa-solid fa-trash"></i> Excluir
+                            </button>
+                        </div>
                     </td>`;
                 tableBody.appendChild(tr);
             });
         }
-        
+
+        function renderWeeklyThemes(themes) {
+            const dropzone = document.getElementById('weekly-themes-dropzone');
+            dropzone.innerHTML = '';
+            if (themes.length === 0) {
+                dropzone.style.overflowY = 'hidden';
+                dropzone.innerHTML = '<p class="dropzone-placeholder">Arraste os temas da tabela para cá.</p>';
+            } else {
+                dropzone.style.overflowY = 'auto';
+                themes.forEach(theme => {
+                    const item = document.createElement('div');
+                    item.className = 'weekly-theme-item';
+                    item.innerHTML = `
+                        <i class="fa-solid fa-grip-lines" style="color: var(--cor-texto-sutil); cursor: default;"></i>
+                        <div class="weekly-theme-content">
+                            <p class="theme-item-title" title="${theme.title}">${theme.title}</p>
+                            <p class="theme-item-snippet" title="${theme.text}">${theme.text.substring(0, 70)}...</p>
+                        </div>
+                        <button data-id="${theme.id}" title="Remover da semana">
+                            <i class="fa-solid fa-times"></i>
+                        </button>
+                    `;
+                    dropzone.appendChild(item);
+                });
+            }
+        }
+
+        function getWeekDateRange(weekOffset) {
+            const now = new Date();
+            const today = now.getDay();
+            const dayOffset = (today === 0) ? -6 : 1 - today;
+            const monday = new Date(new Date(now).setDate(now.getDate() + dayOffset + (weekOffset * 7)));
+            const sunday = new Date(new Date(monday).setDate(monday.getDate() + 6));
+            const format = (date) => `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}`;
+            return `${format(monday)} - ${format(sunday)}`;
+        }
+
+        function updateWeeklyPlannerView(activeWeek) {
+            document.getElementById('week-title').innerHTML = `Semana ${displayedWeek} <span id="week-dates">${getWeekDateRange(displayedWeek - 1)}</span>`;
+            const statusTag = document.getElementById('week-status-tag');
+            statusTag.classList.toggle('active', displayedWeek === activeWeek);
+            const themesForDisplayedWeek = allThemes.filter(t => t.assignedWeek === displayedWeek);
+            renderWeeklyThemes(themesForDisplayedWeek);
+            document.getElementById('weekly-themes-dropzone').dataset.week = displayedWeek;
+            document.getElementById('prev-week-btn').disabled = displayedWeek === 1;
+            document.getElementById('next-week-btn').disabled = displayedWeek === 3;
+        }
+
         function openThemeModal(isEdit = false, themeData = null) {
             themeModalTitle.innerHTML = `<i class="fa-solid fa-book"></i> ${isEdit ? 'Editar Tema' : 'Novo Tema'}`;
             themeForm.reset();
@@ -1690,9 +2017,10 @@
             const data = { title, text, updatedAt: serverTimestamp() };
             try {
                 if (currentThemeId) {
-                    await setDoc(doc(db, "themes", currentThemeId), data, { merge: true });
+                    await updateDoc(doc(db, "themes", currentThemeId), data);
                 } else {
                     data.createdAt = serverTimestamp();
+                    data.assignedWeek = null;
                     await setDoc(doc(collection(db, "themes")), data);
                 }
                 themeModal.style.display = 'none';
@@ -1724,18 +2052,29 @@
                     await deleteDoc(doc(db, "themes", id));
                 } else if (type === 'essay') {
                     const essay = allEssays.find(e => e.id === id);
-                    if (essay.essayImagePublicId) await deleteArquivoCloudinary(essay.essayImagePublicId);
+                    if (essay && essay.essayImagePublicId) {
+                         await deleteArquivoCloudinary(essay.essayImagePublicId);
+                    }
                     await deleteDoc(doc(db, "essays", id));
                     if(id === currentEssayId) showPlaceholder();
                 }
-                deleteConfirmationModal.style.display = 'none';
             } catch (e) {
                 console.error(`Erro ao excluir ${type}:`, e);
                 alert(`Erro ao excluir ${type}.`);
             } finally {
+                deleteConfirmationModal.style.display = 'none';
                 confirmDeleteBtn.disabled = false;
                 confirmDeleteBtn.innerHTML = 'Excluir';
                 itemToDelete = null;
+            }
+        }
+
+        async function updateThemeAssignedWeek(themeId, weekNumber) {
+            try {
+                await updateDoc(doc(db, "themes", themeId), { assignedWeek: weekNumber });
+            } catch (e) {
+                console.error("Erro ao atualizar semana do tema:", e);
+                alert("Ocorreu um erro ao mover o tema.");
             }
         }
         
@@ -1743,13 +2082,9 @@
             event.preventDefault();
             const description = document.getElementById('generator-description').value;
             const quantity = document.getElementById('generator-quantity').value;
-            const generateBtn = document.getElementById('generate-btn');
-
             generatorFormView.style.display = 'none';
             generatorResultsView.style.display = 'none';
             generatorLoadingView.style.display = 'flex';
-            generateBtn.disabled = true;
-
             try {
                 const apiKey = "AIzaSyB7ygXwm0Zw39QrS9oV6D8P1qqZ5BmRhrM";
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
@@ -1767,7 +2102,6 @@
                 generatorFormView.style.display = 'block';
             } finally {
                 generatorLoadingView.style.display = 'none';
-                generateBtn.disabled = false;
             }
         }
 
@@ -1793,7 +2127,7 @@
                     const contentDiv = item.nextElementSibling;
                     const title = contentDiv.querySelector('h4').dataset.title;
                     const text = contentDiv.querySelector('p').dataset.text;
-                    const themeData = { title, text, createdAt: serverTimestamp(), updatedAt: serverTimestamp() };
+                    const themeData = { title, text, createdAt: serverTimestamp(), updatedAt: serverTimestamp(), assignedWeek: null };
                     return setDoc(doc(collection(db, "themes")), themeData);
                 });
                 await Promise.all(promises);
@@ -1858,12 +2192,14 @@
             try {
                 await updateDoc(doc(db, "essays", currentEssayId), { highlightedTranscription: transcriptionTextEl.innerHTML });
                 saveHighlightsBtn.innerHTML = '<i class="fa-solid fa-check"></i> Salvo!';
-                setTimeout(() => saveHighlightsBtn.innerHTML = '<i class="fa-solid fa-save"></i> Salvar Grifos', 1500);
+                setTimeout(() => {
+                    saveHighlightsBtn.disabled = false;
+                    saveHighlightsBtn.innerHTML = '<i class="fa-solid fa-save"></i> Salvar Grifos'
+                }, 1500);
             } catch (e) {
                 console.error("Erro ao salvar grifos:", e);
                 alert("Não foi possível salvar os grifos.");
-            } finally {
-                saveHighlightsBtn.disabled = false;
+                 saveHighlightsBtn.disabled = false;
             }
         }
 
@@ -1886,12 +2222,12 @@
             }
             document.getElementById('teacher-name').textContent = appData.userData.name;
             document.getElementById('teacher-avatar').src = appData.userData.avatar || 'assets/default-avatar.png';
-            
             listenForEssays();
             
-            // Event Listeners
+            // --- Event Listeners ---
             correctionNavBtn.addEventListener('click', () => switchView('correction'));
             themesNavBtn.addEventListener('click', () => switchView('themes'));
+            
             document.querySelector('.sidebar').addEventListener('click', (event) => {
                 const essayItem = event.target.closest('.essay-item');
                 const actionButton = event.target.closest('.action-btn');
@@ -1903,12 +2239,27 @@
                     displayEssayDetails(essayItem.dataset.id);
                 }
             });
+
             document.getElementById('themes-table-body').addEventListener('click', (event) => {
-                const editBtn = event.target.closest('.edit-btn');
-                const deleteBtn = event.target.closest('.delete-btn');
-                if (editBtn) openThemeModal(true, allThemes.find(t => t.id === editBtn.dataset.id));
-                if (deleteBtn) setupDeleteModal('theme', deleteBtn.dataset.id);
+                const kebabBtn = event.target.closest('.kebab-menu-btn');
+                const editBtn = event.target.closest('.popup-action-btn.edit');
+                const deleteBtn = event.target.closest('.popup-action-btn.delete');
+                if (kebabBtn) {
+                    const popup = kebabBtn.nextElementSibling;
+                    const isShown = popup.classList.contains('show');
+                    document.querySelectorAll('.actions-popup.show').forEach(p => p.classList.remove('show'));
+                    document.querySelectorAll('.kebab-menu-btn.active').forEach(b => b.classList.remove('active'));
+                    if (!isShown) {
+                        popup.classList.add('show');
+                        kebabBtn.classList.add('active');
+                    }
+                } else if (editBtn) {
+                    openThemeModal(true, allThemes.find(t => t.id === editBtn.dataset.id));
+                } else if (deleteBtn) {
+                    setupDeleteModal('theme', deleteBtn.dataset.id);
+                }
             });
+
             document.querySelectorAll('.sidebar-section-toggle').forEach(toggle => {
                 toggle.addEventListener('click', () => {
                     const targetWrapper = document.getElementById(toggle.dataset.target);
@@ -1922,42 +2273,70 @@
                     });
                 });
             });
-            
-            deleteEssayBtn.addEventListener('click', () => {
-                if(currentEssayId) setupDeleteModal('essay', currentEssayId);
+
+            document.getElementById('next-week-btn').addEventListener('click', () => {
+                if (displayedWeek < 3) {
+                    displayedWeek++;
+                    listenForThemes();
+                }
             });
+            document.getElementById('prev-week-btn').addEventListener('click', () => {
+                if (displayedWeek > 1) {
+                    displayedWeek--;
+                    listenForThemes();
+                }
+            });
+            
+            deleteEssayBtn.addEventListener('click', () => { if(currentEssayId) setupDeleteModal('essay', currentEssayId) });
             confirmDeleteBtn.addEventListener('click', confirmDelete);
 
             document.getElementById('theme-search-input').addEventListener('input', (e) => {
-                const term = e.target.value.toLowerCase();
-                const filtered = allThemes.filter(t => t.title.toLowerCase().includes(term) || t.text.toLowerCase().includes(term));
-                renderThemesTable(filtered);
+                renderThemesTable(allThemes);
             });
-            document.getElementById('grades-header').addEventListener('click', () => {
+
+            document.getElementById('grades-header').addEventListener('click', (e) => {
+                e.currentTarget.querySelector('.toggle-grades-btn').classList.toggle('collapsed');
                 document.getElementById('collapsible-grades').classList.toggle('expanded');
-                document.querySelector('#grades-header .toggle-grades-btn').classList.toggle('collapsed');
             });
+
             profileTrigger.addEventListener('click', (e) => { e.stopPropagation(); profileDropdown.classList.toggle('show'); });
-            window.addEventListener('click', () => profileDropdown.classList.remove('show'));
+            window.addEventListener('click', (e) => {
+                if (!e.target.closest('.profile-container')) profileDropdown.classList.remove('show');
+                if (!e.target.closest('.theme-actions-cell')) {
+                    document.querySelectorAll('.actions-popup.show').forEach(p => p.classList.remove('show'));
+                    document.querySelectorAll('.kebab-menu-btn.active').forEach(b => b.classList.remove('active'));
+                }
+            });
             logoutButton.addEventListener('click', () => signOut(auth).then(() => { localStorage.removeItem(APP_STORAGE_KEY); window.location.href = '../index.html'; }));
+            
             showTranscriptionBtn.addEventListener('click', () => { transcriptionModal.style.display = 'flex'; hideHighlightTooltip(); });
-            [closeTranscriptionModalBtn, transcriptionModal].forEach(el => el.addEventListener('click', (e) => { if (e.target === el) { transcriptionModal.style.display = 'none'; hideHighlightTooltip(); } }));
+            closeTranscriptionModalBtn.addEventListener('click', () => { transcriptionModal.style.display = 'none'; hideHighlightTooltip(); });
+            transcriptionModal.addEventListener('click', (e) => { if (e.target === e.currentTarget) { transcriptionModal.style.display = 'none'; hideHighlightTooltip(); }});
+            
             addThemeBtn.addEventListener('click', () => openThemeModal());
-            [closeThemeModalBtn, cancelThemeBtn, themeModal].forEach(el => el.addEventListener('click', (e) => { if (e.currentTarget === el) themeModal.style.display = 'none'; }));
+            closeThemeModalBtn.addEventListener('click', () => themeModal.style.display = 'none');
+            cancelThemeBtn.addEventListener('click', () => themeModal.style.display = 'none');
+            themeModal.addEventListener('click', (e) => { if (e.target === e.currentTarget) themeModal.style.display = 'none'; });
             themeForm.addEventListener('submit', (e) => { e.preventDefault(); saveTheme(); });
-            [closeDeleteModalBtn, cancelDeleteBtn, deleteConfirmationModal].forEach(el => el.addEventListener('click', (e) => { if (e.currentTarget === el) deleteConfirmationModal.style.display = 'none'; }));
+            
+            closeDeleteModalBtn.addEventListener('click', () => deleteConfirmationModal.style.display = 'none');
+            cancelDeleteBtn.addEventListener('click', () => deleteConfirmationModal.style.display = 'none');
+            deleteConfirmationModal.addEventListener('click', (e) => { if (e.target === e.currentTarget) deleteConfirmationModal.style.display = 'none'; });
+            
             openGeneratorBtn.addEventListener('click', (e) => { e.preventDefault(); generatorForm.reset(); generatorFormView.style.display = 'block'; generatorLoadingView.style.display = 'none'; generatorResultsView.style.display = 'none'; themeGeneratorModal.style.display = 'flex'; });
-            [closeGeneratorModalBtn, themeGeneratorModal].forEach(el => el.addEventListener('click', (e) => { if (e.currentTarget === el) themeGeneratorModal.style.display = 'none'; }));
+            closeGeneratorModalBtn.addEventListener('click', () => themeGeneratorModal.style.display = 'none');
+            themeGeneratorModal.addEventListener('click', (e) => { if (e.target === e.currentTarget) themeGeneratorModal.style.display = 'none'; });
             generatorForm.addEventListener('submit', handleThemeGeneration);
             addSelectedThemesBtn.addEventListener('click', saveSelectedThemes);
             backToGeneratorFormBtn.addEventListener('click', () => { generatorFormView.style.display = 'block'; generatorResultsView.style.display = 'none'; });
+            
             transcriptionTextEl.addEventListener('mouseup', () => {
                 const selection = window.getSelection();
                 if (selection.rangeCount > 0 && !selection.isCollapsed) {
                     const range = selection.getRangeAt(0);
                     if (transcriptionTextEl.contains(range.commonAncestorContainer)) {
                         activeSelectionRange = range.cloneRange();
-                        showHighlightTooltip(getSelectionCoords(selection));
+                        showHighlightTooltip(getSelectionCoords());
                     }
                 }
             });
@@ -1966,6 +2345,21 @@
             highlightTooltip.querySelectorAll('.color-option').forEach(option => option.addEventListener('click', (e) => applyHighlight(e.currentTarget.dataset.color)));
             saveHighlightsBtn.addEventListener('click', saveHighlights);
             clearAllHighlightsBtn.addEventListener('click', clearAllHighlights);
+
+            const dropzone = document.getElementById('weekly-themes-dropzone');
+            dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('drag-over'); });
+            dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('drag-over');
+                const themeId = e.dataTransfer.getData('text/plain');
+                const weekNumber = parseInt(e.currentTarget.dataset.week, 10);
+                if (themeId && weekNumber) updateThemeAssignedWeek(themeId, weekNumber);
+            });
+            dropzone.addEventListener('click', (e) => {
+                const removeBtn = e.target.closest('button');
+                if (removeBtn && removeBtn.dataset.id) updateThemeAssignedWeek(removeBtn.dataset.id, null);
+            });
         }
         
         document.addEventListener('DOMContentLoaded', initializeApp);
