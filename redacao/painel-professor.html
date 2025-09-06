@@ -605,6 +605,10 @@
             border-style: solid;
             border-color: transparent var(--cor-container) transparent transparent;
         }
+        /* Adicione esta nova regra de CSS */
+        #transcription-modal .modal-body {
+            padding-top: 0;
+        }
         .tooltip-text::before {
             content: "";
             position: absolute;
@@ -1244,7 +1248,7 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             display: flex;
             gap: 6px;
-            z-index: 1001;
+            z-index: 9998; /* <<-- VALOR AUMENTADO */
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.2s, visibility 0.2s;
@@ -1342,6 +1346,43 @@
             color: var(--cor-texto-sutil); 
             padding: 20px 0;
         }
+        
+        /* === ESTILOS ATUALIZADOS PARA O TOOLTIP DE ERRO === */
+        .error-highlight {
+            background-color: rgba(255, 99, 71, 0.4);
+            border-radius: 3px;
+            cursor: help;
+        }
+
+        .error-tooltip-global {
+            display: none; /* Começa escondido */
+            position: fixed; /* Posição fixa para ignorar o overflow dos pais */
+            z-index: 9999; /* Z-index muito alto para ficar acima de tudo */
+            max-width: 300px;
+            background-color: #ffffff;
+            color: #333;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            pointer-events: none; /* Impede que o tooltip bloqueie o mouse */
+            transition: opacity 0.2s; /* Transição suave */
+        }
+        
+        .error-tooltip-global.show {
+            display: block; /* Mostra o tooltip */
+        }
+
+        .error-tooltip-global b {
+            font-weight: 600;
+            color: var(--cor-acento);
+            display: block;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 4px;
+        }
+
     </style>
 </head>
 <body>
@@ -1792,6 +1833,7 @@
         let essayUnsubscribe, themeUnsubscribe;
         let activeSelectionRange = null;
         let displayedWeek = 1;
+        let initialEssayId = null;
 
         // --- Funções Principais ---
 
@@ -1800,6 +1842,17 @@
             themesNavBtn.classList.toggle('active', viewName === 'themes');
             correctionView.style.display = viewName === 'correction' ? 'flex' : 'none';
             themesView.style.display = viewName === 'themes' ? 'flex' : 'none';
+            
+            // ATUALIZA A URL: Define a aba atual na URL
+            if (viewName === 'themes') {
+                window.location.hash = 'view=temas';
+            } else {
+                // Só muda para a visão geral se uma redação específica não estiver sendo definida
+                if (!window.location.hash.includes('redacao=')) {
+                    window.location.hash = 'view=correcoes';
+                }
+            }
+
             if (viewName === 'themes' && !themeUnsubscribe) listenForThemes();
         }
 
@@ -1811,6 +1864,18 @@
                 activeEssays = allEssays.filter(e => e.status !== 'archived');
                 archivedEssays = allEssays.filter(e => e.status === 'archived');
                 renderEssayLists();
+
+                // ADICIONADO: Abre a redação da URL após os dados carregarem
+                if (initialEssayId) {
+                    if (allEssays.some(e => e.id === initialEssayId)) {
+                        displayEssayDetails(initialEssayId);
+                    } else {
+                        console.warn(`Redação com ID ${initialEssayId} da URL não foi encontrada.`);
+                        showPlaceholder(); // Mostra a tela padrão se o ID for inválido
+                    }
+                    initialEssayId = null; // Limpa a variável para rodar apenas uma vez
+                }
+
                 if (currentEssayId && !allEssays.some(e => e.id === currentEssayId)) {
                     showPlaceholder();
                 }
@@ -1865,21 +1930,61 @@
             placeholder.style.display = 'flex';
             essayDetailsWrapper.style.display = 'none';
             document.querySelectorAll('.essay-item').forEach(item => item.classList.remove('active'));
+            // ATUALIZA A URL: Limpa o ID da redação da URL
+            window.location.hash = 'view=correcoes';
+        }
+
+        function parseAndApplyHash() {
+            const hash = window.location.hash.substring(1); // Remove o '#'
+            if (!hash) {
+                switchView('correction');
+                return;
+            }
+
+            const [key, value] = hash.split('=');
+
+            if (key === 'view' && value === 'temas') {
+                switchView('themes');
+            } else if (key === 'redacao' && value) {
+                // Guarda o ID para abrir depois que os dados carregarem
+                initialEssayId = value;
+                // Garante que a aba de correções esteja ativa
+                switchView('correction'); 
+            } else {
+                // Se a URL for inválida ou #view=correcoes, vai para a tela padrão
+                switchView('correction');
+            }
         }
 
         function displayEssayDetails(id) {
             currentEssayId = id;
             const essay = allEssays.find(e => e.id === id);
             if (!essay) return;
+            
+            // ATUALIZA A URL: Define a redação atual na URL
+            window.location.hash = `redacao=${id}`;
+
             document.querySelectorAll('.essay-item').forEach(item => item.classList.toggle('active', item.dataset.id === id));
             placeholder.style.display = 'none';
             essayDetailsWrapper.style.display = 'flex';
+
             const date = essay.submissionDate?.toDate().toLocaleDateString('pt-BR') || 'Data indisponível';
             document.getElementById('viewer-student-avatar').src = essay.studentAvatar || 'assets/default-avatar.png';
             document.getElementById('viewer-student-name').textContent = essay.studentName;
             document.getElementById('viewer-submission-date').textContent = `Enviado em: ${date}`;
             document.getElementById('essay-image').src = essay.essayImageURL;
-            transcriptionTextEl.innerHTML = essay.highlightedTranscription || essay.transcribedText || 'Transcrição não disponível.';
+
+            let transcriptionContent = essay.highlightedTranscription || essay.transcribedText || 'Transcrição não disponível.';
+            if (essay.errors && essay.errors.length > 0 && !essay.highlightedTranscription) {
+                essay.errors.forEach(error => {
+                    const snippet = error.snippet;
+                    const escapedSnippet = snippet.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    const replacementHTML = `<span class="error-highlight" data-type="${error.type}" data-suggestion="${error.suggestion}">${snippet}</span>`;
+                    transcriptionContent = transcriptionContent.replace(new RegExp(escapedSnippet, 'm'), replacementHTML);
+                });
+            }
+            transcriptionTextEl.innerHTML = transcriptionContent;
+
             transcriptionThemeTitle.textContent = essay.themeTitle || 'Tema não especificado';
             document.getElementById('ia-grade-c1').textContent = essay.grades?.competencia1 ?? '--';
             document.getElementById('ia-grade-c2').textContent = essay.grades?.competencia2 ?? '--';
@@ -2159,7 +2264,7 @@
 
         function showHighlightTooltip(coords) {
             highlightTooltip.style.left = `${coords.left + coords.width / 2 - highlightTooltip.offsetWidth / 2}px`;
-            highlightTooltip.style.top = `${coords.top - highlightTooltip.offsetHeight - 10}px`;
+            highlightTooltip.style.top = `${coords.top - highlightTooltip.offsetHeight - 15}px`; /* <<-- AUMENTADO DE 10 PARA 15PX */
             highlightTooltip.classList.add('show');
         }
 
@@ -2360,9 +2465,52 @@
                 const removeBtn = e.target.closest('button');
                 if (removeBtn && removeBtn.dataset.id) updateThemeAssignedWeek(removeBtn.dataset.id, null);
             });
+
+            // LÓGICA ATUALIZADA PARA CONTROLAR O TOOLTIP GLOBAL
+            const globalTooltip = document.getElementById('error-tooltip-global');
+
+            transcriptionWrapper.addEventListener('mouseover', (e) => {
+                const highlight = e.target.closest('.error-highlight');
+                if (highlight) {
+                    const type = highlight.dataset.type;
+                    const suggestion = highlight.dataset.suggestion;
+                    globalTooltip.innerHTML = `<b>${type}</b>${suggestion}`;
+                    globalTooltip.classList.add('show');
+                }
+            });
+
+            transcriptionWrapper.addEventListener('mousemove', (e) => {
+                if (globalTooltip.classList.contains('show')) {
+                    const viewportWidth = window.innerWidth;
+                    const tooltipWidth = globalTooltip.offsetWidth;
+
+                    // Posiciona o tooltip 15px abaixo e à direita do cursor
+                    let top = e.clientY + 15;
+                    let left = e.clientX + 15;
+
+                    // Se passar da borda direita da tela, inverte a posição para a esquerda do cursor
+                    if (left + tooltipWidth > viewportWidth - 10) { // -10 de margem
+                        left = e.clientX - tooltipWidth - 15;
+                    }
+                    
+                    globalTooltip.style.top = `${top}px`;
+                    globalTooltip.style.left = `${left}px`;
+                }
+            });
+
+            transcriptionWrapper.addEventListener('mouseout', (e) => {
+                const highlight = e.target.closest('.error-highlight');
+                if (highlight) {
+                    globalTooltip.classList.remove('show');
+                }
+            });
         }
-        
+
+        parseAndApplyHash();
+        window.addEventListener('hashchange', parseAndApplyHash);
         document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
+    
+    <div id="error-tooltip-global" class="error-tooltip-global"></div>
 </body>
 </html>
