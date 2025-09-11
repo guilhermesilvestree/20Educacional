@@ -771,6 +771,12 @@
                 location.reload(); 
                 return; 
             }
+        
+            const unsavedChangesHandler = (event) => {
+                event.preventDefault();
+                event.returnValue = '';
+            };
+            window.addEventListener('beforeunload', unsavedChangesHandler);
 
             submitEssayButton.disabled = true;
             submitEssayButton.textContent = 'Enviando...';
@@ -816,6 +822,8 @@
                 submissionStatus.textContent = 'Ocorreu um erro ao enviar. Tente novamente.';
                 submitEssayButton.disabled = false;
                 submitEssayButton.textContent = 'Enviar Redação';
+            } finally {
+                window.removeEventListener('beforeunload', unsavedChangesHandler);
             }
         }
         
