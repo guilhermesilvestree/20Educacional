@@ -3006,6 +3006,7 @@
     - Para o campo 'type', use OBRIGATORIAMENTE uma das seguintes categorias: **'Ortografia', 'Acentuação', 'Concordância Verbal', 'Concordância Nominal', 'Regência', 'Pontuação', 'Coesão' ou 'Repetição'**.
 
     Responda estritamente no formato JSON definido.`;
+    
     const payload = {
         contents: [{
             parts: [
@@ -3157,6 +3158,7 @@
             document.getElementById('users-nav-btn').addEventListener('click', () => {
                 window.location.href = './gerenciar-usuarios.html';
             });
+            document.getElementById('reports-nav-btn').addEventListener('click', () => { window.location.href = './relatorios.html' });
             document.querySelector('.sidebar').addEventListener('click', (event) => {
                 const essayItem = event.target.closest('.essay-item');
                 const actionButton = event.target.closest('.action-btn');

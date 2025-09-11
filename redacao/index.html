@@ -698,31 +698,52 @@
             
             // PROMPT MELHORADO E MAIS ROBUSTO
             const prompt = `
-            Sua tarefa é agir como um corretor especialista do ENEM, seguindo um processo rigoroso.
+            Você é um corretor especialista do ENEM, treinado para ser extremamente preciso e criterioso. Sua análise deve seguir as regras oficiais de correção com máximo rigor.
 
-            **Etapa 0: Verificação de Conteúdo**
-            Primeiro, analise o texto transcrito para determinar se ele é uma redação no formato dissertativo-argumentativo.
-            - Se NÃO for uma redação (ex: um poema, lista de compras, desenho, texto incompreensível), retorne o JSON com o campo 'transcribedText' preenchido, mas com todas as notas em 'grades' zeradas e o campo 'feedback.difficulties' explicando que o conteúdo não é uma redação válida para análise. Prossiga para as outras etapas APENAS se for uma redação.
+            **REGRAS CRÍTICAS E INEGOCIÁVEIS:**
+            1.  **FUGA TOTAL AO TEMA:** Se o texto não abordar o tema "${theme}" em nenhum momento, a redação DEVE receber nota 0 (zero) em TODAS as competências. A nota final será zero. Esta é a regra mais importante.
+            2.  **TANGENCIAMENTO AO TEMA:** Se o texto abordar o tema apenas de forma parcial, superficial ou secundária, a Competência 2 não pode ultrapassar 80 pontos. As competências 3 e 5 também devem ser penalizadas, pois a argumentação e a proposta de intervenção ficam prejudicadas. Justifique o tangenciamento no feedback.
+            3.  **TEXTO NÃO DISSERTATIVO-ARGUMENTATIVO:** Se o conteúdo não for uma redação (poema, receita, etc.), aplique a regra de Fuga ao Tema e zere a nota, explicando o motivo no feedback.
+
+            **PROCESSO DE AVALIAÇÃO PASSO-A-PASSO:**
 
             **Etapa 1: Transcrição Fiel**
-            Transcreva CUIDADOSAMENTE o texto manuscrito da imagem. Se partes forem ilegíveis, use "____".
+            Transcreva o texto da imagem. Partes ilegíveis devem ser marcadas com "____". Se o texto for majoritariamente ilegível, informe no feedback e atribua nota zero.
 
-            **Etapa 2: Análise Crítica do Tema e Avaliação**
-            Usando o texto transcrito, analise a redação com o tema "${theme}".
-            - **VERIFICAÇÃO DE TEMA:** Avalie rigorosamente se a redação aborda o tema proposto. Se o texto fugir completamente do tema, **atribua nota 0 (zero) para as competências 2, 3 e 5**.
-            - **ATRIBUIÇÃO DE NOTAS:** Atribua uma nota de 0 a 200 para cada uma das 5 competências, **obrigatoriamente em múltiplos de 40**.
+            **Etapa 2: Análise e Atribuição de Notas (0-200, múltiplos de 40)**
+            Avalie cada competência com base nos critérios abaixo:
 
-            **Etapa 3: Cálculo da Nota**
-            Some as notas das 5 competências para obter a nota total.
+            * **Competência 1 (Domínio da norma culta):**
+                * **200 pontos (Excelente):** Desvios gramaticais ou de convenções da escrita são raros e não comprometem a compreensão.
+                * **160-120 pontos (Bom/Médio):** Apresenta alguns desvios, mas que não são graves ou recorrentes.
+                * **80-40-0 pontos (Insuficiente):** Desvios são frequentes e graves, comprometendo a leitura.
 
-            **Etapa 4: Feedback Estruturado e Construtivo**
-            Forneça um feedback detalhado, direto e conciso.
-            - No campo 'positive', você pode e deve usar trechos curtos do texto como exemplos positivos. Coloque esses trechos entre aspas (ex: "A sua argumentação inicial, ao afirmar que 'a persistência da violência contra a mulher na sociedade brasileira é um problema complexo', é um ótimo ponto de partida.").
+            * **Competência 2 (Compreensão do tema e estrutura):**
+                * **200 pontos (Excelente):** Desenvolve o tema de forma completa, dentro dos limites do texto dissertativo-argumentativo, e mobiliza um repertório sociocultural pertinente, legitimado e produtivo (ex: citação, fato histórico, dado estatístico bem aplicado).
+                * **160-120 pontos (Bom/Médio):** Desenvolve bem o tema, mas o repertório pode ser comum ou não tão bem articulado. A estrutura é boa, mas com pequenas falhas.
+                * **80-40-0 pontos (Insuficiente):** Tangencia o tema ou apresenta estrutura inadequada. O repertório é inexistente ou mal utilizado.
 
-            **Etapa 5: Detecção de Erros**
-            Identifique desvios gramaticais, ortográficos ou de coesão. Para cada erro, forneça o trecho exato ('snippet'), o tipo de erro ('type') e uma explicação curta e objetiva ('suggestion'). Se nenhum erro for encontrado, retorne um array vazio.
+            * **Competência 3 (Argumentação):**
+                * **200 pontos (Excelente):** Apresenta um projeto de texto estratégico, com argumentos consistentes e bem desenvolvidos, defendendo um ponto de vista claro. As informações são bem relacionadas e aprofundadas.
+                * **160-120 pontos (Bom/Médio):** A argumentação é previsível ou os argumentos não são tão bem desenvolvidos.
+                * **80-40-0 pontos (Insuficiente):** Argumentos são contraditórios, frágeis ou apenas expositivos, sem defesa de um ponto de vista.
 
-            Responda estritamente no formato JSON definido no schema.`;
+            * **Competência 4 (Coesão e Coerência):**
+                * **200 pontos (Excelente):** Usa um repertório diversificado de conectivos e recursos coesivos, articulando frases e parágrafos de forma expressiva e sem falhas.
+                * **160-120 pontos (Bom/Médio):** A articulação existe, mas com repetições ou inadequações pontuais.
+                * **80-40-0 pontos (Insuficiente):** A falta de articulação compromete a leitura e a fluidez do texto.
+
+            * **Competência 5 (Proposta de Intervenção):**
+                * **200 pontos (Excelente):** A proposta é detalhada, articulada com a discussão e contém os 5 elementos válidos (Ação, Agente, Meio/Modo, Efeito/Finalidade + Detalhamento de um deles).
+                * **160 pontos (Bom):** Apresenta os 5 elementos, mas a proposta é genérica ou não está bem articulada com o texto.
+                * **120-0 pontos (Insuficiente):** Faltam elementos essenciais na proposta.
+
+            **Etapa 3: Feedback e Detecção de Erros**
+            - Forneça um feedback claro.
+            - Liste os erros de forma precisa. Para o campo 'snippet', retorne o trecho EXATAMENTE como aparece no texto.
+            - Para o campo 'type', use OBRIGATORIAMENTE uma das seguintes categorias: **'Ortografia', 'Acentuação', 'Concordância Verbal', 'Concordância Nominal', 'Regência', 'Pontuação', 'Coesão' ou 'Repetição'**.
+
+            Responda estritamente no formato JSON definido.`;
             
             const payload = {
                 contents: [{
