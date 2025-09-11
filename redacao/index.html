@@ -657,7 +657,7 @@
         });
 
         async function getGeminiAnalysisAndTranscription(theme, imageFile) {
-            const apiKey = "AIzaSyB7ygXwm0Zw39QrS9oV6D8P1qqZ5BmRhrM";
+            const apiKey = "AIzaSyB7ygXwm0Zw39QrS9oV6D8P1qqZ5BmRhrM"; // Lembre-se de proteger sua chave de API
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
             submissionStatus.textContent = 'Convertendo imagem para análise...';
             const base64Image = await fileToBase64(imageFile);
@@ -696,27 +696,68 @@
                 }
             };
             
-            // PROMPT ATUALIZADO: A instrução na Etapa 5 foi refinada para pedir uma explicação.
-            const prompt = `Sua tarefa é agir como um corretor especialista do ENEM. Realize as seguintes etapas:
-            1. **Transcrição:** Transcreva CUIDADOSAMENTE e fielmente o texto manuscrito da imagem. Se o texto for ilegível, retorne "____" no campo 'transcribedText'.
-            2. **Análise e Avaliação:** Usando o texto transcrito, analise a redação com o tema "${theme}" com base nas 5 competências do ENEM. Atribua uma nota de 0 a 200 para cada uma, **obrigatoriamente em múltiplos de 40**.
-            3. **Cálculo da Nota:** Calcule a nota total.
-            4. **Feedback Estruturado:** Forneça um feedback detalhado, direto e conciso.
-            5. **Detecção de Erros:** Identifique desvios gramaticais, ortográficos ou de coesão. Para cada erro, forneça o trecho exato ('snippet'), o tipo de erro ('type', ex: 'Concordância Verbal') e uma explicação curta e objetiva ('suggestion') que justifique o erro (ex: 'O verbo "haver", no sentido de "existir", é impessoal e deve ficar no singular: "Houve".'). Se nenhum erro for encontrado, retorne um array vazio.
+            // PROMPT MELHORADO E MAIS ROBUSTO
+            const prompt = `
+            Sua tarefa é agir como um corretor especialista do ENEM, seguindo um processo rigoroso.
+
+            **Etapa 0: Verificação de Conteúdo**
+            Primeiro, analise o texto transcrito para determinar se ele é uma redação no formato dissertativo-argumentativo.
+            - Se NÃO for uma redação (ex: um poema, lista de compras, desenho, texto incompreensível), retorne o JSON com o campo 'transcribedText' preenchido, mas com todas as notas em 'grades' zeradas e o campo 'feedback.difficulties' explicando que o conteúdo não é uma redação válida para análise. Prossiga para as outras etapas APENAS se for uma redação.
+
+            **Etapa 1: Transcrição Fiel**
+            Transcreva CUIDADOSAMENTE o texto manuscrito da imagem. Se partes forem ilegíveis, use "____".
+
+            **Etapa 2: Análise Crítica do Tema e Avaliação**
+            Usando o texto transcrito, analise a redação com o tema "${theme}".
+            - **VERIFICAÇÃO DE TEMA:** Avalie rigorosamente se a redação aborda o tema proposto. Se o texto fugir completamente do tema, **atribua nota 0 (zero) para as competências 2, 3 e 5**.
+            - **ATRIBUIÇÃO DE NOTAS:** Atribua uma nota de 0 a 200 para cada uma das 5 competências, **obrigatoriamente em múltiplos de 40**.
+
+            **Etapa 3: Cálculo da Nota**
+            Some as notas das 5 competências para obter a nota total.
+
+            **Etapa 4: Feedback Estruturado e Construtivo**
+            Forneça um feedback detalhado, direto e conciso.
+            - No campo 'positive', você pode e deve usar trechos curtos do texto como exemplos positivos. Coloque esses trechos entre aspas (ex: "A sua argumentação inicial, ao afirmar que 'a persistência da violência contra a mulher na sociedade brasileira é um problema complexo', é um ótimo ponto de partida.").
+
+            **Etapa 5: Detecção de Erros**
+            Identifique desvios gramaticais, ortográficos ou de coesão. Para cada erro, forneça o trecho exato ('snippet'), o tipo de erro ('type') e uma explicação curta e objetiva ('suggestion'). Se nenhum erro for encontrado, retorne um array vazio.
+
             Responda estritamente no formato JSON definido no schema.`;
             
-            const payload = { contents: [{ parts: [ { text: prompt }, { inline_data: { mime_type: imageFile.type, data: base64Image } } ] }], generationConfig: { responseMimeType: "application/json", responseSchema: schema } };
+            const payload = {
+                contents: [{
+                    parts: [
+                        { text: prompt },
+                        { inline_data: { mime_type: imageFile.type, data: base64Image } }
+                    ]
+                }],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: schema
+                }
+            };
 
             try {
                 submissionStatus.textContent = 'Transcrevendo e analisando com a IA...';
-                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                if (!response.ok) { throw new Error(`API request failed with status ${response.status}`); }
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
                 const result = await response.json();
                 console.log("Resposta da API do Gemini:", result);
                 return JSON.parse(result.candidates[0].content.parts[0].text);
             } catch (error) {
                 console.error("Erro ao chamar a API do Gemini:", error);
-                return { transcribedText: "Erro na transcrição.", grades: { total: 0 }, feedback: { difficulties: "Ocorreu um erro durante a comunicação com a IA." }, errors: [] };
+                return {
+                    transcribedText: "Erro na transcrição.",
+                    grades: { competencia1: 0, competencia2: 0, competencia3: 0, competencia4: 0, competencia5: 0, total: 0 },
+                    feedback: { difficulties: "Ocorreu um erro durante a comunicação com a IA." },
+                    errors: []
+                };
             }
         }
 

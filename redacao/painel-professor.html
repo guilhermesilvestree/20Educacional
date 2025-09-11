@@ -202,7 +202,7 @@
             display: flex;
             flex-direction: column;
             scrollbar-gutter: stable;
-            /* Adicionado para evitar o "salto" do conteúdo */
+            position: relative;
         }
 
         .sidebar-section {
@@ -287,15 +287,12 @@
             justify-content: space-between;
             align-items: center;
             position: relative;
-            /* Essencial para posicionar o botão de ação */
             overflow: hidden;
-            /* Garante que o botão não vaze para fora */
         }
 
         .essay-item:hover {
             background-color: #f8f9fa;
             padding-left: 20px;
-            /* Altera o padding para criar o efeito de deslocamento */
         }
 
         .essay-item.active {
@@ -353,7 +350,6 @@
         .essay-actions {
             position: absolute;
             top: 5px;
-            /* Movido mais para cima */
             right: 8px;
             display: flex;
             align-items: center;
@@ -427,7 +423,34 @@
 
         #correction-view {
             display: none;
+            position: relative;
         }
+        
+        #add-essay-manual-btn {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: var(--cor-acento);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 6px 20px rgba(0, 168, 255, 0.3);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        #add-essay-manual-btn:hover {
+            background-color: var(--cor-acento-hover);
+            transform: translateY(-3px) scale(1.05);
+        }
+
 
         #essay-details-wrapper {
             display: none;
@@ -471,7 +494,7 @@
             font-size: 0.9rem;
             color: var(--cor-texto-sutil);
             font-weight: 500;
-            margin-top: 5px; /* Adiciona um pequeno espaço */
+            margin-top: 5px;
         }
 
         #viewer-theme-title i {
@@ -739,7 +762,6 @@
             border-color: transparent var(--cor-container) transparent transparent;
         }
 
-        /* Adicione esta nova regra de CSS */
         #transcription-modal .modal-body {
             padding-top: 0;
         }
@@ -916,9 +938,7 @@
             font-weight: 600;
             flex-shrink: 0;
             padding-bottom: 15px;
-            /* Adicionado para separar do conteúdo abaixo */
             border-bottom: 1px solid var(--cor-borda);
-            /* Adicionado para separar */
         }
 
         .table-wrapper {
@@ -1094,7 +1114,6 @@
             align-items: center;
             margin-bottom: 15px;
             flex-shrink: 0;
-            /* Removido: padding-bottom e border-bottom */
         }
 
         .weekly-planning-main-info {
@@ -1109,10 +1128,8 @@
             align-items: baseline;
             gap: 8px;
             font-size: 1.1rem;
-            /* Tamanho ajustado para subtítulo */
             color: var(--cor-texto-principal);
             font-weight: 600;
-            /* Reduzido o peso da fonte */
             margin: 0;
         }
 
@@ -1129,7 +1146,6 @@
             background-color: var(--cor-sucesso);
             color: white;
             display: none;
-            /* Inicia oculto */
             align-items: center;
             gap: 5px;
         }
@@ -1321,7 +1337,8 @@
         }
 
         .form-group input,
-        .form-group textarea {
+        .form-group textarea,
+        .form-group select {
             width: 100%;
             padding: 12px 16px;
             border: 1px solid var(--cor-borda);
@@ -1329,10 +1346,12 @@
             font-size: 0.9rem;
             font-family: 'Poppins', sans-serif;
             transition: border-color 0.2s ease;
+            background-color: var(--cor-container);
         }
 
         .form-group input:focus,
-        .form-group textarea:focus {
+        .form-group textarea:focus,
+        .form-group select:focus {
             outline: none;
             border-color: var(--cor-acento);
         }
@@ -1369,12 +1388,17 @@
             margin-right: 4px;
         }
 
+        .btn:disabled {
+            background-color: #B0B8C5;
+            cursor: not-allowed;
+        }
+
         .btn-primary {
             background-color: var(--cor-acento);
             color: white;
         }
 
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             background-color: var(--cor-acento-hover);
         }
 
@@ -1551,7 +1575,6 @@
             display: flex;
             gap: 6px;
             z-index: 9998;
-            /* <<-- VALOR AUMENTADO */
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.2s, visibility 0.2s;
@@ -1674,7 +1697,6 @@
             padding: 20px 0;
         }
 
-        /* === ESTILOS ATUALIZADOS PARA O TOOLTIP DE ERRO === */
         .error-highlight {
             background-color: rgba(255, 99, 71, 0.4);
             border-radius: 3px;
@@ -1683,11 +1705,8 @@
 
         .error-tooltip-global {
             display: none;
-            /* Começa escondido */
             position: fixed;
-            /* Posição fixa para ignorar o overflow dos pais */
             z-index: 9999;
-            /* Z-index muito alto para ficar acima de tudo */
             max-width: 300px;
             background-color: #ffffff;
             color: #333;
@@ -1697,14 +1716,11 @@
             font-size: 0.85rem;
             line-height: 1.5;
             pointer-events: none;
-            /* Impede que o tooltip bloqueie o mouse */
             transition: opacity 0.2s;
-            /* Transição suave */
         }
 
         .error-tooltip-global.show {
             display: block;
-            /* Mostra o tooltip */
         }
 
         .error-tooltip-global b {
@@ -1715,6 +1731,107 @@
             border-bottom: 1px solid #eee;
             padding-bottom: 4px;
         }
+
+        .upload-area {
+            border: 2px dashed var(--cor-borda);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            background-color: #f9fafb;
+        }
+
+        .upload-area:hover {
+            background-color: #f0f5fa;
+            border-color: var(--cor-acento);
+        }
+
+        .upload-area i {
+            font-size: 2.5rem;
+            color: var(--cor-acento);
+            margin-bottom: 10px;
+        }
+
+        .upload-area p {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--cor-texto-principal);
+            margin: 0;
+        }
+
+        .upload-area span {
+            font-size: 0.85rem;
+            color: var(--cor-texto-sutil);
+        }
+        
+        #manual-submission-status {
+            text-align: center;
+            margin-top: 15px;
+            min-height: 1.2em;
+            color: var(--cor-texto-sutil);
+            font-size: 0.9rem;
+        }
+
+        #open-theme-chooser-btn {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.2s ease;
+            background-color: var(--cor-container);
+            cursor: pointer;
+            text-align: left;
+            color: var(--cor-texto-principal);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #open-theme-chooser-btn.placeholder {
+            color: #6c757d;
+        }
+
+        #theme-chooser-list {
+            max-height: 50vh;
+            overflow-y: auto;
+            margin-top: 15px;
+            padding-right: 10px;
+        }
+
+        .theme-chooser-item {
+            padding: 15px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .theme-chooser-item:hover {
+            border-color: var(--cor-acento);
+            background-color: #f8f9fa;
+        }
+
+        .theme-chooser-item h4 {
+            margin: 0 0 5px 0;
+            font-size: 1rem;
+            color: var(--cor-texto-principal);
+        }
+
+        .theme-chooser-item p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--cor-texto-sutil);
+            line-height: 1.6;
+        }
+        
+        #theme-chooser-search-input {
+            width: 100%;
+        }
+
     </style>
 </head>
 
@@ -1759,6 +1876,9 @@
     </header>
     <div class="dashboard-container">
         <div id="correction-view" style="display: flex; width: 100%;">
+            <button id="add-essay-manual-btn" title="Adicionar Redação Manualmente">
+                <i class="fa-solid fa-plus"></i>
+            </button>
             <aside class="sidebar">
                 <div class="sidebar-section">
                     <button class="sidebar-section-toggle expanded" data-target="active-list-wrapper">
@@ -2121,12 +2241,69 @@
             </div>
         </div>
     </div>
+    
+    <div id="manual-submission-modal" class="modal-backdrop">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-upload"></i> Adicionar Redação Manualmente</h2>
+                <button id="close-manual-modal-btn" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="manual-submission-form">
+                    <div class="form-group">
+                        <label for="open-theme-chooser-btn">Selecione o Tema *</label>
+                        <button type="button" id="open-theme-chooser-btn" class="placeholder">
+                            <span>Clique para selecionar um tema</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label for="manual-student-name">Nome do Aluno (Opcional)</label>
+                        <input type="text" id="manual-student-name" placeholder="Ex: João da Silva">
+                    </div>
+                    <div class="form-group">
+                        <label for="manual-photo-input" class="upload-area" id="manual-upload-area">
+                            <i class="fa-solid fa-camera"></i>
+                            <p id="manual-upload-text">Clique para Enviar Imagem</p>
+                            <span>Selecione a foto da redação</span>
+                        </label>
+                        <input type="file" id="manual-photo-input" accept="image/*" style="display: none;">
+                    </div>
+                </form>
+                <p id="manual-submission-status"></p>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" id="cancel-manual-submission-btn">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="manual-submit-btn" disabled>
+                    <i class="fa-solid fa-paper-plane"></i>
+                    Enviar para Análise
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="theme-chooser-modal" class="modal-backdrop">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-list-check"></i> Selecione um Tema</h2>
+                <button id="close-theme-chooser-modal-btn" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="search" id="theme-chooser-search-input" placeholder="Buscar por título ou conteúdo...">
+                </div>
+                <div id="theme-chooser-list">
+                    </div>
+            </div>
+        </div>
+    </div>
+
 
     <script type="module">
         import { auth, db } from '../firebase/firebase-config.js';
         import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { collection, onSnapshot, query, orderBy, doc, setDoc, deleteDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-        import { deleteArquivoCloudinary } from '../firebase/firebase-services.js';
+        import { uploadArquivoCloudinary, deleteArquivoCloudinary } from '../firebase/firebase-services.js';
 
         const APP_STORAGE_KEY = 'perfilUser';
 
@@ -2139,8 +2316,16 @@
                 return null;
             }
         }
+        
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = error => reject(error);
+            });
+        }
 
-        // --- Variáveis Globais ---
         const correctionNavBtn = document.getElementById('correction-nav-btn');
         const themesNavBtn = document.getElementById('themes-nav-btn');
         const correctionView = document.getElementById('correction-view');
@@ -2186,6 +2371,23 @@
         const closeDeleteModalBtn = document.getElementById('close-delete-modal-btn');
         const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
         const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+        
+        const addEssayManualBtn = document.getElementById('add-essay-manual-btn');
+        const manualSubmissionModal = document.getElementById('manual-submission-modal');
+        const closeManualModalBtn = document.getElementById('close-manual-modal-btn');
+        const cancelManualSubmissionBtn = document.getElementById('cancel-manual-submission-btn');
+        const manualSubmitBtn = document.getElementById('manual-submit-btn');
+        const openThemeChooserBtn = document.getElementById('open-theme-chooser-btn');
+        const manualStudentNameInput = document.getElementById('manual-student-name');
+        const manualPhotoInput = document.getElementById('manual-photo-input');
+        const manualUploadArea = document.getElementById('manual-upload-area');
+        const manualUploadText = document.getElementById('manual-upload-text');
+        const manualSubmissionStatus = document.getElementById('manual-submission-status');
+        
+        const themeChooserModal = document.getElementById('theme-chooser-modal');
+        const closeThemeChooserModalBtn = document.getElementById('close-theme-chooser-modal-btn');
+        const themeChooserSearchInput = document.getElementById('theme-chooser-search-input');
+        const themeChooserList = document.getElementById('theme-chooser-list');
 
         let allEssays = [], activeEssays = [], archivedEssays = [], allThemes = [];
         let currentEssayId = null, currentThemeId = null, itemToDelete = null;
@@ -2193,16 +2395,12 @@
         let activeSelectionRange = null;
         let displayedWeek = 1;
         let initialEssayId = null;
+        let selectedManualTheme = { id: null, title: '' };
 
-        // --- Funções Principais ---
 
         function switchView(viewName) {
-            // Desativa todos os botões primeiro
             correctionNavBtn.classList.remove('active');
             themesNavBtn.classList.remove('active');
-            // usersNavBtn ainda não existe nesta página, mas é uma boa prática se existisse
-
-            // Ativa o correto e mostra a view correta
             if (viewName === 'correction') {
                 correctionNavBtn.classList.add('active');
                 correctionView.style.display = 'flex';
@@ -2213,7 +2411,7 @@
                 correctionView.style.display = 'none';
                 themesView.style.display = 'flex';
                 window.location.hash = 'view=temas';
-                if (!themeUnsubscribe) listenForThemes();
+                // if (!themeUnsubscribe) listenForThemes();
             }
         }
 
@@ -2225,18 +2423,15 @@
                 activeEssays = allEssays.filter(e => e.status !== 'archived');
                 archivedEssays = allEssays.filter(e => e.status === 'archived');
                 renderEssayLists();
-
-                // ADICIONADO: Abre a redação da URL após os dados carregarem
                 if (initialEssayId) {
                     if (allEssays.some(e => e.id === initialEssayId)) {
                         displayEssayDetails(initialEssayId);
                     } else {
                         console.warn(`Redação com ID ${initialEssayId} da URL não foi encontrada.`);
-                        showPlaceholder(); // Mostra a tela padrão se o ID for inválido
+                        showPlaceholder();
                     }
-                    initialEssayId = null; // Limpa a variável para rodar apenas uma vez
+                    initialEssayId = null;
                 }
-
                 if (currentEssayId && !allEssays.some(e => e.id === currentEssayId)) {
                     showPlaceholder();
                 }
@@ -2291,28 +2486,22 @@
             placeholder.style.display = 'flex';
             essayDetailsWrapper.style.display = 'none';
             document.querySelectorAll('.essay-item').forEach(item => item.classList.remove('active'));
-            // ATUALIZA A URL: Limpa o ID da redação da URL
             window.location.hash = 'view=correcoes';
         }
 
         function parseAndApplyHash() {
-            const hash = window.location.hash.substring(1); // Remove o '#'
+            const hash = window.location.hash.substring(1);
             if (!hash) {
                 switchView('correction');
                 return;
             }
-
             const [key, value] = hash.split('=');
-
             if (key === 'view' && value === 'temas') {
                 switchView('themes');
             } else if (key === 'redacao' && value) {
-                // Guarda o ID para abrir depois que os dados carregarem
                 initialEssayId = value;
-                // Garante que a aba de correções esteja ativa
                 switchView('correction');
             } else {
-                // Se a URL for inválida ou #view=correcoes, vai para a tela padrão
                 switchView('correction');
             }
         }
@@ -2321,21 +2510,16 @@
             currentEssayId = id;
             const essay = allEssays.find(e => e.id === id);
             if (!essay) return;
-
-            // ATUALIZA A URL: Define a redação atual na URL
             window.location.hash = `redacao=${id}`;
-
             document.querySelectorAll('.essay-item').forEach(item => item.classList.toggle('active', item.dataset.id === id));
             placeholder.style.display = 'none';
             essayDetailsWrapper.style.display = 'flex';
-
             const date = essay.submissionDate?.toDate().toLocaleDateString('pt-BR') || 'Data indisponível';
             document.getElementById('viewer-theme-title').querySelector('span').textContent = essay.themeTitle || 'Tema não especificado';
             document.getElementById('viewer-student-avatar').src = essay.studentAvatar || 'assets/default-avatar.png';
             document.getElementById('viewer-student-name').textContent = essay.studentName;
             document.getElementById('viewer-submission-date').textContent = `Enviado em: ${date}`;
             document.getElementById('essay-image').src = essay.essayImageURL;
-
             let transcriptionContent = essay.highlightedTranscription || essay.transcribedText || 'Transcrição não disponível.';
             if (essay.errors && essay.errors.length > 0 && !essay.highlightedTranscription) {
                 essay.errors.forEach(error => {
@@ -2346,7 +2530,6 @@
                 });
             }
             transcriptionTextEl.innerHTML = transcriptionContent;
-
             transcriptionThemeTitle.textContent = essay.themeTitle || 'Tema não especificado';
             document.getElementById('ia-grade-c1').textContent = essay.grades?.competencia1 ?? '--';
             document.getElementById('ia-grade-c2').textContent = essay.grades?.competencia2 ?? '--';
@@ -2486,9 +2669,10 @@
                 if (currentThemeId) {
                     await updateDoc(doc(db, "themes", currentThemeId), data);
                 } else {
+                    const newThemeRef = doc(collection(db, "themes"));
                     data.createdAt = serverTimestamp();
                     data.assignedWeek = null;
-                    await setDoc(doc(collection(db, "themes")), data);
+                    await setDoc(newThemeRef, data);
                 }
                 themeModal.style.display = 'none';
             } catch (e) {
@@ -2595,7 +2779,8 @@
                     const title = contentDiv.querySelector('h4').dataset.title;
                     const text = contentDiv.querySelector('p').dataset.text;
                     const themeData = { title, text, createdAt: serverTimestamp(), updatedAt: serverTimestamp(), assignedWeek: null };
-                    return setDoc(doc(collection(db, "themes")), themeData);
+                    const newThemeRef = doc(collection(db, "themes"));
+                    return setDoc(newThemeRef, themeData);
                 });
                 await Promise.all(promises);
                 alert(`${selectedItems.length} tema(s) adicionado(s) com sucesso!`);
@@ -2626,7 +2811,7 @@
 
         function showHighlightTooltip(coords) {
             highlightTooltip.style.left = `${coords.left + coords.width / 2 - highlightTooltip.offsetWidth / 2}px`;
-            highlightTooltip.style.top = `${coords.top - highlightTooltip.offsetHeight - 15}px`; /* <<-- AUMENTADO DE 10 PARA 15PX */
+            highlightTooltip.style.top = `${coords.top - highlightTooltip.offsetHeight - 15}px`;
             highlightTooltip.classList.add('show');
         }
 
@@ -2680,6 +2865,202 @@
             } catch (e) { console.error("Erro ao limpar grifos:", e); }
         }
 
+       async function getGeminiAnalysisAndTranscription(theme, imageFile, statusElement) {
+    const apiKey = "AIzaSyB7ygXwm0Zw39QrS9oV6D8P1qqZ5BmRhrM"; // Lembre-se de manter sua chave de API segura.
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    statusElement.textContent = 'Convertendo imagem para análise...';
+    const base64Image = await fileToBase64(imageFile);
+
+    const schema = {
+        type: "OBJECT",
+        properties: {
+            transcribedText: { type: "STRING" },
+            grades: {
+                type: "OBJECT",
+                properties: {
+                    competencia1: { type: "NUMBER" }, competencia2: { type: "NUMBER" },
+                    competencia3: { type: "NUMBER" }, competencia4: { type: "NUMBER" },
+                    competencia5: { type: "NUMBER" }, total: { type: "NUMBER" }
+                }
+            },
+            feedback: {
+                type: "OBJECT",
+                properties: {
+                    positive: { type: "STRING" },
+                    difficulties: { type: "STRING" },
+                    suggestions: { type: "STRING" }
+                }
+            },
+            errors: {
+                type: "ARRAY",
+                items: {
+                    type: "OBJECT",
+                    properties: {
+                        snippet: { type: "STRING" },
+                        type: { type: "STRING" },
+                        suggestion: { type: "STRING" }
+                    }
+                }
+            }
+        }
+    };
+    
+    // PROMPT MELHORADO E MAIS ROBUSTO
+    const prompt = `
+    Sua tarefa é agir como um corretor especialista do ENEM, seguindo um processo rigoroso.
+
+    **Etapa 0: Verificação de Conteúdo**
+    Primeiro, analise o texto transcrito para determinar se ele é uma redação no formato dissertativo-argumentativo.
+    - Se NÃO for uma redação (ex: um poema, lista de compras, desenho), retorne o JSON com o campo 'transcribedText' preenchido, mas com todas as notas em 'grades' zeradas e o campo 'feedback.difficulties' explicando que o conteúdo não é uma redação válida. Prossiga para as outras etapas APENAS se for uma redação.
+
+    **Etapa 1: Transcrição Fiel**
+    Transcreva CUIDADOSAMENTE o texto manuscrito da imagem. Se partes forem ilegíveis, use "____".
+
+    **Etapa 2: Análise Crítica do Tema e Avaliação**
+    Usando o texto transcrito, analise a redação com o tema "${theme}".
+    - **VERIFICAÇÃO DE FUGA AO TEMA:** Avalie rigorosamente se a redação aborda o tema proposto. Se o texto fugir completamente do tema, **atribua nota 0 (zero) para as competências 2, 3 e 5** e justifique no feedback.
+    - **ATRIBUIÇÃO DE NOTAS:** Atribua uma nota de 0 a 200 para cada uma das 5 competências, **obrigatoriamente em múltiplos de 40**.
+
+    **Etapa 3: Cálculo da Nota**
+    Some as notas das 5 competências para obter a nota total.
+
+    **Etapa 4: Feedback Estruturado e Construtivo**
+    Forneça um feedback detalhado, direto e conciso.
+    - No campo 'positive', você pode e deve usar trechos curtos do texto como exemplos positivos. Coloque esses trechos entre aspas (ex: "Sua afirmação inicial de que 'a questão X representa um desafio persistente' estabelece bem a tese.").
+
+    **Etapa 5: Detecção de Erros**
+    Identifique desvios gramaticais, ortográficos ou de coesão. Para cada erro, forneça o trecho ('snippet'), o tipo ('type') e uma sugestão objetiva ('suggestion'). Se nenhum erro for encontrado, retorne um array vazio.
+
+    Responda estritamente no formato JSON definido no schema.`;
+    
+    const payload = {
+        contents: [{
+            parts: [
+                { text: prompt },
+                { inline_data: { mime_type: imageFile.type, data: base64Image } }
+            ]
+        }],
+        generationConfig: {
+            responseMimeType: "application/json",
+            responseSchema: schema
+        }
+    };
+
+    try {
+        statusElement.textContent = 'Transcrevendo e analisando com a IA...';
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
+        }
+        const result = await response.json();
+        console.log("Resposta da API do Gemini:", result);
+        // Adicionando verificação para garantir que o caminho do resultado existe
+        if (result.candidates && result.candidates[0] && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts[0].text) {
+             return JSON.parse(result.candidates[0].content.parts[0].text);
+        } else {
+            throw new Error("Resposta da API em formato inesperado.");
+        }
+    } catch (error) {
+        console.error("Erro ao chamar a API do Gemini:", error);
+        statusElement.textContent = 'Erro na análise. Tente novamente.';
+        return {
+            transcribedText: "Erro na transcrição.",
+            grades: { competencia1: 0, competencia2: 0, competencia3: 0, competencia4: 0, competencia5: 0, total: 0 },
+            feedback: { difficulties: "Ocorreu um erro durante a comunicação com a IA." },
+            errors: []
+        };
+    }
+}
+
+        async function handleManualUpload() {
+            const file = manualPhotoInput.files[0];
+            const theme = allThemes.find(t => t.id === selectedManualTheme.id);
+
+            if (!file || !theme) {
+                alert("Por favor, selecione um tema e um arquivo de imagem.");
+                return;
+            }
+            
+            let studentName = manualStudentNameInput.value.trim();
+            if (!studentName) {
+                studentName = "Aluno Anônimo";
+            }
+            
+            const teacherData = getAppData().userData;
+
+            manualSubmitBtn.disabled = true;
+            manualSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+            manualSubmissionStatus.textContent = 'Preparando sua redação para análise...';
+
+            try {
+                const analysis = await getGeminiAnalysisAndTranscription(theme.title, file, manualSubmissionStatus);
+                manualSubmissionStatus.textContent = 'Análise concluída. Enviando para o servidor...';
+                
+                const essayIdRef = doc(collection(db, "essays"));
+                const essayId = essayIdRef.id;
+
+                const sanitizedStudentName = studentName.replace(/\s+/g, '-').toLowerCase();
+                const publicFilename = `${sanitizedStudentName}-${essayId}`;
+                const fileURL = await uploadArquivoCloudinary(file, publicFilename);
+                
+                const essayData = {
+                    id: essayId,
+                    studentUid: `manual_${teacherData.uid}`,
+                    studentName: studentName,
+                    studentAvatar: 'assets/default-avatar.png',
+                    themeTitle: theme.title,
+                    essayImageURL: fileURL,
+                    essayImagePublicId: publicFilename,
+                    submissionDate: serverTimestamp(),
+                    status: 'active',
+                    transcribedText: analysis.transcribedText,
+                    feedback: analysis.feedback,
+                    grades: analysis.grades,
+                    errors: analysis.errors || []
+                };
+
+                await setDoc(essayIdRef, essayData);
+                
+                manualSubmissionStatus.innerHTML = `<strong>Sucesso!</strong> A redação foi enviada e corrigida.`;
+                setTimeout(() => {
+                    manualSubmissionModal.style.display = 'none';
+                }, 2000);
+
+            } catch (error) {
+                console.error("Erro no processo de envio manual:", error);
+                manualSubmissionStatus.textContent = 'Ocorreu um erro ao enviar. Tente novamente.';
+            } finally {
+                manualSubmitBtn.disabled = false;
+                manualSubmitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Enviar para Análise';
+            }
+        }
+        
+        function renderThemeChooserList(searchTerm = '') {
+            const lowerCaseSearchTerm = searchTerm.toLowerCase();
+            const filteredThemes = allThemes.filter(theme =>
+                theme.title.toLowerCase().includes(lowerCaseSearchTerm) ||
+                theme.text.toLowerCase().includes(lowerCaseSearchTerm)
+            );
+
+            if (filteredThemes.length === 0) {
+                themeChooserList.innerHTML = '<p class="empty-list-msg">Nenhum tema encontrado.</p>';
+                return;
+            }
+
+            themeChooserList.innerHTML = filteredThemes.map(theme => `
+                <div class="theme-chooser-item" data-id="${theme.id}" data-title="${theme.title}">
+                    <h4>${theme.title}</h4>
+                    <p>${theme.text.substring(0, 120)}...</p>
+                </div>
+            `).join('');
+        }
+
+
         function initializeApp() {
             const appData = getAppData();
             if (!appData || !appData.userData || appData.userData.role !== 'teacher') {
@@ -2690,8 +3071,8 @@
             document.getElementById('teacher-name').textContent = appData.userData.name;
             document.getElementById('teacher-avatar').src = appData.userData.avatar || 'assets/default-avatar.png';
             listenForEssays();
+            listenForThemes();
 
-            // --- Event Listeners ---
             correctionNavBtn.addEventListener('click', () => switchView('correction'));
             themesNavBtn.addEventListener('click', () => switchView('themes'));
             document.getElementById('users-nav-btn').addEventListener('click', () => {
@@ -2732,14 +3113,8 @@
             document.querySelectorAll('.sidebar-section-toggle').forEach(toggle => {
                 toggle.addEventListener('click', () => {
                     const targetWrapper = document.getElementById(toggle.dataset.target);
-                    const isExpanded = toggle.classList.toggle('expanded');
+                    toggle.classList.toggle('expanded');
                     targetWrapper.classList.toggle('expanded');
-                    document.querySelectorAll('.sidebar-section-toggle').forEach(t => {
-                        if (t !== toggle) {
-                            t.classList.remove('expanded');
-                            document.getElementById(t.dataset.target).classList.remove('expanded');
-                        }
-                    });
                 });
             });
 
@@ -2759,7 +3134,7 @@
             deleteEssayBtn.addEventListener('click', () => { if (currentEssayId) setupDeleteModal('essay', currentEssayId) });
             confirmDeleteBtn.addEventListener('click', confirmDelete);
 
-            document.getElementById('theme-search-input').addEventListener('input', (e) => {
+            document.getElementById('theme-search-input').addEventListener('input', () => {
                 renderThemesTable(allThemes);
             });
 
@@ -2830,9 +3205,52 @@
                 if (removeBtn && removeBtn.dataset.id) updateThemeAssignedWeek(removeBtn.dataset.id, null);
             });
 
-            // LÓGICA ATUALIZADA PARA CONTROLAR O TOOLTIP GLOBAL
-            const globalTooltip = document.getElementById('error-tooltip-global');
+            addEssayManualBtn.addEventListener('click', () => {
+                selectedManualTheme = { id: null, title: '' };
+                openThemeChooserBtn.querySelector('span').textContent = 'Clique para selecionar um tema';
+                openThemeChooserBtn.classList.add('placeholder');
+                document.getElementById('manual-submission-form').reset();
+                manualUploadText.textContent = 'Clique para Enviar Imagem';
+                manualSubmissionStatus.textContent = '';
+                manualSubmitBtn.disabled = true;
+                manualSubmissionModal.style.display = 'flex';
+            });
+            
+            const closeManualModal = () => manualSubmissionModal.style.display = 'none';
+            closeManualModalBtn.addEventListener('click', closeManualModal);
+            cancelManualSubmissionBtn.addEventListener('click', closeManualModal);
+            
+            openThemeChooserBtn.addEventListener('click', () => {
+                renderThemeChooserList();
+                themeChooserModal.style.display = 'flex';
+            });
+            
+            themeChooserSearchInput.addEventListener('input', (e) => renderThemeChooserList(e.target.value));
 
+            closeThemeChooserModalBtn.addEventListener('click', () => themeChooserModal.style.display = 'none');
+            
+            themeChooserList.addEventListener('click', (e) => {
+                const item = e.target.closest('.theme-chooser-item');
+                if (item) {
+                    selectedManualTheme.id = item.dataset.id;
+                    selectedManualTheme.title = item.dataset.title;
+                    openThemeChooserBtn.querySelector('span').textContent = selectedManualTheme.title;
+                    openThemeChooserBtn.classList.remove('placeholder');
+                    themeChooserModal.style.display = 'none';
+                }
+            });
+
+            manualPhotoInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    manualUploadText.textContent = file.name;
+                    manualSubmitBtn.disabled = false;
+                }
+            });
+
+            manualSubmitBtn.addEventListener('click', handleManualUpload);
+
+            const globalTooltip = document.getElementById('error-tooltip-global');
             transcriptionWrapper.addEventListener('mouseover', (e) => {
                 const highlight = e.target.closest('.error-highlight');
                 if (highlight) {
@@ -2847,16 +3265,11 @@
                 if (globalTooltip.classList.contains('show')) {
                     const viewportWidth = window.innerWidth;
                     const tooltipWidth = globalTooltip.offsetWidth;
-
-                    // Posiciona o tooltip 15px abaixo e à direita do cursor
                     let top = e.clientY + 15;
                     let left = e.clientX + 15;
-
-                    // Se passar da borda direita da tela, inverte a posição para a esquerda do cursor
-                    if (left + tooltipWidth > viewportWidth - 10) { // -10 de margem
+                    if (left + tooltipWidth > viewportWidth - 10) {
                         left = e.clientX - tooltipWidth - 15;
                     }
-
                     globalTooltip.style.top = `${top}px`;
                     globalTooltip.style.left = `${left}px`;
                 }
