@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios de Atividades</title>
+    <link rel="shortcut icon" href="assets/icon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --cor-fundo: #F4F4F6;
+            --cor-container: #FFFFFF;
+            --cor-texto-principal: #333A45;
+            --cor-texto-sutil: #7A8291;
+            --cor-borda: #EAEBEE;
+            --cor-acento: #00A8FF;
+            --cor-acento-hover: #008DD1;
+            --cor-sucesso: #28a745;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto-principal);
+            margin: 0;
+        }
+
+        .header {
+            background-color: var(--cor-container);
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--cor-borda);
+            height: 81px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo i {
+            font-size: 1.5rem;
+            color: var(--cor-acento);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: var(--cor-texto-principal);
+            margin: 0;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-pills {
+            display: flex;
+            background-color: var(--cor-fundo);
+            padding: 6px;
+            border-radius: 50px;
+            gap: 6px;
+        }
+
+        .nav-button {
+            background: none;
+            border: none;
+            color: var(--cor-texto-sutil);
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-button:hover,
+        .nav-button.active {
+            background-color: var(--cor-container);
+            color: var(--cor-acento);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-button i {
+            color: var(--cor-texto-sutil);
+            transition: color 0.3s ease;
+        }
+
+        .nav-button.active i {
+            color: var(--cor-acento);
+        }
+
+        .profile-container {
+            position: relative;
+        }
+
+        .user-profile-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50px;
+            transition: background-color 0.2s;
+        }
+
+        .user-profile-badge:hover {
+            background-color: var(--cor-fundo);
+        }
+
+        #teacher-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        #teacher-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--cor-borda);
+        }
+
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background-color: var(--cor-container);
+            border: 1px solid var(--cor-borda);
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 160px;
+            overflow: hidden;
+            z-index: 100;
+        }
+
+        .profile-dropdown.show {
+            display: block;
+        }
+
+        #logout-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: none;
+            border: none;
+            color: var(--cor-texto-principal);
+            padding: 12px 15px;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        #logout-button:hover {
+            background-color: var(--cor-fundo);
+        }
+
+        #logout-button i {
+            color: var(--cor-acento);
+        }
+
+        .main-content {
+            padding: 40px;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background-color: var(--cor-container);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid var(--cor-borda);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .metric-card .icon {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .metric-card .icon.essays {
+            background-color: #eef8ff;
+            color: var(--cor-acento);
+        }
+
+        .metric-card .icon.grade {
+            background-color: #eafaf1;
+            color: var(--cor-sucesso);
+        }
+
+        .metric-card .icon.students {
+            background-color: #fff8e8;
+            color: #ffc107;
+        }
+
+        .metric-card .info .value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--cor-texto-principal);
+        }
+
+        .metric-card .info .label {
+            font-size: 0.95rem;
+            color: var(--cor-texto-sutil);
+            margin: 0;
+        }
+
+        .chart-container {
+            background-color: var(--cor-container);
+            border-radius: 16px;
+            border: 1px solid var(--cor-borda);
+            padding: 30px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .chart-header h2 {
+            margin: 0;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chart-header i {
+            color: var(--cor-acento);
+        }
+
+        #grade-distribution-chart {
+            max-height: 400px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-logo">
+            <i class="fa-solid fa-feather-pointed"></i>
+            <h1>Painel do Professor</h1>
+        </div>
+        <div class="header-nav">
+            <div class="nav-pills">
+                <button class="nav-button active" id="reports-nav-btn">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    Relatórios
+                </button>
+                <button class="nav-button" id="correction-nav-btn">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                    Correções
+                </button>
+                <button class="nav-button" id="themes-nav-btn">
+                    <i class="fa-solid fa-book-open"></i>
+                    Gerenciar Temas
+                </button>
+                <button class="nav-button" id="users-nav-btn">
+                    <i class="fa-solid fa-users"></i>
+                    Usuários
+                </button>
+            </div>
+        </div>
+        <div class="profile-container">
+            <div class="user-profile-badge" id="profile-trigger">
+                <span id="teacher-name"></span>
+                <img id="teacher-avatar" src="" alt="Avatar do Professor">
+            </div>
+            <div class="profile-dropdown" id="profile-dropdown">
+                <button id="logout-button">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span>Sair</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="summary-grid">
+            <div class="metric-card">
+                <div class="icon essays">
+                    <i class="fa-solid fa-file-signature"></i>
+                </div>
+                <div class="info">
+                    <p class="value" id="total-essays">0</p>
+                    <p class="label">Total de Redações Corrigidas</p>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="icon grade">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="info">
+                    <p class="value" id="average-grade">0</p>
+                    <p class="label">Nota Média Geral</p>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="icon students">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <div class="info">
+                    <p class="value" id="active-students">0</p>
+                    <p class="label">Alunos com Redações</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <h2><i class="fa-solid fa-chart-bar"></i> Distribuição de Notas</h2>
+            </div>
+            <canvas id="grade-distribution-chart"></canvas>
+        </div>
+    </main>
+
+    <script type="module">
+        import { auth, db } from '../firebase/firebase-config.js';
+        import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { collection, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const APP_STORAGE_KEY = 'perfilUser';
+
+        function getAppData() {
+            try {
+                const rawData = localStorage.getItem(APP_STORAGE_KEY);
+                return rawData ? JSON.parse(rawData) : null;
+            } catch (e) {
+                console.error("Falha ao ler os dados do localStorage", e);
+                return null;
+            }
+        }
+
+        const profileTrigger = document.getElementById('profile-trigger');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        const logoutButton = document.getElementById('logout-button');
+        let gradeChart = null;
+
+        function updateMetrics(essays) {
+            const totalEssays = essays.length;
+            const gradedEssays = essays.filter(e => e.grades && typeof e.grades.total === 'number');
+            const totalSum = gradedEssays.reduce((sum, e) => sum + e.grades.total, 0);
+            const averageGrade = gradedEssays.length > 0 ? (totalSum / gradedEssays.length).toFixed(0) : 0;
+            const activeStudents = new Set(essays.map(e => e.studentUid)).size;
+
+            document.getElementById('total-essays').textContent = totalEssays;
+            document.getElementById('average-grade').textContent = averageGrade;
+            document.getElementById('active-students').textContent = activeStudents;
+
+            updateChart(gradedEssays);
+        }
+
+        function updateChart(gradedEssays) {
+            const gradeRanges = {
+                '0-400': 0,
+                '440-600': 0,
+                '640-800': 0,
+                '840-1000': 0,
+            };
+
+            gradedEssays.forEach(essay => {
+                const total = essay.grades.total;
+                if (total <= 400) gradeRanges['0-400']++;
+                else if (total <= 600) gradeRanges['440-600']++;
+                else if (total <= 800) gradeRanges['640-800']++;
+                else gradeRanges['840-1000']++;
+            });
+
+            const ctx = document.getElementById('grade-distribution-chart').getContext('2d');
+            const chartData = {
+                labels: Object.keys(gradeRanges),
+                datasets: [{
+                    label: 'Nº de Redações',
+                    data: Object.values(gradeRanges),
+                    backgroundColor: [
+                        'rgba(220, 53, 69, 0.6)',
+                        'rgba(255, 193, 7, 0.6)',
+                        'rgba(0, 168, 255, 0.6)',
+                        'rgba(40, 167, 69, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(220, 53, 69, 1)',
+                        'rgba(255, 193, 7, 1)',
+                        'rgba(0, 168, 255, 1)',
+                        'rgba(40, 167, 69, 1)'
+                    ],
+                    borderWidth: 1,
+                    borderRadius: 5
+                }]
+            };
+
+            if (gradeChart) {
+                gradeChart.data = chartData;
+                gradeChart.update();
+            } else {
+                gradeChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function initializeApp() {
+            const appData = getAppData();
+            if (!appData || !appData.userData || appData.userData.role !== 'teacher') {
+                alert('Acesso negado. Apenas professores podem acessar esta página.');
+                window.location.href = '../index.html';
+                return;
+            }
+
+            document.getElementById('teacher-name').textContent = appData.userData.name;
+            document.getElementById('teacher-avatar').src = appData.userData.avatar || 'assets/default-avatar.png';
+
+            const essaysRef = collection(db, "essays");
+            const q = query(essaysRef, where("status", "!=", "rascunho")); // Exemplo, pode ajustar
+            onSnapshot(q, (snapshot) => {
+                const allEssays = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                updateMetrics(allEssays);
+            }, (error) => console.error("Erro ao buscar redações: ", error));
+
+            // --- Event Listeners Navegação ---
+            document.getElementById('correction-nav-btn').addEventListener('click', () => { window.location.href = './painel-professor.html' });
+            document.getElementById('themes-nav-btn').addEventListener('click', () => { window.location.href = './painel-professor.html#view=temas' });
+            document.getElementById('users-nav-btn').addEventListener('click', () => { window.location.href = './gerenciar-usuarios.html' });
+            // Em gerenciar-usuarios.html, dentro da função initializeApp, adicione esta linha:
+            document.getElementById('reports-nav-btn').addEventListener('click', () => { window.location.href = './relatorios.html' });
+
+            profileTrigger.addEventListener('click', (e) => { e.stopPropagation(); profileDropdown.classList.toggle('show'); });
+            window.addEventListener('click', (e) => { if (!e.target.closest('.profile-container')) profileDropdown.classList.remove('show'); });
+            logoutButton.addEventListener('click', () => signOut(auth).then(() => { localStorage.removeItem(APP_STORAGE_KEY); window.location.href = '../index.html'; }));
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+
+</html>
