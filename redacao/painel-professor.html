@@ -1707,20 +1707,35 @@
             display: none;
             position: fixed;
             z-index: 9999;
-            max-width: 300px;
+            max-width: 280px;
             background-color: #ffffff;
             color: #333;
             border-radius: 8px;
-            padding: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            font-size: 0.85rem;
-            line-height: 1.5;
+            padding: 12px 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            font-size: 0.9rem;
+            line-height: 1.6;
             pointer-events: none;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, transform 0.2s;
+            transform: translateY(5px);
+            opacity: 0;
         }
 
         .error-tooltip-global.show {
             display: block;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .error-tooltip-title {
+            font-weight: 600;
+            color: #007bff; /* Azul para o título, como na imagem */
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .error-tooltip-body {
+            color: #555; /* Cor um pouco mais suave para o texto */
         }
 
         .error-tooltip-global b {
@@ -1830,6 +1845,23 @@
         
         #theme-chooser-search-input {
             width: 100%;
+        }
+
+        #redo-analysis-btn:disabled {
+            cursor: not-allowed;
+            background-color: #e9ecef;
+            color: var(--cor-texto-sutil);
+            border-color: var(--cor-borda);
+        }
+
+        #redo-analysis-status {
+            text-align: center;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            min-height: 1.2em;
+            color: var(--cor-texto-sutil);
+            font-size: 0.9rem;
+            font-style: italic;
         }
 
         /* Adicione este código ao seu CSS existente */
@@ -1947,19 +1979,23 @@
                     <div class="evaluation-pane">
                         <div class="detail-box" id="ai-evaluation-box">
                             <div class="detail-box-header">
-                                <h3>
-                                    <i class="fa-solid fa-robot"></i>
-                                    Avaliação da I.A.
-                                </h3>
-                                <div>
-                                    <button id="show-transcription-btn" class="transcription-button">
-                                        <i class="fa-solid fa-file-lines"></i> Ver Transcrição
-                                    </button>
-                                    <button id="delete-essay-btn" class="transcription-button">
-                                        <i class="fa-solid fa-trash"></i> Excluir Avaliação
-                                    </button>
-                                </div>
+                            <h3>
+                                <i class="fa-solid fa-robot"></i>
+                                Avaliação da I.A.
+                            </h3>
+                            <div>
+                                <button id="show-transcription-btn" class="transcription-button">
+                                    <i class="fa-solid fa-file-lines"></i> Ver Transcrição
+                                </button>
+                                <button id="redo-analysis-btn" class="transcription-button">
+                                    <i class="fa-solid fa-arrows-rotate"></i> Refazer Análise
+                                </button>
+                                <button id="delete-essay-btn" class="transcription-button">
+                                    <i class="fa-solid fa-trash"></i> Excluir Avaliação
+                                </button>
                             </div>
+                        </div>
+                        <p id="redo-analysis-status"></p>
                             <h3 id="grades-header">
                                 <i class="fa-solid fa-graduation-cap"></i>
                                 Notas por Competência
@@ -2482,6 +2518,21 @@
             document.getElementById('active-count').textContent = activeEssays.length;
             document.getElementById('archived-count').textContent = archivedEssays.length;
         }
+        
+        async function urlToBlob(url) {
+            const response = await fetch(url);
+            const blob = await response.blob();
+            return blob;
+        }
+
+        function blobToBase64(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = error => reject(error);
+            });
+        }
 
         async function toggleArchiveStatus(essayId, status) {
             const essayRef = doc(db, "essays", essayId);
@@ -2524,58 +2575,52 @@
             const essay = allEssays.find(e => e.id === id);
             if (!essay) return;
 
-            // --- Função auxiliar para mapear o tipo de erro a uma classe de cor CSS ---
             const getErrorColorClass = (errorType) => {
-                if (!errorType) return 'purple'; // Cor padrão para erros não categorizados
+                if (!errorType) return 'purple';
                 const type = errorType.toLowerCase();
-                
-                if (type.includes('ortografi') || type.includes('acentuação')) {
-                    return 'red'; // Erros de escrita e acento
-                } else if (type.includes('concordância') || type.includes('regência')) {
-                    return 'blue'; // Erros de concordância verbal/nominal e regência
-                } else if (type.includes('coesão') || type.includes('repetição') || type.includes('pontuação')) {
-                    return 'yellow'; // Erros de coesão, repetição de palavras e pontuação
-                } else {
-                    return 'purple'; // Outros tipos de erro (crase, etc.)
-                }
+                if (type.includes('ortografi') || type.includes('acentuação')) return 'red';
+                if (type.includes('concordância') || type.includes('regência')) return 'blue';
+                if (type.includes('coesão') || type.includes('repetição') || type.includes('pontuação')) return 'yellow';
+                return 'purple';
             };
-            // -----------------------------------------------------------------------------
 
             window.location.hash = `redacao=${id}`;
             document.querySelectorAll('.essay-item').forEach(item => item.classList.toggle('active', item.dataset.id === id));
             placeholder.style.display = 'none';
             essayDetailsWrapper.style.display = 'flex';
-            
+
             const date = essay.submissionDate?.toDate().toLocaleDateString('pt-BR') || 'Data indisponível';
             document.getElementById('viewer-theme-title').querySelector('span').textContent = essay.themeTitle || 'Tema não especificado';
             document.getElementById('viewer-student-avatar').src = essay.studentAvatar || 'assets/default-avatar.png';
             document.getElementById('viewer-student-name').textContent = essay.studentName;
             document.getElementById('viewer-submission-date').textContent = `Enviado em: ${date}`;
             document.getElementById('essay-image').src = essay.essayImageURL;
-            
+
             let transcriptionContent = essay.highlightedTranscription || essay.transcribedText || 'Transcrição não disponível.';
 
-            // Lógica para aplicar os grifos automáticos da IA
-            if (essay.errors && essay.errors.length > 0 && !essay.highlightedTranscription) {
+            if (essay.transcribedText && !essay.transcribedText.startsWith('Erro na transcrição') && essay.errors && essay.errors.length > 0 && !essay.highlightedTranscription) {
                 let modifiedContent = essay.transcribedText;
+                
+                const sortedErrors = [...essay.errors].sort((a, b) => (b.snippet?.length || 0) - (a.snippet?.length || 0));
 
-                essay.errors.forEach(error => {
-                    if (!error.snippet) {
-                        console.warn("Erro recebido da IA sem 'snippet':", error);
-                        return; 
-                    }
+                sortedErrors.forEach(error => {
+                    if (!error.snippet) return;
+                    
                     const snippet = error.snippet;
-                    const escapedSnippet = snippet.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                    const colorClass = getErrorColorClass(error.type);
-                    const replacementHTML = `<span class="error-highlight ${colorClass}" data-type="${error.type}" data-suggestion="${error.suggestion}">${snippet}</span>`;
+                    // Escapa o snippet para o Regex e torna os espaços flexíveis (\s+)
+                    const escapedSnippet = snippet.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s+');
+                    
+                    // Regex para encontrar o snippet fora de tags HTML existentes
                     const regex = new RegExp(escapedSnippet, 'g');
                     
-                    const contentBeforeReplacement = modifiedContent;
-                    modifiedContent = modifiedContent.replace(regex, replacementHTML);
-
-                    // Diagnóstico: Verifica se a substituição realmente aconteceu
-                    if (contentBeforeReplacement === modifiedContent) {
-                        console.warn(`DIAGNÓSTICO: O snippet de erro "${snippet}" não foi encontrado no texto transcrito.`);
+                    if (regex.test(modifiedContent)) {
+                        const colorClass = getErrorColorClass(error.type);
+                        // A substituição usa uma função para garantir que estamos substituindo o texto original (com seus espaços originais)
+                        modifiedContent = modifiedContent.replace(regex, (match) => {
+                            return `<span class="error-highlight ${colorClass}" data-type="${error.type}" data-suggestion="${error.suggestion}">${match}</span>`;
+                        });
+                    } else {
+                        console.warn(`DIAGNÓSTICO: O snippet de erro "${snippet}" não foi encontrado no texto.`);
                     }
                 });
                 
@@ -2918,138 +2963,134 @@
             } catch (e) { console.error("Erro ao limpar grifos:", e); }
         }
 
-       async function getGeminiAnalysisAndTranscription(theme, imageFile, statusElement) {
-    const apiKey = "AIzaSyB7ygXwm0Zw39QrS9oV6D8P1qqZ5BmRhrM"; // Lembre-se de manter sua chave de API segura.
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-    statusElement.textContent = 'Convertendo imagem para análise...';
-    const base64Image = await fileToBase64(imageFile);
+    async function getGeminiAnalysisAndTranscription(theme, base64Image, mimeType, statusElement) {
+        const apiKey = "AIzaSyB7ygXwm0Zw39QrS9oV6D8P1qqZ5BmRhrM"; // Lembre-se de manter sua chave de API segura.
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        if (statusElement) statusElement.textContent = 'Iniciando análise com a IA...';
 
-    const schema = {
-        type: "OBJECT",
-        properties: {
-            transcribedText: { type: "STRING" },
-            grades: {
-                type: "OBJECT",
-                properties: {
-                    competencia1: { type: "NUMBER" }, competencia2: { type: "NUMBER" },
-                    competencia3: { type: "NUMBER" }, competencia4: { type: "NUMBER" },
-                    competencia5: { type: "NUMBER" }, total: { type: "NUMBER" }
-                }
-            },
-            feedback: {
-                type: "OBJECT",
-                properties: {
-                    positive: { type: "STRING" },
-                    difficulties: { type: "STRING" },
-                    suggestions: { type: "STRING" }
-                }
-            },
-            errors: {
-                type: "ARRAY",
-                items: {
+        const schema = {
+            type: "OBJECT",
+            properties: {
+                transcribedText: { type: "STRING" },
+                grades: {
                     type: "OBJECT",
                     properties: {
-                        snippet: { type: "STRING" },
-                        type: { type: "STRING" },
-                        suggestion: { type: "STRING" }
+                        competencia1: { type: "NUMBER" }, competencia2: { type: "NUMBER" },
+                        competencia3: { type: "NUMBER" }, competencia4: { type: "NUMBER" },
+                        competencia5: { type: "NUMBER" }, total: { type: "NUMBER" }
+                    }
+                },
+                feedback: {
+                    type: "OBJECT",
+                    properties: {
+                        positive: { type: "STRING" },
+                        difficulties: { type: "STRING" },
+                        suggestions: { type: "STRING" }
+                    }
+                },
+                errors: {
+                    type: "ARRAY",
+                    items: {
+                        type: "OBJECT",
+                        properties: {
+                            snippet: { type: "STRING" },
+                            type: { type: "STRING" },
+                            suggestion: { type: "STRING" }
+                        },
+                        required: ["snippet", "type", "suggestion"]
                     }
                 }
-            }
-        }
-    };
-    
-    // PROMPT MELHORADO E MAIS ROBUSTO
-    const prompt = `
-    Você é um corretor especialista do ENEM, treinado para ser extremamente preciso e criterioso. Sua análise deve seguir as regras oficiais de correção com máximo rigor.
-
-    **REGRAS CRÍTICAS E INEGOCIÁVEIS:**
-    1.  **FUGA TOTAL AO TEMA:** Se o texto não abordar o tema "${theme}" em nenhum momento, a redação DEVE receber nota 0 (zero) em TODAS as competências. A nota final será zero. Esta é a regra mais importante.
-    2.  **TANGENCIAMENTO AO TEMA:** Se o texto abordar o tema apenas de forma parcial, superficial ou secundária, a Competência 2 não pode ultrapassar 80 pontos. As competências 3 e 5 também devem ser penalizadas, pois a argumentação e a proposta de intervenção ficam prejudicadas. Justifique o tangenciamento no feedback.
-    3.  **TEXTO NÃO DISSERTATIVO-ARGUMENTATIVO:** Se o conteúdo não for uma redação (poema, receita, etc.), aplique a regra de Fuga ao Tema e zere a nota, explicando o motivo no feedback.
-
-    **PROCESSO DE AVALIAÇÃO PASSO-A-PASSO:**
-
-    **Etapa 1: Transcrição Fiel**
-    Transcreva o texto da imagem. Partes ilegíveis devem ser marcadas com "____". Se o texto for majoritariamente ilegível, informe no feedback e atribua nota zero.
-
-    **Etapa 2: Análise e Atribuição de Notas (0-200, múltiplos de 40)**
-    Avalie cada competência com base nos critérios abaixo:
-
-    * **Competência 1 (Domínio da norma culta):**
-        * **200 pontos (Excelente):** Desvios gramaticais ou de convenções da escrita são raros e não comprometem a compreensão.
-        * **160-120 pontos (Bom/Médio):** Apresenta alguns desvios, mas que não são graves ou recorrentes.
-        * **80-40-0 pontos (Insuficiente):** Desvios são frequentes e graves, comprometendo a leitura.
-
-    * **Competência 2 (Compreensão do tema e estrutura):**
-        * **200 pontos (Excelente):** Desenvolve o tema de forma completa, dentro dos limites do texto dissertativo-argumentativo, e mobiliza um repertório sociocultural pertinente, legitimado e produtivo (ex: citação, fato histórico, dado estatístico bem aplicado).
-        * **160-120 pontos (Bom/Médio):** Desenvolve bem o tema, mas o repertório pode ser comum ou não tão bem articulado. A estrutura é boa, mas com pequenas falhas.
-        * **80-40-0 pontos (Insuficiente):** Tangencia o tema ou apresenta estrutura inadequada. O repertório é inexistente ou mal utilizado.
-
-    * **Competência 3 (Argumentação):**
-        * **200 pontos (Excelente):** Apresenta um projeto de texto estratégico, com argumentos consistentes e bem desenvolvidos, defendendo um ponto de vista claro. As informações são bem relacionadas e aprofundadas.
-        * **160-120 pontos (Bom/Médio):** A argumentação é previsível ou os argumentos não são tão bem desenvolvidos.
-        * **80-40-0 pontos (Insuficiente):** Argumentos são contraditórios, frágeis ou apenas expositivos, sem defesa de um ponto de vista.
-
-    * **Competência 4 (Coesão e Coerência):**
-        * **200 pontos (Excelente):** Usa um repertório diversificado de conectivos e recursos coesivos, articulando frases e parágrafos de forma expressiva e sem falhas.
-        * **160-120 pontos (Bom/Médio):** A articulação existe, mas com repetições ou inadequações pontuais.
-        * **80-40-0 pontos (Insuficiente):** A falta de articulação compromete a leitura e a fluidez do texto.
-
-    * **Competência 5 (Proposta de Intervenção):**
-        * **200 pontos (Excelente):** A proposta é detalhada, articulada com a discussão e contém os 5 elementos válidos (Ação, Agente, Meio/Modo, Efeito/Finalidade + Detalhamento de um deles).
-        * **160 pontos (Bom):** Apresenta os 5 elementos, mas a proposta é genérica ou não está bem articulada com o texto.
-        * **120-0 pontos (Insuficiente):** Faltam elementos essenciais na proposta.
-
-    **Etapa 3: Feedback e Detecção de Erros**
-    - Forneça um feedback claro.
-    - Liste os erros de forma precisa. Para o campo 'snippet', retorne o trecho EXATAMENTE como aparece no texto.
-    - Para o campo 'type', use OBRIGATORIAMENTE uma das seguintes categorias: **'Ortografia', 'Acentuação', 'Concordância Verbal', 'Concordância Nominal', 'Regência', 'Pontuação', 'Coesão' ou 'Repetição'**.
-
-    Responda estritamente no formato JSON definido.`;
-    
-    const payload = {
-        contents: [{
-            parts: [
-                { text: prompt },
-                { inline_data: { mime_type: imageFile.type, data: base64Image } }
-            ]
-        }],
-        generationConfig: {
-            responseMimeType: "application/json",
-            responseSchema: schema
-        }
-    };
-
-    try {
-        statusElement.textContent = 'Transcrevendo e analisando com a IA...';
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        if (!response.ok) {
-            const errorBody = await response.text();
-            throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
-        }
-        const result = await response.json();
-        console.log("Resposta da API do Gemini:", result);
-        // Adicionando verificação para garantir que o caminho do resultado existe
-        if (result.candidates && result.candidates[0] && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts[0].text) {
-             return JSON.parse(result.candidates[0].content.parts[0].text);
-        } else {
-            throw new Error("Resposta da API em formato inesperado.");
-        }
-    } catch (error) {
-        console.error("Erro ao chamar a API do Gemini:", error);
-        statusElement.textContent = 'Erro na análise. Tente novamente.';
-        return {
-            transcribedText: "Erro na transcrição.",
-            grades: { competencia1: 0, competencia2: 0, competencia3: 0, competencia4: 0, competencia5: 0, total: 0 },
-            feedback: { difficulties: "Ocorreu um erro durante a comunicação com a IA." },
-            errors: []
+            },
+            required: ["transcribedText", "grades", "feedback", "errors"]
         };
+    
+        // PROMPT OTIMIZADO (VERSÃO 2.0)
+        const prompt = `
+        Você é um corretor de redações ENEM especialista e extremamente metódico. Sua única tarefa é analisar a imagem de uma redação manuscrita e retornar um objeto JSON VÁLIDO E COMPLETO, seguindo o schema e as regras abaixo de forma obrigatória.
+
+        **TEMA DA REDAÇÃO:** "${theme}"
+
+        **REGRAS DE EXECUÇÃO:**
+
+        1.  **Transcrição (transcribedText):**
+            * Transcreva o texto da imagem de forma 100% fiel.
+            * Se uma palavra ou trecho for completamente ilegível, substitua-o pelo marcador "[ILEGÍVEL]". Mantenha a pontuação original.
+
+        2.  **Notas (grades):**
+            * Atribua notas de 0 a 200 (em múltiplos de 40) para cada uma das 5 competências.
+            * **O campo 'total' DEVE ser a soma exata das 5 competências.**
+
+        3.  **Feedback (feedback):**
+            * Escreva textos concisos e objetivos para os campos 'positive', 'difficulties' e 'suggestions'.
+
+        4.  **Análise de Erros (errors):**
+            * **ESTA É A TAREFA MAIS CRÍTICA.**
+            * Identifique os erros gramaticais, de coesão e de estrutura no texto.
+            * Para **CADA ERRO**, crie um objeto no array 'errors' com os seguintes campos obrigatórios:
+                * **snippet**: O trecho de texto EXATO e LITERAL como aparece na transcrição onde o erro ocorreu.
+                * **type**: Classifique o erro usando UMA das seguintes categorias: "Ortografia", "Acentuação", "Concordância Verbal", "Concordância Nominal", "Regência", "Crase", "Pontuação", "Coesão", "Repetição".
+                * **suggestion**: Uma explicação muito curta e direta sobre o erro e como corrigi-lo. Ex: "O correto é 'haja vista', e não 'haja visto'."
+            * **Se NENHUM erro for encontrado, retorne um array vazio: []**
+
+        Execute a análise e retorne apenas o objeto JSON.
+        `;
+        
+        const payload = {
+            contents: [{
+                parts: [
+                    { text: prompt },
+                    { inline_data: { mime_type: mimeType, data: base64Image } }
+                ]
+            }],
+            generationConfig: {
+                responseMimeType: "application/json",
+                responseSchema: schema
+            }
+        };
+
+        try {
+            if(statusElement) statusElement.textContent = 'Transcrevendo e analisando com a IA...';
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!response.ok) {
+                const errorBody = await response.text();
+                throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
+            }
+            const result = await response.json();
+            
+            if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
+                const analysis = JSON.parse(result.candidates[0].content.parts[0].text);
+                // Validação final para garantir que o campo 'errors' existe
+                if (!analysis.errors) {
+                    analysis.errors = [];
+                }
+                return analysis;
+            } else {
+                console.warn("Resposta da API em formato inesperado ou com restrições de segurança.", result);
+                throw new Error("Resposta da API em formato inesperado.");
+            }
+        } catch (error) {
+            console.error("Erro ao chamar a API do Gemini:", error);
+            if(statusElement) statusElement.textContent = 'Erro na análise. Tente novamente.';
+            
+            let detailedError = "Ocorreu um erro durante a comunicação com a IA.";
+            if (error.message.includes("API request failed")) {
+                detailedError = "A API do Google retornou um erro. Verifique a chave de API e as configurações do projeto.";
+            } else if (error.message.includes("formato inesperado")) {
+                detailedError = "A IA retornou uma resposta inválida, possivelmente devido a filtros de segurança ou instabilidade. Tente novamente ou use outra imagem.";
+            }
+
+            return {
+                transcribedText: `Erro na transcrição. Detalhes: ${detailedError}`,
+                grades: { competencia1: 0, competencia2: 0, competencia3: 0, competencia4: 0, competencia5: 0, total: 0 },
+                feedback: { difficulties: detailedError },
+                errors: [] // Garante que sempre retornará um array
+            };
+        }
     }
-}
 
         async function handleManualUpload() {
             const file = manualPhotoInput.files[0];
@@ -3061,12 +3102,9 @@
             }
             
             let studentName = manualStudentNameInput.value.trim();
-            if (!studentName) {
-                studentName = "Aluno Anônimo";
-            }
+            if (!studentName) studentName = "Aluno Anônimo";
             
             const teacherData = getAppData().userData;
-
             const unsavedChangesHandler = (event) => {
                 event.preventDefault();
                 event.returnValue = '';
@@ -3078,7 +3116,10 @@
             manualSubmissionStatus.textContent = 'Preparando sua redação para análise...';
 
             try {
-                const analysis = await getGeminiAnalysisAndTranscription(theme.title, file, manualSubmissionStatus);
+                manualSubmissionStatus.textContent = 'Convertendo imagem para análise...';
+                const base64Image = await fileToBase64(file);
+                const analysis = await getGeminiAnalysisAndTranscription(theme.title, base64Image, file.type, manualSubmissionStatus);
+                
                 manualSubmissionStatus.textContent = 'Análise concluída. Enviando para o servidor...';
                 
                 const essayIdRef = doc(collection(db, "essays"));
@@ -3120,6 +3161,7 @@
                 window.removeEventListener('beforeunload', unsavedChangesHandler);
             }
         }
+
         function renderThemeChooserList(searchTerm = '') {
             const lowerCaseSearchTerm = searchTerm.toLowerCase();
             const filteredThemes = allThemes.filter(theme =>
@@ -3140,6 +3182,61 @@
             `).join('');
         }
 
+        async function handleRedoAnalysis() {
+            if (!currentEssayId) return;
+
+            const redoAnalysisBtn = document.getElementById('redo-analysis-btn');
+            const redoAnalysisStatus = document.getElementById('redo-analysis-status');
+
+            // Verificação de segurança para evitar o erro "null"
+            if (!redoAnalysisBtn || !redoAnalysisStatus) {
+                console.error("Botão de refazer análise ou elemento de status não encontrado no DOM.");
+                alert("Erro de interface: Elementos necessários não foram encontrados. Recarregue a página.");
+                return;
+            }
+
+            const confirmation = confirm("Tem certeza que deseja refazer a análise? Os dados atuais (notas, feedback, transcrição) serão substituídos.");
+            if (!confirmation) return;
+            
+            redoAnalysisBtn.disabled = true;
+            redoAnalysisBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Reanalisando...';
+            redoAnalysisStatus.textContent = 'Buscando imagem original...';
+
+            try {
+                const essay = allEssays.find(e => e.id === currentEssayId);
+                if (!essay || !essay.essayImageURL) throw new Error("URL da imagem da redação não encontrada.");
+
+                redoAnalysisStatus.textContent = 'Convertendo imagem para análise...';
+                const imageBlob = await urlToBlob(essay.essayImageURL);
+                const base64Image = await blobToBase64(imageBlob);
+
+                const newAnalysis = await getGeminiAnalysisAndTranscription(essay.themeTitle, base64Image, imageBlob.type, redoAnalysisStatus);
+
+                redoAnalysisStatus.textContent = 'Análise concluída. Atualizando dados...';
+
+                const updateData = {
+                    transcribedText: newAnalysis.transcribedText,
+                    feedback: newAnalysis.feedback,
+                    grades: newAnalysis.grades,
+                    errors: newAnalysis.errors || [],
+                    highlightedTranscription: null, 
+                    lastAnalysisAt: serverTimestamp()
+                };
+
+                const essayRef = doc(db, "essays", currentEssayId);
+                await updateDoc(essayRef, updateData);
+
+                redoAnalysisStatus.textContent = 'Análise refeita com sucesso!';
+                setTimeout(() => { redoAnalysisStatus.textContent = '' }, 3000);
+
+            } catch (error) {
+                console.error("Erro ao refazer a análise:", error);
+                redoAnalysisStatus.textContent = 'Ocorreu um erro ao refazer a análise.';
+            } finally {
+                redoAnalysisBtn.disabled = false;
+                redoAnalysisBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Refazer Análise';
+            }
+        }
 
         function initializeApp() {
             const appData = getAppData();
@@ -3148,11 +3245,22 @@
                 window.location.href = '../index.html';
                 return;
             }
+
+            // Mova a declaração de variáveis para dentro da função
+            const redoAnalysisBtn = document.getElementById('redo-analysis-btn');
+
+            // Adicione uma verificação para garantir que o botão existe antes de adicionar o listener
+            if (redoAnalysisBtn) {
+                redoAnalysisBtn.addEventListener('click', handleRedoAnalysis);
+            }
+
             document.getElementById('teacher-name').textContent = appData.userData.name;
             document.getElementById('teacher-avatar').src = appData.userData.avatar || 'assets/default-avatar.png';
+            
             listenForEssays();
             listenForThemes();
 
+            // O restante do seu código de event listeners continua aqui...
             correctionNavBtn.addEventListener('click', () => switchView('correction'));
             themesNavBtn.addEventListener('click', () => switchView('themes'));
             document.getElementById('users-nav-btn').addEventListener('click', () => {
@@ -3337,7 +3445,8 @@
                 if (highlight) {
                     const type = highlight.dataset.type;
                     const suggestion = highlight.dataset.suggestion;
-                    globalTooltip.innerHTML = `<b>${type}</b>${suggestion}`;
+                    // A nova linha abaixo cria os divs separados para o título e o corpo
+                    globalTooltip.innerHTML = `<div class="error-tooltip-title">${type}</div><div class="error-tooltip-body">${suggestion}</div>`;
                     globalTooltip.classList.add('show');
                 }
             });
