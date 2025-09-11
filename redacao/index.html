@@ -152,6 +152,88 @@
             .dashboard-header { flex-direction: column; gap: 10px; align-items: flex-start; }
             .datetime-info { text-align: left; } #writing-step { padding: 25px 15px; }
         }
+        @media (max-width: 768px) {
+        /* Ajustes gerais para telas menores */
+        body {
+            /* Permite rolar a página caso o conteúdo exceda a altura */
+            align-items: flex-start;
+            padding: 15px;
+        }
+        .step-container {
+            padding: 40px 20px;
+            margin-top: 60px; /* Garante espaço para o botão de voltar */
+        }
+        h1 {
+            font-size: 1.8rem;
+        }
+        p {
+            font-size: 1rem;
+        }
+        .action-button {
+            padding: 12px 30px;
+            font-size: 1rem;
+        }
+        .back-button-fixed {
+            top: 15px;
+            left: 15px;
+            width: 40px;
+            height: 40px;
+        }
+
+        /* --- ETAPA DE ESCRITA --- */
+        #writing-step {
+            padding: 25px 15px;
+            margin-top: 0; /* A tela de escrita não precisa de margem extra */
+        }
+        .dashboard-header {
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .datetime-info {
+            text-align: left;
+        }
+        .dashboard-main {
+            /* A mudança mais importante: empilha as colunas */
+            flex-direction: column;
+        }
+        .left-column, .right-column {
+            flex-basis: auto;
+            min-width: 100%;
+        }
+        #theme-text {
+            font-size: 0.9rem;
+            text-align: left; /* Melhora a leitura em telas pequenas */
+        }
+        
+        /* --- ETAPA DE ENVIO --- */
+        .submission-header {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+        }
+        .upload-area {
+            padding: 30px 20px;
+        }
+        .upload-area p {
+            font-size: 1rem;
+        }
+
+        /* --- MODAL DE DICAS --- */
+        .modal-content {
+            padding: 30px 20px;
+        }
+        .tips-list li {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+        }
+        .tips-list li p {
+            text-align: center;
+        }
+    }
     </style>
 </head>
 <body>
