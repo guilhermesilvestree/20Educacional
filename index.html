@@ -5,90 +5,211 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evolução Educacional: Acesso</title>
 
+    <link rel="icon" href="assets/imagens/logo-branca-20Png.png" type="image/png">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --cor-fundo: #0F0F1A;
             --cor-texto: #EAEAEA;
-            --cor-slogan: #A0A0B0;
-            --cor-primaria-btn: #1A1A2E;
-            --cor-risco-1: #00A8FF;
-            --cor-risco-2: #9C27B0;
-            --cor-risco-3: #00BCD4;
+            --cor-texto-secundario: #A0A0B0;
+            --cor-container: rgba(22, 22, 38, 0.7);
+            --cor-borda: rgba(255, 255, 255, 0.1);
+            --cor-destaque-1: #00A8FF;
+            --cor-destaque-2: #9C27B0;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         html, body {
             height: 100%;
             font-family: 'Poppins', sans-serif;
             background-color: var(--cor-fundo);
             color: var(--cor-texto);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden; 
+            overflow: hidden;
         }
+
         #art-background {
             position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; z-index: 0;
+            width: 100%; height: 100%; z-index: -1;
         }
-        .login-container {
-            width: 100%; max-width: 500px;
-            padding: 40px; text-align: center;
-            display: flex; flex-direction: column;
-            align-items: center; gap: 15px;
-            position: relative; z-index: 1;
-            background: rgba(26, 26, 46, 0.4);
-            border-radius: 16px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+
+        .login-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+            gap: 60px;
         }
-        .titulo { font-size: 3.2rem; font-weight: 600; }
-        .slogan { font-size: 1.2rem; color: var(--cor-slogan); font-weight: 400; }
+
+        .info-side {
+            display: flex;
+            flex-direction: column;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .info-side h1 {
+            font-size: 3.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--cor-destaque-1), var(--cor-destaque-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .info-side p {
+            font-size: 1.25rem;
+            color: var(--cor-texto-secundario);
+            max-width: 480px;
+        }
+
+        .form-side {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            padding: 50px;
+            background: var(--cor-container);
+            border-radius: 24px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--cor-borda);
+            animation: fadeInUp 0.8s ease-out 0.2s forwards;
+            opacity: 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .form-side .logo {
+            width: 90px;
+            height: auto;
+            margin: 0 auto 25px auto;
+        }
+
+        .form-side h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .form-side .slogan {
+            font-size: 1.1rem;
+            color: var(--cor-texto-secundario);
+            margin-bottom: 35px;
+        }
+
         #google-login-btn {
             display: inline-flex; align-items: center; justify-content: center;
             gap: 15px; width: 100%;
-            background-color: var(--cor-primaria-btn); color: var(--cor-texto);
-            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px;
-            padding: 14px 28px; margin-top: 25px;
+            color: var(--cor-texto);
+            border: none;
+            border-radius: 12px;
+            padding: 16px 28px;
             font-size: 1.1rem; font-weight: 500;
-            cursor: pointer; transition: all 0.3s ease;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(90deg, #1D1D33, #1A1A2E);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
+
+        #google-login-btn::before {
+            content: ''; position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, var(--cor-destaque-1), transparent);
+            transition: left 0.4s ease-in-out;
+        }
+
         #google-login-btn:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-color: var(--cor-risco-1);
-            box-shadow: 0 0 15px rgba(0, 168, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 168, 255, 0.2), 0 5px 15px rgba(156, 39, 176, 0.1);
         }
+
+        #google-login-btn:hover::before { left: 100%; }
+        #google-login-btn span, #google-login-btn .google-icon { z-index: 1; position: relative; }
         #google-login-btn .google-icon { width: 22px; height: 22px; }
+        
         footer {
             position: absolute; bottom: 20px;
-            font-size: 0.8rem; color: var(--cor-slogan); z-index: 1;
+            width: 100%; text-align: center;
+            font-size: 0.9rem; color: var(--cor-texto-secundario);
+            animation: fadeInUp 1s ease-out 0.4s forwards;
+            opacity: 0;
         }
-        footer a { color: var(--cor-slogan); text-decoration: none; margin: 0 10px; }
-        footer a:hover { color: var(--cor-texto); }
+
+        footer a { 
+            color: var(--cor-texto-secundario); 
+            text-decoration: none; 
+            margin: 0 15px; 
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover { color: var(--cor-destaque-1); }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .login-wrapper {
+                grid-template-columns: 1fr;
+                justify-items: center;
+                text-align: center;
+                padding: 40px 20px;
+                gap: 20px;
+                height: auto;
+            }
+            .info-side { margin-bottom: 30px; }
+            .info-side h1 { font-size: 2.8rem; }
+            .info-side p { font-size: 1.1rem; }
+            .form-side {
+                width: 100%;
+                max-width: 480px;
+                padding: 40px 30px;
+            }
+        }
     </style>
 </head>
 <body>
     
     <canvas id="art-background"></canvas>
 
-    <main class="login-container">
-        <header>
-            <h1 class="titulo">Evolução Educacional</h1>
-            <p class="slogan">Ensino Simples e Claro</p>
-        </header>
-        
-        <button id="google-login-btn">
-            <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
-                <path fill="#EAEAEA" d="M488 261.8C488 403.3 381.5 512 244 512 110.3 512 0 401.7 0 265.9 0 130.2 110.3 20 244 20c66.3 0 121.3 24.4 166.5 65.6l-67.5 64.8C295.5 118.8 273.5 104 244 104c-82.3 0-149.3 67.1-149.3 149.8s67 149.8 149.3 149.8c93.5 0 130.3-71.3 134-108.8H244V261.8h244z"/>
-            </svg>
-            <span>Entrar com o Google</span>
-        </button>
-    </main>
+    <div class="login-wrapper">
+
+        <section class="info-side">
+            <h1>Sua jornada para a aprovação começa aqui.</h1>
+            <p>A plataforma definitiva para organizar seus estudos, dominar o conteúdo e conquistar a sua vaga no ENEM.</p>
+        </section>
+
+        <main class="form-side">
+            <img src="assets/imagens/logo-branca-20Png.png" alt="Logo Evolução Educacional" class="logo">
+            <h2>Bem-vindo(a) de volta!</h2>
+            <p class="slogan">Acesse sua conta para continuar</p>
+            
+            <button id="google-login-btn">
+                <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
+                    <path fill="#EAEAEA" d="M488 261.8C488 403.3 381.5 512 244 512 110.3 512 0 401.7 0 265.9 0 130.2 110.3 20 244 20c66.3 0 121.3 24.4 166.5 65.6l-67.5 64.8C295.5 118.8 273.5 104 244 104c-82.3 0-149.3 67.1-149.3 149.8s67 149.8 149.3 149.8c93.5 0 130.3-71.3 134-108.8H244V261.8h244z"/>
+                </svg>
+                <span>Entrar com o Google</span>
+            </button>
+        </main>
+
+    </div>
 
     <footer>
         <a href="#">Termos de Uso</a>
@@ -103,70 +224,34 @@
 
         // --- Lógica de Armazenamento Centralizado ---
         const APP_STORAGE_KEY = 'perfilUser';
-
         function saveAppData(data) {
-            try {
-                localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(data));
-            } catch (e) {
-                console.error("Falha ao salvar os dados da aplicação no localStorage", e);
-            }
+            try { localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(data)); } catch (e) { console.error("Falha ao salvar os dados da aplicação no localStorage", e); }
         }
 
         // --- Lógica do Botão de Login ---
         const googleLoginButton = document.getElementById('google-login-btn');
-        googleLoginButton.addEventListener('click', async () => { // Transformado em async
+        googleLoginButton.addEventListener('click', async () => {
             const provider = new GoogleAuthProvider();
             try {
                 const result = await signInWithPopup(auth, provider);
                 const user = result.user;
-                console.log("Login realizado com sucesso:", user);
-
-                // ==================================================================
-                // == LÓGICA DE FUNÇÃO (ROLE) INTEGRADA                            ==
-                // ==================================================================
-                
-                // 1. Referência para o documento do usuário no Firestore
                 const userDocRef = doc(db, "users", user.uid);
-                
-                // 2. Tenta buscar o documento
                 const docSnap = await getDoc(userDocRef);
-                
-                let userRole = "student"; // Define a função padrão
-
+                let userRole = "student";
                 if (docSnap.exists()) {
-                    // 3a. Se o usuário já existe no Firestore, usa a função salva
-                    console.log("Usuário existente encontrado no Firestore.");
-                    userRole = docSnap.data().role || "student"; // Garante um fallback
+                    userRole = docSnap.data().role || "student";
                 } else {
-                    // 3b. Se é o primeiro login, cria o documento no Firestore com a função padrão
-                    console.log("Primeiro login. Criando perfil do usuário no Firestore.");
                     await setDoc(userDocRef, {
-                        name: user.displayName,
-                        email: user.email,
-                        uid: user.uid,
-                        avatar: user.photoURL, // Salva o link da imagem da conta
-                        role: "student", // Função padrão para novos usuários
-                        createdAt: serverTimestamp()
+                        name: user.displayName, email: user.email, uid: user.uid,
+                        avatar: user.photoURL, role: "student", createdAt: serverTimestamp()
                     });
                 }
-
-                // 4. Cria o objeto de dados limpo para o localStorage
                 const newAppData = {
-                    userData: {
-                        name: user.displayName,
-                        avatar: user.photoURL,
-                        uid: user.uid,
-                        role: userRole // << A função é incluída aqui
-                    },
-                    essaySession: null // Garante que a sessão de redação comece limpa
+                    userData: { name: user.displayName, avatar: user.photoURL, uid: user.uid, role: userRole },
+                    essaySession: null
                 };
-                
-                // 5. Salva os dados limpos do novo usuário no localStorage
                 saveAppData(newAppData);
-                
-                // 6. Redireciona para o menu
                 window.location.href = 'menu.html';
-
             } catch (error) {
                 console.error("Erro no login com Google:", error.code, error.message);
                 alert(`Erro ao fazer login: ${error.message}`);
@@ -175,6 +260,7 @@
 
         // --- Animação do Canvas ---
         const canvas = document.getElementById('art-background');
+        // ERRO CORRIGIDO AQUI: de getContext('d') para getContext('2d')
         const ctx = canvas.getContext('2d');
         let particlesArray;
         function setCanvasSize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
