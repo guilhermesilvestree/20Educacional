@@ -1,276 +1,315 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Evolução Educacional: Acesso</title>
-
-    <link rel="icon" href="assets/imagens/logo-branca-20Png.png" type="image/png">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+    <link
+      rel="icon"
+      href="assets/imagens/logo-branca-20Png.png"
+      type="image/png"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --cor-fundo: #0F0F1A;
-            --cor-texto: #EAEAEA;
-            --cor-texto-secundario: #A0A0B0;
-            --cor-container: rgba(22, 22, 38, 0.7);
-            --cor-borda: rgba(255, 255, 255, 0.1);
-            --cor-destaque-1: #00A8FF;
-            --cor-destaque-2: #9C27B0;
+      :root {
+        --cor-fundo: #0f0f1a;
+        --cor-texto: #eaeaea;
+        --cor-texto-secundario: #a0a0b0;
+        --cor-container: rgba(22, 22, 38, 0.7);
+        --cor-borda: rgba(255, 255, 255, 0.1);
+        --cor-destaque-1: #00a8ff;
+        --cor-destaque-2: #9c27b0;
+        --google-hover-bg: #e0f2f7;
+        --google-hover-text: #004d66;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        font-family: "Poppins", sans-serif;
+        color: var(--cor-texto);
+        overflow: hidden;
+      }
+      #art-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background-color: var(--cor-fundo);
+      }
+      .login-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 40px;
+        gap: 60px;
+      }
+      .info-side {
+        display: flex;
+        flex-direction: column;
+        animation: fadeInUp 0.8s ease-out forwards;
+      }
+      .info-side h1 {
+        font-size: 3.8rem;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 20px;
+        background: linear-gradient(
+          90deg,
+          var(--cor-destaque-1),
+          var(--cor-destaque-2)
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .info-side p {
+        font-size: 1.25rem;
+        color: var(--cor-texto-secundario);
+        max-width: 480px;
+      }
+      .form-side {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        padding: 50px;
+        background: var(--cor-container);
+        border-radius: 24px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--cor-borda);
+        animation: fadeInUp 0.8s ease-out 0.2s forwards;
+        opacity: 0;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      }
+      .form-side .logo {
+        width: 90px;
+        height: auto;
+        margin: 0 auto 25px auto;
+      }
+      .form-side h2 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+      .form-side .slogan {
+        font-size: 1.1rem;
+        color: var(--cor-texto-secundario);
+        margin-bottom: 35px;
+      }
+      #google-login-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        width: 100%;
+        color: var(--cor-texto);
+        border: none;
+        border-radius: 12px;
+        padding: 16px 28px;
+        font-size: 1.1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(90deg, #1d1d33, #1a1a2e);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+      .google-icon {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+      }
+      #google-login-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 168, 255, 0.2),
+          0 5px 15px rgba(156, 39, 176, 0.1);
+        background: var(--google-hover-bg);
+        color: var(--google-hover-text);
+      }
+      #google-login-btn:hover span {
+        color: var(--google-hover-text);
+      }
+      footer {
+        position: absolute;
+        bottom: 20px;
+        width: 100%;
+        text-align: center;
+        font-size: 0.9rem;
+        color: var(--cor-texto-secundario);
+        animation: fadeInUp 1s ease-out 0.4s forwards;
+        opacity: 0;
+      }
+      footer a {
+        color: var(--cor-texto-secundario);
+        text-decoration: none;
+        margin: 0 15px;
+        transition: color 0.3s ease;
+      }
+      footer a:hover {
+        color: var(--cor-destaque-1);
+      }
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        html, body {
-            height: 100%;
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--cor-fundo);
-            color: var(--cor-texto);
-            overflow: hidden;
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
-
-        #art-background {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; z-index: -1;
-        }
-
+      }
+      @media (max-width: 900px) {
         .login-wrapper {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 40px;
-            gap: 60px;
+          grid-template-columns: 1fr;
+          justify-items: center;
+          text-align: center;
+          padding: 40px 20px;
+          gap: 20px;
+          height: auto;
         }
-
         .info-side {
-            display: flex;
-            flex-direction: column;
-            animation: fadeInUp 0.8s ease-out forwards;
+          margin-bottom: 30px;
         }
-
         .info-side h1 {
-            font-size: 3.8rem;
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 20px;
-            background: linear-gradient(90deg, var(--cor-destaque-1), var(--cor-destaque-2));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+          font-size: 2.8rem;
         }
-
         .info-side p {
-            font-size: 1.25rem;
-            color: var(--cor-texto-secundario);
-            max-width: 480px;
+          font-size: 1.1rem;
         }
-
         .form-side {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            text-align: center;
-            padding: 50px;
-            background: var(--cor-container);
-            border-radius: 24px;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--cor-borda);
-            animation: fadeInUp 0.8s ease-out 0.2s forwards;
-            opacity: 0;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+          width: 100%;
+          max-width: 480px;
+          padding: 40px 30px;
         }
-        
-        .form-side .logo {
-            width: 90px;
-            height: auto;
-            margin: 0 auto 25px auto;
-        }
-
-        .form-side h2 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-        
-        .form-side .slogan {
-            font-size: 1.1rem;
-            color: var(--cor-texto-secundario);
-            margin-bottom: 35px;
-        }
-
-        #google-login-btn {
-            display: inline-flex; align-items: center; justify-content: center;
-            gap: 15px; width: 100%;
-            color: var(--cor-texto);
-            border: none;
-            border-radius: 12px;
-            padding: 16px 28px;
-            font-size: 1.1rem; font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(90deg, #1D1D33, #1A1A2E);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        #google-login-btn::before {
-            content: ''; position: absolute;
-            top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, var(--cor-destaque-1), transparent);
-            transition: left 0.4s ease-in-out;
-        }
-
-        #google-login-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 168, 255, 0.2), 0 5px 15px rgba(156, 39, 176, 0.1);
-        }
-
-        #google-login-btn:hover::before { left: 100%; }
-        #google-login-btn span, #google-login-btn .google-icon { z-index: 1; position: relative; }
-        #google-login-btn .google-icon { width: 22px; height: 22px; }
-        
-        footer {
-            position: absolute; bottom: 20px;
-            width: 100%; text-align: center;
-            font-size: 0.9rem; color: var(--cor-texto-secundario);
-            animation: fadeInUp 1s ease-out 0.4s forwards;
-            opacity: 0;
-        }
-
-        footer a { 
-            color: var(--cor-texto-secundario); 
-            text-decoration: none; 
-            margin: 0 15px; 
-            transition: color 0.3s ease;
-        }
-
-        footer a:hover { color: var(--cor-destaque-1); }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 900px) {
-            .login-wrapper {
-                grid-template-columns: 1fr;
-                justify-items: center;
-                text-align: center;
-                padding: 40px 20px;
-                gap: 20px;
-                height: auto;
-            }
-            .info-side { margin-bottom: 30px; }
-            .info-side h1 { font-size: 2.8rem; }
-            .info-side p { font-size: 1.1rem; }
-            .form-side {
-                width: 100%;
-                max-width: 480px;
-                padding: 40px 30px;
-            }
-        }
+      }
     </style>
-</head>
-<body>
-    
+  </head>
+  <body>
     <canvas id="art-background"></canvas>
-
     <div class="login-wrapper">
-
-        <section class="info-side">
-            <h1>Sua jornada para a aprovação começa aqui.</h1>
-            <p>A plataforma definitiva para organizar seus estudos, dominar o conteúdo e conquistar a sua vaga no ENEM.</p>
-        </section>
-
-        <main class="form-side">
-            <img src="assets/imagens/logo-branca-20Png.png" alt="Logo Evolução Educacional" class="logo">
-            <h2>Bem-vindo(a) de volta!</h2>
-            <p class="slogan">Acesse sua conta para continuar</p>
-            
-            <button id="google-login-btn">
-                <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
-                    <path fill="#EAEAEA" d="M488 261.8C488 403.3 381.5 512 244 512 110.3 512 0 401.7 0 265.9 0 130.2 110.3 20 244 20c66.3 0 121.3 24.4 166.5 65.6l-67.5 64.8C295.5 118.8 273.5 104 244 104c-82.3 0-149.3 67.1-149.3 149.8s67 149.8 149.3 149.8c93.5 0 130.3-71.3 134-108.8H244V261.8h244z"/>
-                </svg>
-                <span>Entrar com o Google</span>
-            </button>
-        </main>
-
+      <section class="info-side">
+        <h1>Sua jornada para a aprovação começa aqui.</h1>
+        <p>
+          A plataforma definitiva para organizar seus estudos, dominar o
+          conteúdo e conquistar a sua vaga no ENEM.
+        </p>
+      </section>
+      <main class="form-side">
+        <img
+          src="assets/imagens/logo-branca-20Png.png"
+          alt="Logo Evolução Educacional"
+          class="logo"
+        />
+        <h2>Bem-vindo(a) de volta!</h2>
+        <p class="slogan">Acesse sua conta para continuar</p>
+        <button id="google-login-btn">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Google_Favicon_2025.svg/1002px-Google_Favicon_2025.svg.png"
+            alt="Google Icon"
+            class="google-icon"
+          />
+          <span>Entrar com o Google</span>
+        </button>
+      </main>
     </div>
-
     <footer>
-        <a href="#">Termos de Uso</a>
-        <a href="#">Política de Privacidade</a>
+      <a href="#">Termos de Uso</a>
+      <a href="#">Política de Privacidade</a>
     </footer>
-
     <script type="module">
-        // Importações do Firebase
-        import { auth, db } from './firebase/firebase-config.js';
-        import { GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+      // Importa a função de login do nosso novo arquivo centralizado
+      import { loginComGoogle } from "./firebase/firebase-conta.js";
 
-        // --- Lógica de Armazenamento Centralizado ---
-        const APP_STORAGE_KEY = 'perfilUser';
-        function saveAppData(data) {
-            try { localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(data)); } catch (e) { console.error("Falha ao salvar os dados da aplicação no localStorage", e); }
+      // Adiciona o evento de clique ao botão, que agora só chama a função importada
+      const googleLoginButton = document.getElementById("google-login-btn");
+      googleLoginButton.addEventListener("click", loginComGoogle);
+
+      // --- Animação do Canvas (sem alterações) ---
+      const canvas = document.getElementById("art-background");
+      const ctx = canvas.getContext("2d");
+      let particlesArray;
+      function setCanvasSize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      setCanvasSize();
+      class Particle {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.size = Math.random() * 1.5 + 0.5;
+          this.speedX = Math.random() * 2 - 1;
+          this.speedY = Math.random() * 2 - 1;
+          this.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
         }
-
-        // --- Lógica do Botão de Login ---
-        const googleLoginButton = document.getElementById('google-login-btn');
-        googleLoginButton.addEventListener('click', async () => {
-            const provider = new GoogleAuthProvider();
-            try {
-                const result = await signInWithPopup(auth, provider);
-                const user = result.user;
-                const userDocRef = doc(db, "users", user.uid);
-                const docSnap = await getDoc(userDocRef);
-                let userRole = "student";
-                if (docSnap.exists()) {
-                    userRole = docSnap.data().role || "student";
-                } else {
-                    await setDoc(userDocRef, {
-                        name: user.displayName, email: user.email, uid: user.uid,
-                        avatar: user.photoURL, role: "student", createdAt: serverTimestamp()
-                    });
-                }
-                const newAppData = {
-                    userData: { name: user.displayName, avatar: user.photoURL, uid: user.uid, role: userRole },
-                    essaySession: null
-                };
-                saveAppData(newAppData);
-                window.location.href = 'menu.html';
-            } catch (error) {
-                console.error("Erro no login com Google:", error.code, error.message);
-                alert(`Erro ao fazer login: ${error.message}`);
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+          if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+          if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+        }
+        draw() {
+          ctx.fillStyle = this.color;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      function init() {
+        particlesArray = [];
+        let numberOfParticles = (canvas.height * canvas.width) / 9000;
+        for (let i = 0; i < numberOfParticles; i++) {
+          particlesArray.push(new Particle());
+        }
+      }
+      init();
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < particlesArray.length; i++) {
+          particlesArray[i].update();
+          particlesArray[i].draw();
+        }
+        for (let i = 0; i < particlesArray.length; i++) {
+          for (let j = i; j < particlesArray.length; j++) {
+            let dx = particlesArray[i].x - particlesArray[j].x;
+            let dy = particlesArray[i].y - particlesArray[j].y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < 100) {
+              ctx.beginPath();
+              ctx.strokeStyle = particlesArray[i].color;
+              ctx.lineWidth = 0.2;
+              ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+              ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+              ctx.stroke();
+              ctx.closePath();
             }
-        });
-
-        // --- Animação do Canvas ---
-        const canvas = document.getElementById('art-background');
-        // ERRO CORRIGIDO AQUI: de getContext('d') para getContext('2d')
-        const ctx = canvas.getContext('2d');
-        let particlesArray;
-        function setCanvasSize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+      animate();
+      window.addEventListener("resize", () => {
         setCanvasSize();
-        class Particle { constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 1.5 + 0.5; this.speedX = Math.random() * 2 - 1; this.speedY = Math.random() * 2 - 1; this.color = `hsl(${Math.random() * 360}, 70%, 50%)`; } update() { this.x += this.speedX; this.y += this.speedY; if (this.x > canvas.width || this.x < 0) this.speedX *= -1; if (this.y > canvas.height || this.y < 0) this.speedY *= -1; } draw() { ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); } }
-        function init() { particlesArray = []; let numberOfParticles = (canvas.height * canvas.width) / 9000; for (let i = 0; i < numberOfParticles; i++) { particlesArray.push(new Particle()); } }
         init();
-        function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); particlesArray[i].draw(); } for (let i = 0; i < particlesArray.length; i++) { for (let j = i; j < particlesArray.length; j++) { let dx = particlesArray[i].x - particlesArray[j].x; let dy = particlesArray[i].y - particlesArray[j].y; let distance = Math.sqrt(dx * dx + dy * dy); if (distance < 100) { ctx.beginPath(); ctx.strokeStyle = particlesArray[i].color; ctx.lineWidth = 0.2; ctx.moveTo(particlesArray[i].x, particlesArray[i].y); ctx.lineTo(particlesArray[j].x, particlesArray[j].y); ctx.stroke(); ctx.closePath(); } } } requestAnimationFrame(animate); }
-        animate();
-        window.addEventListener('resize', () => { setCanvasSize(); init(); });
+      });
     </script>
-</body>
+  </body>
 </html>

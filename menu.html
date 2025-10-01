@@ -1,362 +1,558 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard | Evolução Educacional</title>
-    <link rel="icon" href="assets/imagens/logo-branca-20Png.png" type="image/png">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link
+      rel="icon"
+      href="assets/imagens/logo-branca-20Png.png"
+      type="image/png"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --cor-fundo: #0F0F1A;
-            --cor-fundo-secundario: #161622;
-            --cor-borda: rgba(255, 255, 255, 0.08);
-            --cor-texto: #EAEAEA;
-            --cor-texto-secundario: #A0A0B0;
-            --cor-destaque-1: #00A8FF;
-            --cor-destaque-2: #9C27B0;
+      :root {
+        --cor-fundo: #0f0f1a;
+        --cor-fundo-secundario: #161622;
+        --cor-borda: rgba(255, 255, 255, 0.08);
+        --cor-texto: #eaeaea;
+        --cor-texto-secundario: #a0a0b0;
+        --cor-destaque-1: #00a8ff;
+        --cor-destaque-2: #9c27b0;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        font-family: "Poppins", sans-serif;
+        background-color: var(--cor-fundo);
+        color: var(--cor-texto);
+        overflow: hidden;
+      }
+      .wrapper {
+        display: flex;
+        width: 100%;
+        height: 100%;
+      }
+      .sidebar {
+        width: 260px;
+        background-color: var(--cor-fundo-secundario);
+        border-right: 1px solid var(--cor-borda);
+        display: flex;
+        flex-direction: column;
+        padding: 25px;
+        transition: transform 0.3s ease-in-out;
+        z-index: 100;
+        flex-shrink: 0;
+      }
+      .sidebar-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 40px;
+        height: 64px;
+      }
+      .sidebar-header img {
+        width: 64px;
+      }
+      .sidebar nav {
+        flex: 1;
+      }
+      .sidebar-nav {
+        list-style: none;
+      }
+      .sidebar-nav li a {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        border-radius: 8px;
+        color: var(--cor-texto-secundario);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s ease;
+      }
+      .sidebar-nav li a:not(.disabled):hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: var(--cor-destaque-1);
+      }
+      .sidebar-nav li a.active {
+        background-color: var(--cor-destaque-1);
+        color: #fff;
+        box-shadow: 0 4px 15px rgba(0, 168, 255, 0.2);
+      }
+      .sidebar-nav li a.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+      .sidebar-footer {
+        border-top: 1px solid var(--cor-borda);
+        padding-top: 20px;
+      }
+      .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .user-profile img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .user-info {
+        min-width: 0;
+      }
+      .user-info span {
+        display: block;
+      }
+      .user-name {
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .user-info .logout {
+        font-size: 0.8rem;
+        color: var(--cor-texto-secundario);
+        cursor: pointer;
+      }
+      .user-info .logout:hover {
+        color: var(--cor-destaque-1);
+      }
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+      }
+      #art-background-dashboard {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        filter: blur(3px);
+        transform: scale(1.05);
+      }
+      .main-content-inner {
+        padding: 30px 40px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        z-index: 1;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .header-title {
+        flex: 1;
+      }
+      #welcome-message {
+        font-size: 1.8rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .header-title p {
+        color: var(--cor-texto-secundario);
+      }
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      .waving-hand {
+        width: 36px;
+        height: 36px;
+        animation: wave-animation 2.5s infinite;
+        transform-origin: 70% 70%;
+      }
+      @keyframes wave-animation {
+        0% {
+          transform: rotate(0deg);
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--cor-fundo);
-            color: var(--cor-texto);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
+        10% {
+          transform: rotate(14deg);
         }
-
-        /* --- Sidebar --- */
-        .sidebar {
-            width: 260px;
-            background-color: var(--cor-fundo-secundario);
-            border-right: 1px solid var(--cor-borda);
-            display: flex;
-            flex-direction: column;
-            padding: 25px;
-            transition: transform 0.3s ease-in-out; /* Transição para o modo responsivo */
-            z-index: 100; /* Garante que a sidebar fique na frente */
+        20% {
+          transform: rotate(-8deg);
         }
-
-        .sidebar-header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 40px;
-            height: 64px;
+        30% {
+          transform: rotate(14deg);
         }
-        
-        .sidebar-header img { 
-            width: 64px; 
+        40% {
+          transform: rotate(-4deg);
         }
-
-        .sidebar nav { flex: 1; }
-        .sidebar-nav { list-style: none; }
-        .sidebar-nav li a {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px;
-            border-radius: 8px;
-            color: var(--cor-texto-secundario);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.2s ease;
+        50% {
+          transform: rotate(10deg);
         }
-
-        .sidebar-nav li a:not(.disabled):hover {
-            background-color: rgba(255, 255, 255, 0.05);
-            color: var(--cor-destaque-1);
+        60% {
+          transform: rotate(0deg);
         }
-        
-        .sidebar-nav li a.active {
-            background-color: var(--cor-destaque-1);
-            color: #FFF;
-            box-shadow: 0 4px 15px rgba(0, 168, 255, 0.2);
+        100% {
+          transform: rotate(0deg);
         }
-        
-        .sidebar-nav li a.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        .sidebar-footer {
-            border-top: 1px solid var(--cor-borda);
-            padding-top: 20px;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .user-profile img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-        .user-info { min-width: 0; }
-        .user-info span { display: block; }
-        .user-name { 
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .user-info .logout { font-size: 0.8rem; color: var(--cor-texto-secundario); cursor: pointer; }
-        .user-info .logout:hover { color: var(--cor-destaque-1); }
-
-        /* --- Conteúdo Principal --- */
-        .main-content {
-            flex: 1;
-            padding: 30px 40px;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-        }
-        .header-title h2 { font-size: 1.8rem; }
-        .header-title p { color: var(--cor-texto-secundario); }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .search-bar { position: relative; }
-        .search-bar input {
-            width: 300px;
-            padding: 12px 15px 12px 40px;
-            background-color: var(--cor-fundo-secundario);
-            border: 1px solid var(--cor-borda);
-            border-radius: 8px;
-            color: var(--cor-texto);
-            font-size: 0.9rem;
-        }
-        .search-bar i {
-            position: absolute;
-            left: 15px; top: 50%;
-            transform: translateY(-50%);
-            color: var(--cor-texto-secundario);
-        }
-
-        /* NOVO: Menu Hambúrguer */
-        .hamburger-menu {
-            display: none; /* Oculto em telas grandes */
-            cursor: pointer;
-        }
-
-        /* NOVO: Overlay */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 99;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-        }
-        .overlay.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .missions-container { flex: 1; }
-        .missions-container h3 { font-size: 1.5rem; margin-bottom: 25px; }
+      }
+      .hamburger-menu {
+        display: none;
+        cursor: pointer;
+      }
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 99;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+      }
+      .overlay.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+      .missions-wrapper {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .missions-container h3 {
+        font-size: 1.8rem;
+        text-align: center;
+        margin-bottom: 35px;
+      }
+      .missions-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 25px;
+        width: 100%;
+        max-width: 1300px;
+      }
+      .mission-card {
+        background-color: rgba(22, 22, 38, 0.7);
+        border: 1px solid var(--cor-borda);
+        border-radius: 16px;
+        padding: 40px 25px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: var(--cor-texto);
+        backdrop-filter: blur(5px);
+      }
+      .mission-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--cor-destaque-1);
+        box-shadow: 0 10px 30px rgba(0, 168, 255, 0.15);
+      }
+      .mission-card .icon {
+        width: 48px;
+        height: 48px;
+      }
+      .mission-card h4 {
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+      @media (max-width: 1300px) {
         .missions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
+          grid-template-columns: repeat(2, 1fr);
+          max-width: 700px;
         }
-        .mission-card {
-            background-color: var(--cor-fundo-secundario);
-            border: 1px solid var(--cor-borda);
-            border-radius: 16px;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: var(--cor-texto);
+      }
+      @media (max-width: 992px) {
+        html,
+        body {
+          overflow: auto;
         }
-
-        .mission-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--cor-destaque-2);
-            box-shadow: 0 10px 30px rgba(156, 39, 176, 0.2);
+        .wrapper {
+          height: auto;
+          flex-direction: column;
         }
-        .mission-card .icon { width: 48px; height: 48px; }
-        .mission-card h4 { font-size: 1.2rem; font-weight: 600; }
-        
-        /* --- Media Queries para Responsividade --- */
-        @media (max-width: 992px) {
-            .sidebar {
-                position: fixed;
-                left: 0;
-                top: 0;
-                height: 100%;
-                transform: translateX(-100%); /* Esconde a sidebar fora da tela */
-            }
-            .sidebar.open {
-                transform: translateX(0); /* Mostra a sidebar */
-            }
-
-            .hamburger-menu {
-                display: block; /* Mostra o hambúrguer em telas menores */
-            }
-            
-            .search-bar { display: none; } /* Opcional: esconder a busca em telas pequenas */
-
-            .main-content { padding: 20px; }
-            .header-title h2 { font-size: 1.5rem; }
-            .missions-grid {
-                grid-template-columns: 1fr; /* Uma coluna para os cards */
-            }
+        .main-content {
+          padding: 0;
+          height: auto;
         }
+        .main-content-inner {
+          padding: 20px;
+        }
+        .sidebar {
+          position: fixed;
+          left: 0;
+          top: 0;
+          height: 100vh;
+          transform: translateX(-100%);
+        }
+        .sidebar.open {
+          transform: translateX(0);
+        }
+        .hamburger-menu {
+          display: block;
+        }
+        #welcome-message {
+          font-size: 1.5rem;
+        }
+      }
+      @media (max-width: 768px) {
+        .missions-grid {
+          grid-template-columns: 1fr;
+        }
+        .missions-wrapper {
+          padding-top: 20px;
+          align-items: flex-start;
+        }
+      }
     </style>
-</head>
-<body>
-
-    <aside class="sidebar" id="sidebar">
+  </head>
+  <body>
+    <div class="wrapper">
+      <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <img src="assets/imagens/logo-branca-20Png.png" alt="Logo">
+          <img src="assets/imagens/logo-branca-20Png.png" alt="Logo" />
         </div>
         <nav>
-            <ul class="sidebar-nav">
-                <li><a href="#" class="active nav-link"><i data-lucide="home"></i> Início</a></li>
-                <li><a href="#" class="disabled nav-link"><i data-lucide="bar-chart-3"></i> Desempenho</a></li>
-                <li><a href="#" class="disabled nav-link"><i data-lucide="file-pen-line"></i> Redações</a></li>
-                <li><a href="#" class="disabled nav-link"><i data-lucide="file-check-2"></i> Simulados</a></li>
-                <li><a href="#" class="disabled nav-link"><i data-lucide="settings"></i> Configurações</a></li>
-            </ul>
+          <ul class="sidebar-nav">
+            <li>
+              <a href="#" class="active nav-link"
+                ><i data-lucide="home"></i> Início</a
+              >
+            </li>
+            <li>
+              <a href="#" class="disabled nav-link"
+                ><i data-lucide="bar-chart-3"></i> Desempenho</a
+              >
+            </li>
+            <li>
+              <a href="/redacao" class="nav-link"
+                ><i data-lucide="file-pen-line"></i> Redações</a
+              >
+            </li>
+            <li>
+              <a href="#" class="disabled nav-link"
+                ><i data-lucide="file-check-2"></i> Simulados</a
+              >
+            </li>
+            <li>
+              <a href="#" class="disabled nav-link"
+                ><i data-lucide="settings"></i> Configurações</a
+              >
+            </li>
+          </ul>
         </nav>
         <div class="sidebar-footer">
-            <div class="user-profile">
-                <img id="user-avatar" src="https://via.placeholder.com/40" alt="Avatar do usuário">
-                <div class="user-info">
-                    <span id="user-name" class="user-name">Carregando...</span>
-                    <span class="logout" id="logout-btn">Sair</span>
-                </div>
+          <div class="user-profile">
+            <img
+              id="user-avatar"
+              src="https://via.placeholder.com/40"
+              alt="Avatar do usuário"
+            />
+            <div class="user-info">
+              <span id="user-name" class="user-name">Carregando...</span>
+              <span class="logout" id="logout-btn">Sair</span>
             </div>
+          </div>
         </div>
-    </aside>
-
-    <div class="overlay" id="overlay"></div>
-
-    <div class="main-content">
-        <header>
+      </aside>
+      <div class="main-content">
+        <canvas id="art-background-dashboard"></canvas>
+        <div class="overlay" id="overlay"></div>
+        <div class="main-content-inner">
+          <header>
             <div class="header-title">
-                <h2 id="welcome-message">Olá, ...</h2>
-                <p>Pronto para começar a evoluir?</p>
+              <h2 id="welcome-message">
+                <img
+                  src="assets/imagens/saudar.png"
+                  alt="Mão acenando"
+                  class="waving-hand"
+                />
+                <span id="welcome-text">Olá, ...</span>
+              </h2>
+              <p>Pronto para começar a evoluir?</p>
             </div>
             <div class="header-actions">
-                <div class="search-bar">
-                    <i data-lucide="search"></i>
-                    <input type="text" placeholder="Buscar por um assunto...">
-                </div>
-                <div class="hamburger-menu" id="hamburger-menu">
-                    <i data-lucide="menu"></i>
-                </div>
+              <div class="hamburger-menu" id="hamburger-menu">
+                <i data-lucide="menu"></i>
+              </div>
             </div>
-        </header>
-
-        <main class="missions-container">
-            <h3>Escolha sua Missão</h3>
-            <div class="missions-grid">
-                 <a href="#" class="mission-card">
-                    <i data-lucide="message-circle" class="icon" style="color: #00A8FF;"></i>
-                    <h4>Linguagens, Códigos e suas Tecnologias</h4>
-                </a>
-                <a href="#" class="mission-card">
-                    <i data-lucide="puzzle" class="icon" style="color: #9C27B0;"></i>
-                    <h4>Ciências Humanas e suas Tecnologias</h4>
-                </a>
-                <a href="#" class="mission-card">
-                    <i data-lucide="atom" class="icon" style="color: #00BCD4;"></i>
-                    <h4>Ciências da Natureza e suas Tecnologias</h4>
-                </a>
-                <a href="#" class="mission-card">
-                    <i data-lucide="function-square" class="icon" style="color: #4CAF50;"></i>
-                    <h4>Matemática e suas Tecnologias</h4>
-                </a>
+          </header>
+          <main class="missions-wrapper">
+            <div class="missions-container">
+              <h3>Escolha sua Missão</h3>
+              <div class="missions-grid">
+                <a href="#" class="mission-card"
+                  ><i
+                    data-lucide="message-circle"
+                    class="icon"
+                    style="color: #00a8ff"
+                  ></i>
+                  <h4>Linguagens e suas Tecnologias</h4></a
+                >
+                <a href="#" class="mission-card"
+                  ><i
+                    data-lucide="puzzle"
+                    class="icon"
+                    style="color: #9c27b0"
+                  ></i>
+                  <h4>Ciências Humanas e suas Tecnologias</h4></a
+                >
+                <a href="#" class="mission-card"
+                  ><i
+                    data-lucide="atom"
+                    class="icon"
+                    style="color: #00bcd4"
+                  ></i>
+                  <h4>Ciências da Natureza e suas Tecnologias</h4></a
+                >
+                <a href="#" class="mission-card"
+                  ><i
+                    data-lucide="function-square"
+                    class="icon"
+                    style="color: #4caf50"
+                  ></i>
+                  <h4>Matemática e suas Tecnologias</h4></a
+                >
+              </div>
             </div>
-        </main>
+          </main>
+        </div>
+      </div>
     </div>
-
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script>
-        lucide.createIcons();
+    <script type="module">
+      import { verificarLogin, logout } from "./firebase/firebase-conta.js";
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- Lógica de dados do usuário ---
-            const APP_STORAGE_KEY = 'perfilUser';
-            const appData = JSON.parse(localStorage.getItem(APP_STORAGE_KEY));
+      lucide.createIcons();
 
-            if (!appData || !appData.userData) {
-                window.location.href = 'index.html';
-                return;
-            }
+      document.addEventListener("DOMContentLoaded", () => {
+        // Verifica o login e, se for válido, executa a função para popular a página
+        verificarLogin((userData) => {
+          const { name, avatar } = userData;
+          const firstName = name.split(" ")[0];
 
-            const { name, avatar } = appData.userData;
-            const firstName = name.split(' ')[0];
-
-            document.getElementById('welcome-message').textContent = `Olá, ${firstName}!`;
-            document.getElementById('user-name').textContent = name;
-            
-            const userAvatar = document.getElementById('user-avatar');
-            if(avatar) userAvatar.src = avatar;
-
-            const logoutButton = document.getElementById('logout-btn');
-            logoutButton.addEventListener('click', () => {
-                localStorage.removeItem(APP_STORAGE_KEY);
-                window.location.href = 'index.html';
-            });
-
-            // --- Lógica da Sidebar Responsiva ---
-            const sidebar = document.getElementById('sidebar');
-            const hamburgerMenu = document.getElementById('hamburger-menu');
-            const overlay = document.getElementById('overlay');
-            const navLinks = document.querySelectorAll('.nav-link');
-
-            const toggleSidebar = () => {
-                sidebar.classList.toggle('open');
-                overlay.classList.toggle('visible');
-            };
-
-            hamburgerMenu.addEventListener('click', toggleSidebar);
-            overlay.addEventListener('click', toggleSidebar);
-
-            // Fecha a sidebar ao clicar em um link (útil em mobile)
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    if (sidebar.classList.contains('open')) {
-                        toggleSidebar();
-                    }
-                });
-            });
+          // Popula os dados do usuário na interface
+          document.getElementById(
+            "welcome-text"
+          ).textContent = `Olá, ${firstName}!`;
+          document.getElementById("user-name").textContent = name;
+          const userAvatar = document.getElementById("user-avatar");
+          if (avatar) userAvatar.src = avatar;
         });
-    </script>
 
-</body>
+        // Lógica de Logout
+        document.getElementById("logout-btn").addEventListener("click", logout);
+
+        // Lógica da Sidebar Responsiva (sem alterações)
+        const sidebar = document.getElementById("sidebar");
+        const hamburgerMenu = document.getElementById("hamburger-menu");
+        const overlay = document.getElementById("overlay");
+        const navLinks = document.querySelectorAll(".nav-link");
+        const toggleSidebar = () => {
+          sidebar.classList.toggle("open");
+          overlay.classList.toggle("visible");
+        };
+        hamburgerMenu.addEventListener("click", toggleSidebar);
+        overlay.addEventListener("click", toggleSidebar);
+        navLinks.forEach((link) => {
+          link.addEventListener("click", () => {
+            if (sidebar.classList.contains("open")) {
+              toggleSidebar();
+            }
+          });
+        });
+
+        // Animação do Canvas (sem alterações)
+        const canvas = document.getElementById("art-background-dashboard");
+        const ctx = canvas.getContext("2d");
+        let particlesArray;
+        function setCanvasSize() {
+          const mainContent = document.querySelector(".main-content");
+          canvas.width = mainContent.clientWidth;
+          canvas.height = mainContent.clientHeight;
+        }
+        setCanvasSize();
+        class Particle {
+          constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 1.5 + 0.5;
+            this.speedX = Math.random() * 0.5 - 0.25;
+            this.speedY = Math.random() * 0.5 - 0.25;
+            this.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
+          }
+          update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+            if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+          }
+          draw() {
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        function init() {
+          particlesArray = [];
+          let numberOfParticles = (canvas.height * canvas.width) / 9000;
+          for (let i = 0; i < numberOfParticles; i++) {
+            particlesArray.push(new Particle());
+          }
+        }
+        init();
+        function animate() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          for (let i = 0; i < particlesArray.length; i++) {
+            particlesArray[i].update();
+            particlesArray[i].draw();
+          }
+          for (let i = 0; i < particlesArray.length; i++) {
+            for (let j = i; j < particlesArray.length; j++) {
+              let dx = particlesArray[i].x - particlesArray[j].x;
+              let dy = particlesArray[i].y - particlesArray[j].y;
+              let distance = Math.sqrt(dx * dx + dy * dy);
+              if (distance < 100) {
+                ctx.beginPath();
+                ctx.strokeStyle = particlesArray[i].color;
+                ctx.lineWidth = 0.2;
+                ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                ctx.stroke();
+                ctx.closePath();
+              }
+            }
+          }
+          requestAnimationFrame(animate);
+        }
+        animate();
+        window.addEventListener("resize", () => {
+          setCanvasSize();
+          init();
+        });
+      });
+    </script>
+  </body>
 </html>
