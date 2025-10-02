@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1: Operações Fundamentais com Inteiros e Decimais</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @font-face {
+        font-family: 'Helvetica';
+        src: url('Helvetica.ttf') format('truetype');
+
+      }
+
+      body {
+        font-family: "Helvetica", sans-serif;
+        background-image: url("https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2071&auto=format&fit=crop");
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+      }
+
+      /* Estilos para a impressão */
+      @media print {
+        body {
+          background-image: none;
+        }
+        .no-print {
+          display: none !important;
+        }
+        .main-container {
+          box-shadow: none;
+          border: 1px solid #ccc;
+          margin: 0;
+          max-width: 100%;
+        }
+        .quiz-form label {
+          border: 1px solid #eee;
+        }
+      }
+
+      .highlight {
+        color: #2dd4bf; /* Teal-400 */
+        font-weight: 700;
+      }
+
+      .highlight-yellow {
+        background-color: #fef08a; /* Yellow-200 */
+        padding: 0.1rem 0.3rem;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+
+      pre {
+        background-color: #f3f4f6; /* Gray-100 */
+        border: 1px solid #d1d5db; /* Gray-300 */
+        border-radius: 8px;
+        padding: 16px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #1f2937; /* Gray-800 */
+      }
+
+      .quiz-form label {
+        display: block;
+        padding: 12px 16px;
+        border: 2px solid #e5e7eb; /* Gray-200 */
+        border-radius: 8px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+      }
+
+      .quiz-form label:hover {
+        border-color: #38bdf8; /* Sky-400 */
+        background-color: #f0f9ff; /* Sky-50 */
+      }
+
+      .quiz-form input[type="radio"] {
+        display: none;
+      }
+
+      .quiz-form input[type="radio"]:checked + label {
+        border-color: #38bdf8; /* Sky-400 */
+        background-color: #e0f2fe; /* Sky-100 */
+        font-weight: 700;
+      }
+
+      .correct {
+        border-color: #22c55e !important; /* Green-500 */
+        background-color: #dcfce7 !important; /* Green-100 */
+        color: #15803d; /* Green-700 */
+      }
+
+      .incorrect {
+        border-color: #ef4444 !important; /* Red-500 */
+        background-color: #fee2e2 !important; /* Red-100 */
+        color: #b91c1c; /* Red-700 */
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-900 text-gray-800 p-4 sm:p-6 md:p-8">
+    <div
+      class="main-container max-w-4xl mx-auto bg-white bg-opacity-95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 sm:p-8 md:p-12"
+    >
+      <header class="text-center mb-10">
+        <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">
+          Aula 1: Operações Fundamentais com Inteiros e Decimais
+        </h1>
+        <p class="text-gray-600 mt-2">
+          Uma base sólida para o seu sucesso no ENEM.
+        </p>
+      </header>
+
+      <section
+        class="no-print bg-sky-50 border-2 border-sky-200 rounded-xl p-6 mb-12 text-center"
+      >
+        <h2 class="text-2xl font-bold text-sky-800 mb-2">
+          Timer de Estudos (Pomodoro)
+        </h2>
+        <p class="text-sky-600 mb-4">
+          Use esta técnica para manter o foco durante seus estudos.
+        </p>
+        <div id="pomodoro-timer" class="text-6xl font-bold text-sky-900 my-4">
+          25:00
+        </div>
+        <div class="flex justify-center space-x-4">
+          <button
+            id="pomodoro-start"
+            class="px-6 py-2 bg-sky-500 text-white font-semibold rounded-lg shadow-md hover:bg-sky-600 transition"
+          >
+            Iniciar
+          </button>
+          <button
+            id="pomodoro-pause"
+            class="px-6 py-2 bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600 transition"
+          >
+            Pausar
+          </button>
+          <button
+            id="pomodoro-reset"
+            class="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 transition"
+          >
+            Resetar
+          </button>
+        </div>
+      </section>
+
+      <article class="space-y-10">
+        <section>
+          <h2
+            class="text-2xl font-bold text-gray-700 border-b-4 border-teal-400 pb-2 mb-6"
+          >
+            Parte 1: O Mundo dos Números Inteiros (Z)
+          </h2>
+          <p class="mb-6 text-lg">
+            Nesta primeira parte, vamos construir uma base sólida para trabalhar
+            com números positivos e negativos. Esqueça as regras decoradas por
+            um instante e vamos pensar de forma lógica, usando situações do dia
+            a dia.
+          </p>
+
+          <div>
+            <h3 class="text-xl font-bold text-gray-700 mb-4">
+              1.1. Adição com Números Inteiros
+            </h3>
+            <h4 class="text-lg font-semibold text-gray-600 mb-2">
+              1.1.1. Teoria: Somando Sinais Iguais e Sinais Diferentes (A Lógica
+              do "Ter" e "Dever")
+            </h4>
+            <p class="mb-4">
+              Para nunca mais errar a adição de números inteiros, vamos usar uma
+              analogia simples com dinheiro.
+            </p>
+            <ul class="list-disc list-inside space-y-2 mb-4 pl-4">
+              <li>
+                <strong class="text-green-600">Números Positivos (+):</strong>
+                Representam o que você
+                <span class="highlight-yellow">TEM</span>. É o seu crédito, seu
+                saldo positivo, o dinheiro no seu bolso.
+              </li>
+              <li>
+                <strong class="text-red-600">Números Negativos (-):</strong>
+                Representam o que você
+                <span class="highlight-yellow">DEVE</span>. É a sua dívida, seu
+                saldo negativo, uma conta a pagar.
+              </li>
+            </ul>
+            <p class="mb-2">
+              <strong class="highlight">Regra 1: Sinais Iguais</strong> → Some
+              os valores e mantenha o mesmo sinal. (Juntar dívidas aumenta a
+              dívida, juntar créditos aumenta o crédito).
+            </p>
+            <p class="mb-4">
+              <strong class="highlight">Regra 2: Sinais Diferentes</strong> →
+              Subtraia o menor valor do maior. O resultado terá o sinal do
+              número que era maior (o que você tinha mais: crédito ou dívida).
+            </p>
+
+            <h4 class="text-lg font-semibold text-gray-600 mt-6 mb-2">
+              1.1.2. Exemplo Prático: Analisando o Saldo de uma Conta Bancária
+            </h4>
+            <p class="mb-4">
+              <strong>Situação:</strong> Você tem R$ 50 na sua conta corrente
+              (+50) e precisa pagar uma conta de luz de R$ 80 por débito
+              automático (-80). Qual será o seu novo saldo?
+            </p>
+            <pre>
+Passo 1: Traduzir a situação para a matemática.
+Temos: (+50) + (-80)
+
+Passo 2: Aplicar a lógica do "Ter" e "Dever".
+- Eu TENHO R$ 50 (o valor positivo).
+- Eu DEVO R$ 80 (o valor negativo).
+A dívida (80) é maior que o crédito (50). O resultado será negativo.
+
+Passo 3: Calcular a diferença.
+  80   (O valor absoluto da dívida)
+- 50   (O valor absoluto do que eu tenho)
+----
+  30
+
+Passo 4: Dar o sinal correto ao resultado.
+Como a dívida era maior, o resultado é -30.
+
+Resposta: O novo saldo é de -R$ 30. Você ficou no vermelho.
+                    </pre
+            >
+          </div>
+
+          <div class="mt-8">
+            <h3 class="text-xl font-bold text-gray-700 mb-4">
+              1.2. Subtração com Números Inteiros
+            </h3>
+            <h4 class="text-lg font-semibold text-gray-600 mb-2">
+              1.2.1. Teoria: A Regra do Oposto
+            </h4>
+            <p class="mb-4">
+              A regra fundamental é:
+              <strong class="highlight"
+                >Subtrair um número é o mesmo que SOMAR o seu OPOSTO.</strong
+              >
+              O oposto é o mesmo número com o sinal trocado (oposto de +7 é -7;
+              oposto de -12 é +12).
+            </p>
+            <p>
+              Então, `8 - (-3)` vira `8 + (+3)`. Depois, é só usar a lógica do
+              "Ter e Dever".
+            </p>
+
+            <h4 class="text-lg font-semibold text-gray-600 mt-6 mb-2">
+              1.2.2. Exemplo Prático: Variação de Temperatura
+            </h4>
+            <p class="mb-4">
+              <strong>Situação:</strong> A temperatura em uma cidade na serra
+              foi de -3°C para +9°C. Qual foi a variação?
+            </p>
+            <pre>
+Passo 1: Traduzir para a matemática.
+Variação = (Valor Final) - (Valor Inicial)
+Conta: (+9) - (-3)
+
+Passo 2: Aplicar a regra do oposto.
+Subtrair -3 é o mesmo que somar +3.
+Vamos visualizar a transformação:
+
+  (+9)   -   (-3)
+   |
+   | <-- O sinal de menos e o número seguinte se transformam
+   V
+  (+9)   +   (+3)
+
+Passo 3: Resolver a nova adição.
+A conta virou (+9) + (+3).
+Tenho 9 e ganho 3, fico com 12.
+9 + 3 = 12
+
+Resposta: A variação de temperatura foi de +12°C.
+                    </pre
+            >
+          </div>
+
+          <div class="mt-8">
+            <h3 class="text-xl font-bold text-gray-700 mb-4">
+              1.3. Multiplicação e 1.4. Divisão com Inteiros
+            </h3>
+            <h4 class="text-lg font-semibold text-gray-600 mb-2">
+              1.3.1. Teoria: A Regra de Sinais (Amigo/Inimigo)
+            </h4>
+            <p class="mb-4">
+              <strong>Atenção!</strong> As regras aqui são diferentes. Não use
+              "Ter e Dever". A regra é a mesma para multiplicação e divisão:
+            </p>
+            <ul class="list-disc list-inside space-y-2 mb-4 pl-4">
+              <li>
+                Sinais <strong class="text-green-600">IGUAIS</strong> resultam
+                em <strong class="highlight">POSITIVO (+)</strong>. <br /><span
+                  class="text-sm text-gray-500"
+                  >(+) * (+) = + | (-) * (-) = +</span
+                >
+              </li>
+              <li>
+                Sinais <strong class="text-red-600">DIFERENTES</strong> resultam
+                em <strong class="highlight">NEGATIVO (-)</strong>. <br /><span
+                  class="text-sm text-gray-500"
+                  >(+) * (-) = - | (-) * (+) = -</span
+                >
+              </li>
+            </ul>
+            <p>
+              Uma analogia: `(+)` é "amigo", `(-)` é "inimigo". O inimigo do meu
+              inimigo é meu amigo `(- * - = +)`.
+            </p>
+
+            <h4 class="text-lg font-semibold text-gray-600 mt-6 mb-2">
+              1.3.2. Exemplo Prático (Multiplicação): Dívida Parcelada
+            </h4>
+            <p class="mb-4">
+              <strong>Situação:</strong> Você tem uma dívida de 5 parcelas
+              mensais de R$ 90. Qual o impacto total?
+            </p>
+            <pre>
+Passo 1: Traduzir para a matemática.
+Conta: (+5) * (-90)
+
+Passo 2: Resolver o sinal do resultado.
+Sinais diferentes (+) e (-) resultam em NEGATIVO.
+
+Passo 3: Multiplicar os valores.
+  90
+x  5
+----
+ 450
+
+Passo 4: Juntar o sinal com o valor.
+Resultado: -450.
+
+Resposta: O impacto total é de -R$ 450.
+                    </pre
+            >
+          </div>
+        </section>
+
+        <section>
+          <h2
+            class="text-2xl font-bold text-gray-700 border-b-4 border-teal-400 pb-2 mb-6"
+          >
+            Parte 2: Desvendando os Números Decimais
+          </h2>
+          <p class="mb-6 text-lg">
+            Números com vírgula aparecem o tempo todo. O segredo está em
+            entender o papel da vírgula e alinhar tudo corretamente.
+          </p>
+
+          <div>
+            <h3 class="text-xl font-bold text-gray-700 mb-4">
+              2.1. Entendendo a Posição: O que a Vírgula nos Diz
+            </h3>
+            <h4 class="text-lg font-semibold text-gray-600 mb-2">
+              Teoria: Casas Decimais
+            </h4>
+            <p class="mb-4">
+              A vírgula separa a parte
+              <strong class="highlight">inteira</strong> (à esquerda) da parte
+              <strong class="highlight">fracionada</strong> (à direita). Em R$
+              8,50, o "8" é a parte inteira e "50" é a parte decimal.
+            </p>
+            <p class="mb-4">
+              <strong>Importante:</strong> Zeros no final da parte decimal não
+              alteram o valor. Assim,
+              <span class="highlight-yellow"
+                >R$ 8,5 é exatamente igual a R$ 8,50</span
+              >. Porém,
+              <span class="highlight-yellow"
+                >R$ 8,05 (oito reais e cinco centavos) é diferente</span
+              >, pois o 5 está em outra posição.
+            </p>
+          </div>
+
+          <div class="mt-8">
+            <h3 class="text-xl font-bold text-gray-700 mb-4">
+              2.2. Adição e Subtração com Decimais
+            </h3>
+            <h4 class="text-lg font-semibold text-gray-600 mb-2">
+              Teoria: A Regra de Ouro - "Vírgula Embaixo de Vírgula"
+            </h4>
+            <p class="mb-4">
+              Para somar ou subtrair, a única regra é alinhar os números de
+              forma que as
+              <strong class="highlight"
+                >vírgulas fiquem uma embaixo da outra</strong
+              >. Se um número tiver menos casas decimais, complete com zeros.
+            </p>
+
+            <h4 class="text-lg font-semibold text-gray-600 mt-6 mb-2">
+              Exemplo Prático (Subtração): Recebendo o Troco
+            </h4>
+            <p class="mb-4">
+              <strong>Situação:</strong> Sua compra deu R$ 13,45. Você pagou com
+              uma nota de R$ 20. Quanto é o troco?
+            </p>
+            <pre>
+Passo 1: Traduzir e preparar os números.
+Conta: 20 - 13,45. O número 20 vira 20,00.
+
+Passo 2: Montar a conta com "vírgula embaixo de vírgula".
+  20,00
+- 13,45
+-------
+
+Passo 3: Subtrair, "pegando emprestado".
+  1  9  9  10  <- Visualização do empréstimo
+  2  0, 0  0
+- 1  3, 4  5
+-----------
+  0  6, 5  5
+
+Resposta: O troco é de R$ 6,55.
+                    </pre
+            >
+          </div>
+
+          <div class="mt-8">
+            <h3 class="text-xl font-bold text-gray-700 mb-4">
+              2.3. Multiplicação com Decimais
+            </h3>
+            <h4 class="text-lg font-semibold text-gray-600 mb-2">
+              Teoria: Multiplicar e Contar as Casas
+            </h4>
+            <p class="mb-4">
+              Aqui <strong class="text-red-600">NÃO</strong> se alinha a
+              vírgula. O processo tem dois passos:
+            </p>
+            <ol class="list-decimal list-inside space-y-2 mb-4 pl-4">
+              <li>
+                <strong class="highlight">Ignore as vírgulas:</strong>
+                Multiplique os números como se fossem inteiros.
+              </li>
+              <li>
+                <strong class="highlight">Conte as casas decimais:</strong> Some
+                a quantidade de casas decimais dos números originais. O
+                resultado final deve ter essa quantidade total de casas.
+              </li>
+            </ol>
+
+            <h4 class="text-lg font-semibold text-gray-600 mt-6 mb-2">
+              Exemplo Prático: Custo da Carne
+            </h4>
+            <p class="mb-4">
+              <strong>Situação:</strong> 1,5 kg de carne a R$ 45,50 por quilo.
+            </p>
+            <pre>
+Passo 1: Multiplicar ignorando as vírgulas (455 * 15).
+    455
+  x  15
+  -----
+   2275  <- (5 * 455)
++ 455   <- (1 * 455, deslocado)
+------
+  6825
+
+Passo 2: Contar as casas decimais.
+- 45,5  -> 1 casa decimal
+-  1,5  -> 1 casa decimal
+Total: 1 + 1 = 2 casas decimais.
+
+Passo 3: Colocar a vírgula no resultado.
+O resultado 6825 precisa de 2 casas. Contamos da direita para a esquerda.
+Resultado: 68,25
+
+Resposta: O valor a pagar é R$ 68,25.
+                    </pre
+            >
+          </div>
+
+          <div class="mt-8">
+            <h3 class="text-xl font-bold text-gray-700 mb-4">
+              2.4. Divisão com Decimais
+            </h3>
+            <h4 class="text-lg font-semibold text-gray-600 mb-2">
+              Teoria: A Missão - Eliminar a Vírgula
+            </h4>
+            <p class="mb-4">
+              O objetivo é transformar a conta em uma divisão de números
+              inteiros.
+            </p>
+            <ol class="list-decimal list-inside space-y-2 mb-4 pl-4">
+              <li>
+                <strong class="highlight">Igualar as casas decimais:</strong>
+                Adicione zeros até que os dois números tenham a mesma quantidade
+                de casas depois da vírgula.
+              </li>
+              <li>
+                <strong class="highlight">Eliminar as vírgulas:</strong>
+                Simplesmente remova as vírgulas dos dois números.
+              </li>
+              <li>
+                <strong class="highlight">Dividir:</strong> Faça a divisão com
+                os novos números inteiros.
+              </li>
+            </ol>
+
+            <h4 class="text-lg font-semibold text-gray-600 mt-6 mb-2">
+              Exemplo Prático: Dividindo a Pizza
+            </h4>
+            <p class="mb-4">
+              <strong>Situação:</strong> Uma conta de R$ 55,50 para 3 amigos.
+            </p>
+            <pre>
+Passo 1: Igualar as casas decimais.
+Conta: 55,50 / 3
+- 55,50 -> 2 casas decimais
+- 3     -> Vira 3,00 para também ter 2 casas.
+Nova conta: 55,50 / 3,00
+
+Passo 2: Eliminar as vírgulas.
+A conta se torna: 5550 / 300
+
+Passo 3: Dividir (podemos simplificar cortando um zero: 555 / 30).
+  555 |__30__
+ -30  | 18,5
+ ---
+  255
+ -240
+ ----
+   150  <- Adiciona vírgula no quociente e um zero aqui
+  -150
+  ----
+     0
+
+Resposta: Cada amigo deve pagar R$ 18,50.
+                    </pre
+            >
+          </div>
+        </section>
+      </article>
+
+      <section class="my-12">
+        <h2
+          class="text-2xl font-bold text-gray-700 border-b-4 border-teal-400 pb-2 mb-6"
+        >
+          Vídeo Aula de Apoio
+        </h2>
+        <div
+          class="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg overflow-hidden shadow-lg"
+        >
+          <iframe
+            class="w-full h-full"
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </section>
+
+      <section class="no-print mt-12">
+        <h2
+          class="text-2xl font-bold text-gray-700 border-b-4 border-teal-400 pb-2 mb-6"
+        >
+          Questões de Fixação (Estilo ENEM)
+        </h2>
+
+        <div
+          class="bg-amber-50 border-2 border-amber-200 rounded-xl p-6 mb-8 text-center"
+        >
+          <h3 class="text-xl font-bold text-amber-800 mb-2">
+            Atenção ao Tempo!
+          </h3>
+          <p class="text-amber-700">
+            No ENEM, você terá em média 3 minutos por questão. Antes de começar
+            a ler cada questão, ative o timer individual para simular essa
+            condição.
+          </p>
+        </div>
+
+        <form id="quiz" class="quiz-form space-y-8">
+          <div class="question-container bg-gray-50 p-6 rounded-lg shadow-sm">
+            <div class="flex justify-between items-start mb-4">
+              <p class="font-semibold text-lg flex-1">
+                <strong>Questão 1:</strong> Mariana foi até a padaria e comprou
+                um pedaço de torta de frango por R$ 6,50, um copo de suco por R$
+                5,25 e, de sobremesa, dois brigadeiros por R$ 0,75 cada. O valor
+                total pago por ela foi de:
+              </p>
+              <div class="text-center ml-4 flex-shrink-0">
+                <div class="question-timer text-2xl font-bold text-amber-900">
+                  03:00
+                </div>
+                <button
+                  type="button"
+                  class="start-timer-btn mt-1 px-3 py-1 text-sm bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600 transition"
+                >
+                  Ativar Timer
+                </button>
+              </div>
+            </div>
+            <div>
+              <input type="radio" name="q1" id="q1a" value="A" /><label
+                for="q1a"
+                >A) R$ 13,25</label
+              >
+              <input type="radio" name="q1" id="q1b" value="B" /><label
+                for="q1b"
+                >B) R$ 12,50</label
+              >
+              <input type="radio" name="q1" id="q1c" value="C" /><label
+                for="q1c"
+                >C) R$ 11,75</label
+              >
+              <input type="radio" name="q1" id="q1d" value="D" /><label
+                for="q1d"
+                >D) R$ 10,00</label
+              >
+              <input type="radio" name="q1" id="q1e" value="E" /><label
+                for="q1e"
+                >E) R$ 7,50</label
+              >
+            </div>
+          </div>
+
+          <div class="question-container bg-gray-50 p-6 rounded-lg shadow-sm">
+            <div class="flex justify-between items-start mb-4">
+              <p class="font-semibold text-lg flex-1">
+                <strong>Questão 2:</strong> Para fazer a decoração de Natal, seu
+                Jerivaldo decidiu alugar um forro para a sua mesa. O comprimento
+                e a largura do forro são de 2,20 metros e 1,10 metros,
+                respectivamente. Podemos afirmar que a área da peça é de:
+              </p>
+              <div class="text-center ml-4 flex-shrink-0">
+                <div class="question-timer text-2xl font-bold text-amber-900">
+                  03:00
+                </div>
+                <button
+                  type="button"
+                  class="start-timer-btn mt-1 px-3 py-1 text-sm bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600 transition"
+                >
+                  Ativar Timer
+                </button>
+              </div>
+            </div>
+            <div>
+              <input type="radio" name="q2" id="q2a" value="A" /><label
+                for="q2a"
+                >A) 2,30 m²</label
+              >
+              <input type="radio" name="q2" id="q2b" value="B" /><label
+                for="q2b"
+                >B) 2,42 m²</label
+              >
+              <input type="radio" name="q2" id="q2c" value="C" /><label
+                for="q2c"
+                >C) 2,50 m²</label
+              >
+              <input type="radio" name="q2" id="q2d" value="D" /><label
+                for="q2d"
+                >D) 2,69 m²</label
+              >
+              <input type="radio" name="q2" id="q2e" value="E" /><label
+                for="q2e"
+                >E) 2,85 m²</label
+              >
+            </div>
+          </div>
+
+          <div class="question-container bg-gray-50 p-6 rounded-lg shadow-sm">
+            <div class="flex justify-between items-start mb-4">
+              <p class="font-semibold text-lg flex-1">
+                <strong>Questão 3:</strong> Em um supermercado, no início de
+                janeiro, pagava-se R$ 22,50 pelo quilo de determinada carne.
+                Após sucessivos aumentos, essa carne passou a custar R$ 39,90 em
+                dezembro. A diferença paga por um cliente que comprou 2,5 kg
+                desse produto em dezembro e em janeiro é igual a:
+              </p>
+              <div class="text-center ml-4 flex-shrink-0">
+                <div class="question-timer text-2xl font-bold text-amber-900">
+                  03:00
+                </div>
+                <button
+                  type="button"
+                  class="start-timer-btn mt-1 px-3 py-1 text-sm bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600 transition"
+                >
+                  Ativar Timer
+                </button>
+              </div>
+            </div>
+            <div>
+              <input type="radio" name="q3" id="q3a" value="A" /><label
+                for="q3a"
+                >A) R$ 99,75</label
+              >
+              <input type="radio" name="q3" id="q3b" value="B" /><label
+                for="q3b"
+                >B) R$ 56,25</label
+              >
+              <input type="radio" name="q3" id="q3c" value="C" /><label
+                for="q3c"
+                >C) R$ 43,50</label
+              >
+              <input type="radio" name="q3" id="q3d" value="D" /><label
+                for="q3d"
+                >D) R$ 39,90</label
+              >
+              <input type="radio" name="q3" id="q3e" value="E" /><label
+                for="q3e"
+                >E) R$ 30,75</label
+              >
+            </div>
+          </div>
+
+          <div class="question-container bg-gray-50 p-6 rounded-lg shadow-sm">
+            <div class="flex justify-between items-start mb-4">
+              <p class="font-semibold text-lg flex-1">
+                <strong>Questão 4:</strong> Ao abastecer seu veículo, um cliente
+                pagou R$ 145,20. Sabendo que o litro de combustível naquele dia
+                custava R$ 6,60, a quantidade de combustível colocada no veículo
+                foi igual a:
+              </p>
+              <div class="text-center ml-4 flex-shrink-0">
+                <div class="question-timer text-2xl font-bold text-amber-900">
+                  03:00
+                </div>
+                <button
+                  type="button"
+                  class="start-timer-btn mt-1 px-3 py-1 text-sm bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600 transition"
+                >
+                  Ativar Timer
+                </button>
+              </div>
+            </div>
+            <div>
+              <input type="radio" name="q4" id="q4a" value="A" /><label
+                for="q4a"
+                >A) 20 litros</label
+              >
+              <input type="radio" name="q4" id="q4b" value="B" /><label
+                for="q4b"
+                >B) 21 litros</label
+              >
+              <input type="radio" name="q4" id="q4c" value="C" /><label
+                for="q4c"
+                >C) 22 litros</label
+              >
+              <input type="radio" name="q4" id="q4d" value="D" /><label
+                for="q4d"
+                >D) 23 litros</label
+              >
+              <input type="radio" name="q4" id="q4e" value="E" /><label
+                for="q4e"
+                >E) 24 litros</label
+              >
+            </div>
+          </div>
+
+          <div class="question-container bg-gray-50 p-6 rounded-lg shadow-sm">
+            <div class="flex justify-between items-start mb-4">
+              <p class="font-semibold text-lg flex-1">
+                <strong>Questão 5:</strong> Suponha uma situação em que um
+                pagante entrega uma nota de R$50,00 para o recebedor, por um
+                produto de R$23,20. Calcule o troco necessário.
+              </p>
+              <div class="text-center ml-4 flex-shrink-0">
+                <div class="question-timer text-2xl font-bold text-amber-900">
+                  03:00
+                </div>
+                <button
+                  type="button"
+                  class="start-timer-btn mt-1 px-3 py-1 text-sm bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600 transition"
+                >
+                  Ativar Timer
+                </button>
+              </div>
+            </div>
+            <div>
+              <input type="radio" name="q5" id="q5a" value="A" /><label
+                for="q5a"
+                >A) R$ 25,80</label
+              >
+              <input type="radio" name="q5" id="q5b" value="B" /><label
+                for="q5b"
+                >B) R$ 26,20</label
+              >
+              <input type="radio" name="q5" id="q5c" value="C" /><label
+                for="q5c"
+                >C) R$ 26,80</label
+              >
+              <input type="radio" name="q5" id="q5d" value="D" /><label
+                for="q5d"
+                >D) R$ 27,20</label
+              >
+              <input type="radio" name="q5" id="q5e" value="E" /><label
+                for="q5e"
+                >E) R$ 37,80</label
+              >
+            </div>
+          </div>
+
+          <button
+            type="button"
+            id="submit-quiz"
+            class="w-full py-4 text-xl font-bold text-white bg-teal-500 rounded-lg shadow-lg hover:bg-teal-600 transition-transform transform hover:scale-105"
+          >
+            Finalizar e Ver Resultado
+          </button>
+        </form>
+      </section>
+
+      <section
+        id="resultados"
+        class="hidden mt-12 text-center bg-blue-50 border-2 border-blue-200 rounded-xl p-8"
+      >
+        <h2 class="text-3xl font-bold text-blue-800">Seu Desempenho</h2>
+        <p id="score-text" class="text-2xl mt-4 text-blue-700"></p>
+      </section>
+
+      <section id="gabarito" class="hidden mt-12">
+        <h2
+          class="text-2xl font-bold text-gray-700 border-b-4 border-teal-400 pb-2 mb-6"
+        >
+          Gabarito Comentado
+        </h2>
+        <div class="space-y-8">
+          <div>
+            <h3 class="font-bold text-lg mb-2">Questão 1: Alternativa A</h3>
+            <p>
+              Precisamos somar o valor de todos os itens. Primeiro, calculamos o
+              custo dos brigadeiros: 2 * 0,75 = 1,50. Depois, somamos tudo,
+              alinhando as vírgulas:
+            </p>
+            <pre>
+  6,50  (Torta)
+  5,25  (Suco)
++ 1,50  (Brigadeiros)
+-------
+ 13,25
+</pre
+            >
+          </div>
+          <div>
+            <h3 class="font-bold text-lg mb-2">Questão 2: Alternativa B</h3>
+            <p>
+              A área é comprimento x largura. Multiplicamos 2,20 * 1,10.
+              Ignorando as vírgulas, fazemos 22 * 11 = 242. Nos números
+              originais, temos 2 + 2 = 4 casas decimais no total. Colocando a
+              vírgula no resultado: 2,4200, que é 2,42 m².
+            </p>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg mb-2">Questão 3: Alternativa C</h3>
+            <p>
+              Primeiro, calculamos a diferença de preço por quilo: 39,90 - 22,50
+              = 17,40. Depois, multiplicamos essa diferença pela quantidade de
+              carne comprada: 17,40 * 2,5 = 43,50.
+            </p>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg mb-2">Questão 4: Alternativa C</h3>
+            <p>
+              Dividimos o valor total pago pelo preço do litro: 145,20 / 6,60.
+              Como ambos têm 2 casas decimais, podemos dividir 14520 por 660.
+              Simplificando (cortando um zero), dividimos 1452 por 66, o que
+              resulta em 22 litros.
+            </p>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg mb-2">Questão 5: Alternativa C</h3>
+            <p>
+              Calculamos o troco subtraindo o valor do produto do valor pago,
+              lembrando de alinhar as vírgulas:
+            </p>
+            <pre>
+  50,00
+- 23,20
+-------
+  26,80
+</pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <footer
+        class="no-print mt-12 pt-8 border-t-2 border-gray-200 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6"
+      >
+        <a
+          href="../index.html"
+          class="w-full sm:w-auto px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 transition text-center"
+          >Voltar para o Menu de Aulas</a
+        >
+        <button
+          onclick="window.print()"
+          class="w-full sm:w-auto px-6 py-3 bg-sky-600 text-white font-semibold rounded-lg shadow-md hover:bg-sky-700 transition"
+        >
+          Salvar como PDF ou Imprimir
+        </button>
+      </footer>
+    </div>
+
+    <script type="module">
+      document.addEventListener("DOMContentLoaded", () => {
+        // --- LÓGICA DO TIMER POMODORO ---
+        const pomodoroDisplay = document.getElementById("pomodoro-timer");
+        const pomodoroStartBtn = document.getElementById("pomodoro-start");
+        const pomodoroPauseBtn = document.getElementById("pomodoro-pause");
+        const pomodoroResetBtn = document.getElementById("pomodoro-reset");
+
+        let pomodoroInterval;
+        let pomodoroTime = 25 * 60;
+        let isPomodoroPaused = true;
+
+        function updatePomodoroDisplay() {
+          const minutes = Math.floor(pomodoroTime / 60);
+          const seconds = pomodoroTime % 60;
+          pomodoroDisplay.textContent = `${String(minutes).padStart(
+            2,
+            "0"
+          )}:${String(seconds).padStart(2, "0")}`;
+        }
+
+        pomodoroStartBtn.addEventListener("click", () => {
+          if (isPomodoroPaused) {
+            isPomodoroPaused = false;
+            pomodoroInterval = setInterval(() => {
+              pomodoroTime--;
+              updatePomodoroDisplay();
+              if (pomodoroTime <= 0) {
+                clearInterval(pomodoroInterval);
+                alert("Pomodoro finalizado! Hora de uma pausa.");
+              }
+            }, 1000);
+          }
+        });
+
+        pomodoroPauseBtn.addEventListener("click", () => {
+          isPomodoroPaused = true;
+          clearInterval(pomodoroInterval);
+        });
+
+        pomodoroResetBtn.addEventListener("click", () => {
+          isPomodoroPaused = true;
+          clearInterval(pomodoroInterval);
+          pomodoroTime = 25 * 60;
+          updatePomodoroDisplay();
+        });
+
+        // --- LÓGICA DO QUIZ E TIMERS INDIVIDUAIS ---
+        const quizForm = document.getElementById("quiz");
+        const submitButton = document.getElementById("submit-quiz");
+        const resultadosSection = document.getElementById("resultados");
+        const gabaritoSection = document.getElementById("gabarito");
+        const scoreText = document.getElementById("score-text");
+
+        const questionContainers = document.querySelectorAll(
+          ".question-container"
+        );
+        let activeTimers = [];
+
+        const correctAnswers = { q1: "A", q2: "B", q3: "C", q4: "C", q5: "C" };
+
+        questionContainers.forEach((container, index) => {
+          const startBtn = container.querySelector(".start-timer-btn");
+          const timerDisplay = container.querySelector(".question-timer");
+          const radios = container.querySelectorAll('input[type="radio"]');
+          let time = 3 * 60;
+          let intervalId;
+
+          startBtn.addEventListener("click", () => {
+            startBtn.disabled = true;
+            startBtn.textContent = "Ativado";
+            startBtn.classList.add("opacity-50", "cursor-not-allowed");
+
+            intervalId = setInterval(() => {
+              time--;
+              const minutes = Math.floor(time / 60);
+              const seconds = time % 60;
+              timerDisplay.textContent = `${String(minutes).padStart(
+                2,
+                "0"
+              )}:${String(seconds).padStart(2, "0")}`;
+
+              if (time <= 0) {
+                clearInterval(intervalId);
+                timerDisplay.textContent = "Esgotado!";
+                radios.forEach((radio) => (radio.disabled = true));
+                container.classList.add(
+                  "bg-red-100",
+                  "border",
+                  "border-red-300"
+                );
+              }
+            }, 1000);
+            activeTimers.push(intervalId);
+          });
+        });
+
+        function checkAnswers() {
+          activeTimers.forEach((id) => clearInterval(id));
+          let score = 0;
+          const totalQuestions = Object.keys(correctAnswers).length;
+
+          for (const question in correctAnswers) {
+            const selector = `input[name="${question}"]:checked`;
+            const userAnswerNode = quizForm.querySelector(selector);
+            const userAnswer = userAnswerNode ? userAnswerNode.value : null;
+
+            const correctAnswer = correctAnswers[question];
+            const correctLabel = document.querySelector(
+              `label[for="${question}${correctAnswer.toLowerCase()}"]`
+            );
+
+            if (correctLabel) {
+              correctLabel.classList.add("correct");
+            }
+
+            if (userAnswer === correctAnswer) {
+              score++;
+            } else if (userAnswerNode && !userAnswerNode.disabled) {
+              // Apenas marca como incorreto se o usuário respondeu e o tempo não esgotou
+              const incorrectLabel = document.querySelector(
+                `label[for="${userAnswerNode.id}"]`
+              );
+              if (incorrectLabel) {
+                incorrectLabel.classList.add("incorrect");
+              }
+            }
+          }
+
+          scoreText.textContent = `Você acertou ${score} de ${totalQuestions} questões.`;
+          resultadosSection.classList.remove("hidden");
+          gabaritoSection.classList.remove("hidden");
+
+          submitButton.disabled = true;
+          submitButton.textContent = "Resultados Exibidos";
+          submitButton.classList.add("opacity-50", "cursor-not-allowed");
+
+          quizForm
+            .querySelectorAll('input[type="radio"]')
+            .forEach((radio) => (radio.disabled = true));
+          quizForm
+            .querySelectorAll(".start-timer-btn")
+            .forEach((btn) => (btn.disabled = true));
+
+          resultadosSection.scrollIntoView({ behavior: "smooth" });
+        }
+
+        submitButton.addEventListener("click", checkAnswers);
+      });
+
+      import { verificarAulaAtual } from "../../firebase/firebase-conta.js";
+      document.addEventListener("DOMContentLoaded", () => {
+        const path = window.location.pathname;
+        const match = path.match(/aula(\d+)\.html/);
+        if (match && match[1]) {
+          const numeroDaAula = parseInt(match[1]);
+          console.log(`Verificando permissão para a aula ${numeroDaAula}...`);
+          verificarAulaAtual("matematica", numeroDaAula);
+        } else {
+          console.error(
+            "Não foi possível determinar o número da aula a partir da URL."
+          );
+        }
+      });
+    </script>
+  </body>
+</html>

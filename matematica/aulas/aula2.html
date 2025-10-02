@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 2: Operações com Frações e Ordem de Precedência</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-image: url('https://images.unsplash.com/photo-1454789548928-9efd52dc4031?q=80&w=2080&auto=format&fit=crop');
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+      }
+
+      /* Estilos para a impressão */
+      @media print {
+        body {
+          background-image: none;
+        }
+        .no-print {
+          display: none !important;
+        }
+        .main-container {
+          box-shadow: none;
+          border: 1px solid #ccc;
+          margin: 0;
+          max-width: 100%;
+        }
+        .quiz-form label {
+          border: 1px solid #eee;
+        }
+      }
+
+      .highlight {
+        color: #2dd4bf; /* Teal-400 */
+        font-weight: 700;
+      }
+
+      .highlight-yellow {
+        background-color: #fef08a; /* Yellow-200 */
+        padding: 0.1rem 0.3rem;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+
+      pre {
+        background-color: #f3f4f6; /* Gray-100 */
+        border: 1px solid #d1d5db; /* Gray-300 */
+        border-radius: 8px;
+        padding: 16px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #1f2937; /* Gray-800 */
+      }
+
+      .quiz-form label {
+        display: block;
+        padding: 12px 16px;
+        border: 2px solid #e5e7eb; /* Gray-200 */
+        border-radius: 8px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+      }
+
+      .quiz-form label:hover {
+        border-color: #38bdf8; /* Sky-400 */
+        background-color: #f0f9ff; /* Sky-50 */
+      }
+
+      .quiz-form input[type='radio'] {
+        display: none;
+      }
+
+      .quiz-form input[type='radio']:checked + label {
+        border-color: #38bdf8; /* Sky-400 */
+        background-color: #e0f2fe; /* Sky-100 */
+        font-weight: 700;
+      }
+
+      .correct {
+        border-color: #22c55e !important; /* Green-500 */
+        background-color: #dcfce7 !important; /* Green-100 */
+        color: #15803d; /* Green-700 */
+      }
+
+      .incorrect {
+        border-color: #ef4444 !important; /* Red-500 */
+        background-color: #fee2e2 !important; /* Red-100 */
+        color: #b91c1c; /* Red-700 */
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-900 text-gray-800 p-4 sm:p-6 md:p-8">
+    <div
+      class="main-container max-w-4xl mx-auto bg-white bg-opacity-95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 sm:p-8 md:p-12"
+    >
+      <header class="text-center mb-10">
+        <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">
+          Aula 2: Operações com Frações e Ordem de Precedência
+        </h1>
+        <p class="text-gray-600 mt-2">
+          Resolvendo expressões que aparecem embutidas em problemas maiores.
+        </p>
+      </header>
+
+      <!-- Seção Timer Pomodoro -->
+      <section
+        class="no-print bg-sky-50 border-2 border-sky-200 rounded-xl p-6 mb-12 text-center"
+      >
+        <h2 class="text-2xl font-bold text-sky-800 mb-2">
+          Timer de Estudos (Pomodoro)
+        </h2>
+        <p class="text-sky-600 mb-4">
+          Use esta técnica para manter o foco durante seus estudos.
+        </p>
+        <div id="pomodoro-timer" class="text-6xl font-bold text-sky-900 my-4">
+          25:00
+        </div>
+        <div class="flex justify-center space-x-4">
+          <button
+            id="pomodoro-start"
+            class="px-6 py-2 bg-sky-500 text-white font-semibold rounded-lg shadow-md hover:bg-sky-600 transition"
+          >
+            Iniciar
+          </button>
+          <button
+            id="pomodoro-pause"
+            class="px-6 py-2 bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600 transition"
+          >
+            Pausar
+          </button>
+          <button
+            id="pomodoro-reset"
+            class="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 transition"
+          >
+            Resetar
+          </button>
+        </div>
+      </section>
+
+      <!-- Conteúdo da Aula -->
+      <article class="space-y-10">
+        <!-- Adição e Subtração -->
+        <section>
+          <h2
+            class="text-2xl font-bold text-gray-700 border-b-4 border-teal-400 pb-2 mb-6"
+          >
+            1.0 Adição e Subtração de Frações
+          </h2>
+          <p class="mb-6 text-lg">
+            Nesta seção, vamos dominar a base de tudo: como somar e subtrair
+            frações. Entender isso é fundamental, pois muitas questões do ENEM
+            escondem esses cálculos simples dentro de problemas maiores.
+          </p>
+
+          <div>
+            <h3 class="text-xl font-bold text-gray-700 mb-4">
+              1.1 Frações com Denominadores Iguais
+            </h3>
+            <h4 class="text-lg font-semibold text-gray-600 mb-2">Teoria</h4>
+            <p class="mb-4">
+              Somar ou subtrair frações com o mesmo denominador (o número de
+              baixo) é a operação mais intuitiva. Pense em uma pizza cortada em
+              8 fatias. Cada fatia é 1/8 da pizza. Se você come 2 fatias e
+              depois mais 3, você comeu 5 fatias no total. A conta é simples:
+              2/8 + 3/8 = 5/8.
+            </p>
+            <p class="mb-4">
+              A regra é clara:
+              <strong class="highlight"
+                >Some (ou subtraia) os numeradores (os de cima) e mantenha o
+                denominador (o de baixo) igual.</strong
+              >
+            </p>
+
+            <h4 class="text-lg font-semibold text-gray-600 mt-6 mb-2">
+              Exemplo Prático
+            </h4>
+            <p class="mb-4">
+              <strong>Situação:</strong> Uma pizza gigante vem cortada em 12
+              fatias. No primeiro episódio de uma série, amigos comem 5 fatias.
+              No segundo, comem mais 4. Que fração da pizza eles comeram? E que
+              fração resta?
+            </p>
+            <pre>
+**Parte 1: Calcular o total comido.**
+A conta é 5/12 + 4/12.
+
+    5      (fatias do 1º episódio)
+  -----
+   12
++
+    4      (fatias do 2º episódio)
+  -----
+   12
+------------------
+    9      (5 + 4 = 9)  <-- Some APENAS os de cima.
+  -----
+   12      <-- Repita o de baixo.
+
+**Parte 2: Calcular o que sobrou.**
+A pizza inteira é 12/12. A conta é 12/12 - 9/12.
+
+   12      (a pizza inteira)
+  -----
+   12
+-
+    9      (o que já foi comido)
+  -----
+   12
+------------------
+    3      (12 - 9 = 3)  <-- Subtraia APENAS os de cima.
+  -----
+   12      <-- Repita o de baixo.
+
+Respostas: Eles comeram 9/12 e restou 3/12 da pizza.
+                    </pre
+            >
+          </div>
+
+          <div class="mt-8">
+            <h3 class="text-xl font-bold text-gray-700 mb-4">
+              1.2 Frações com Denominadores Diferentes
+            </h3>
+            <h4 class="text-lg font-semibold text-gray-600 mb-2">Teoria</h4>
+            <p class="mb-4">
+              Como somar 1/2 + 1/3? Não podemos somar direto. Precisamos
+              encontrar um "terreno comum", o
+              <strong class="highlight">Mínimo Múltiplo Comum (MMC)</strong> dos
+              denominadores. O processo tem 3 passos:
+            </p>
+            <ol class="list-decimal list-inside space-y-2 mb-4 pl-4">
+              <li>
+                Calcular o <strong class="highlight">MMC</strong> dos
+                denominadores.
+              </li>
+              <li>
+                Achar as
+                <strong class="highlight">frações equivalentes</strong> com o
+                novo denominador.
+              </li>
+              <li>
+                <strong class="highlight">Somar ou subtrair</strong> as novas
+                frações.
+              </li>
+            </ol>
+
+            <h4 class="text-lg font-semibold text-gray-600 mt-6 mb-2">
+              Exemplo Prático
+            </h4>
+            <p class="mb-4">
+              <strong>Situação:</strong> Um jardineiro mistura 1/4 de um saco de
+              terra preta com 2/5 do mesmo saco de húmus. Qual a fração total do
+              saco que ele usará?
+            </p>
+            <pre>
+O problema é somar 1/4 + 2/5.
+
+**Passo 1: Achar o MMC entre 4 e 5.**
+   4, 5 | 2
+   2, 5 | 2
+   1, 5 | 5
+   1, 1 | --> MMC = 2 x 2 x 5 = 20.
+
+**Passo 2: Achar as frações equivalentes com denominador 20.**
+A regra é: "Divide pelo de baixo, multiplica pelo de cima".
+
+Para 1/4:
+(20 ÷ 4) x 1 = 5 x 1 = 5. A nova fração é 5/20.
+
+Para 2/5:
+(20 ÷ 5) x 2 = 4 x 2 = 8. A nova fração é 8/20.
+
+**Passo 3: Somar as novas frações.**
+    5/20 + 8/20 = 13/20.
+
+Resposta: Ele usará 13/20 do saco.
+                    </pre
+            >
+          </div>
+        </section>
+
+        <!-- Multiplicação e Divisão -->
+        <section>
+          <h2
+            class="text-2xl font-bold text-gray-700 border-b-4 border-teal-400 pb-2 mb-6"
+          >
+            2.0 Multiplicação e Divisão de Frações
+          </h2>
+          <p class="mb-6 text-lg">
+            Se você achou a soma trabalhosa, vai gostar daqui. Multiplicar e
+            dividir frações é muito mais direto.
+          </p>
+
+          <div>
+            <h3 class="text-xl font-bold text-gray-700 mb-4">
+              2.1 Multiplicação
+            </h3>
+            <h4 class="text-lg font-semibold text-gray-600 mb-2">Teoria</h4>
+            <p class="mb-4">
+              A regra é a mais simples de todas:
+              <strong class="highlight"
+                >multiplique o de cima pelo de cima, e o de baixo pelo de
+                baixo.</strong
+              >
+              Em problemas do ENEM, a palavra "de" quase sempre indica uma
+              multiplicação.
+            </p>
+
+            <h4 class="text-lg font-semibold text-gray-600 mt-6 mb-2">
+              Exemplo Prático
+            </h4>
+            <p class="mb-4">
+              <strong>Situação:</strong> Você decide fazer 2/3 de uma receita.
+              Depois, resolve assar apenas 1/2 da massa que preparou. Que fração
+              da receita original você assou?
+            </p>
+            <pre>
+O problema pede 1/2 DE 2/3. A conta é: 1/2 x 2/3.
+
+  1       2      1 x 2      2
+ ---  x  ---  =  ------- = ---
+  2       3      2 x 3      6
+
+Resposta: Você assou 2/6 (ou 1/3) da receita original.
+                    </pre
+            >
+          </div>
+
+          <div class="mt-8">
+            <h3 class="text-xl font-bold text-gray-700 mb-4">2.2 Divisão</h3>
+            <h4 class="text-lg font-semibold text-gray-600 mb-2">Teoria</h4>
+            <p class="mb-4">
+              A regra de ouro transforma a divisão em multiplicação. É um dos
+              "macetes" mais úteis para o ENEM:
+            </p>
+            <ol class="list-decimal list-inside space-y-2 mb-4 pl-4">
+              <li>
+                <strong class="highlight">MANTENHA</strong> a primeira fração.
+              </li>
+              <li>
+                <strong class="highlight">TROQUE</strong> o sinal de divisão (÷)
+                por multiplicação (x).
+              </li>
+              <li>
+                <strong class="highlight">INVERTA</strong> a segunda fração.
+              </li>
+            </ol>
+
+            <h4 class="text-lg font-semibold text-gray-600 mt-6 mb-2">
+              Exemplo Prático
+            </h4>
+            <p class="mb-4">
+              <strong>Situação:</strong> Você tem 3/4 de litro de azeite e quer
+              distribuir em garrafinhas de 1/8 de litro. Quantas garrafinhas
+              você encherá?
+            </p>
+            <pre>
+O problema é "quantas vezes 1/8 cabe em 3/4?".
+A conta é: 3/4 ÷ 1/8.
+
+Aplicando a regra: MANTÉM - TROCA - INVERTE.
+A conta vira: 3/4 x 8/1.
+
+  3       8      3 x 8      24
+ ---  x  ---  =  ------- =  ----  = 6
+  4       1      4 x 1       4
+
+Resposta: Você encherá 6 garrafinhas.
+                    </pre
+            >
+          </div>
+        </section>
+
+        <!-- PEMDAS -->
+        <section>
+          <h2
+            class="text-2xl font-bold text-gray-700 border-b-4 border-teal-400 pb-2 mb-6"
+          >
+            3.0 A Hierarquia das Operações: PEMDAS
+          </h2>
+          <p class="mb-6 text-lg">
+            Em problemas do ENEM, as operações vêm misturadas. Errar a ordem de
+            resolução é um erro fatal. A regra que organiza a bagunça se chama
+            PEMDAS.
+          </p>
+
+          <div>
+            <h3 class="text-xl font-bold text-gray-700 mb-4">
+              3.1 A Regra PEMDAS
+            </h3>
+            <h4 class="text-lg font-semibold text-gray-600 mb-2">Teoria</h4>
+            <p class="mb-4">
+              PEMDAS define a ordem de prioridade das operações:
+            </p>
+            <ul class="list-disc list-inside space-y-2 mb-4 pl-4">
+              <li><strong>P</strong>arênteses ( ), [ ], { }</li>
+              <li><strong>E</strong>xpoentes (potências e raízes)</li>
+              <li>
+                <strong>M</strong>ultiplicação e <strong>D</strong>ivisão (mesma
+                prioridade, resolva da esquerda para a direita)
+              </li>
+              <li>
+                <strong>A</strong>dição e <strong>S</strong>ubtração (mesma
+                prioridade, resolva da esquerda para a direita)
+              </li>
+            </ul>
+            <p
+              class="mt-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded"
+            >
+              <strong>Atenção:</strong> Multiplicação NÃO tem prioridade sobre
+              Divisão. Resolva a que aparecer primeiro!
+            </p>
+
+            <h4 class="text-lg font-semibold text-gray-600 mt-6 mb-2">
+              Exemplo Prático
+            </h4>
+            <p class="mb-4">
+              <strong>Situação:</strong> O estoque de uma cantina escolar começa
+              o dia com 20 caixas de suco. Na hora do recreio, 1/4 do estoque
+              inicial é vendido. Após o recreio, a cantina recebe uma entrega de
+              mais 10 caixas. No período da tarde, a cantina vende 2/5 **do novo
+              estoque**. Quantas caixas de suco restaram no final do dia?
+            </p>
+            <pre>
+Este é um problema clássico do ENEM que mistura interpretação com operações.
+Vamos resolver passo a passo, seguindo a história.
+
+**Passo 1: Calcular a venda do recreio.**
+Venda = 1/4 de 20 = (1/4) * 20 = 20/4 = 5 caixas.
+Restaram: 20 - 5 = 15 caixas.
+
+**Passo 2: Calcular o estoque após a entrega.**
+O estoque era 15 e chegaram mais 10.
+Novo estoque = 15 + 10 = 25 caixas.
+
+**Passo 3: Calcular a venda da tarde.**
+Venda = 2/5 do novo estoque = (2/5) * 25 = 50/5 = 10 caixas.
+
+**Passo 4: Calcular o estoque final.**
+Estoque final = 25 (novo estoque) - 10 (venda da tarde) = 15 caixas.
+
+**Resposta:** Restaram 15 caixas de suco.
+                    </pre
+            >
+          </div>
+        </section>
+      </article>
+
+      <!-- Seção Vídeo Aula -->
+      <section class="my-12">
+        <h2
+          class="text-2xl font-bold text-gray-700 border-b-4 border-teal-400 pb-2 mb-6"
+        >
+          Vídeo Aula de Apoio
+        </h2>
+        <div
+          class="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg overflow-hidden shadow-lg"
+        >
+          <!-- Substitua o SRC pelo link do seu vídeo do YouTube -->
+          <iframe
+            class="w-full h-full"
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          >
+          </iframe>
+        </div>
+      </section>
+
+      <!-- Seção de Exercícios -->
+      <section class="no-print mt-12">
+        <h2
+          class="text-2xl font-bold text-gray-700 border-b-4 border-teal-400 pb-2 mb-6"
+        >
+          Questões de Fixação (Estilo ENEM)
+        </h2>
+
+        <div
+          class="bg-amber-50 border-2 border-amber-200 rounded-xl p-6 mb-8 text-center"
+        >
+          <h3 class="text-xl font-bold text-amber-800 mb-2">
+            Atenção ao Tempo!
+          </h3>
+          <p class="text-amber-700">
+            No ENEM, você terá em média 3 minutos por questão. Antes de começar
+            a ler cada questão, ative o timer individual para simular essa
+            condição.
+          </p>
+        </div>
+
+        <form id="quiz" class="quiz-form space-y-8">
+          <!-- Questão 1 -->
+          <div class="question-container bg-gray-50 p-6 rounded-lg shadow-sm">
+            <div class="flex justify-between items-center mb-4">
+              <p class="font-semibold text-lg">
+                <strong>Questão 1:</strong> Três amigos, João, Maria e Carlos,
+                compraram uma pizza grande dividida em 12 fatias iguais. João
+                comeu 1/3 da pizza e Maria comeu 1/4. A fração da pizza que
+                sobrou para Carlos foi:
+              </p>
+              <div class="text-center ml-4">
+                <div class="question-timer text-2xl font-bold text-amber-900">
+                  03:00
+                </div>
+                <button
+                  type="button"
+                  class="start-timer-btn mt-1 px-3 py-1 text-sm bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600 transition"
+                >
+                  Ativar Timer
+                </button>
+              </div>
+            </div>
+            <div>
+              <input type="radio" name="q1" id="q1a" value="A" /><label
+                for="q1a"
+                >A) 1/2</label
+              >
+              <input type="radio" name="q1" id="q1b" value="B" /><label
+                for="q1b"
+                >B) 5/12</label
+              >
+              <input type="radio" name="q1" id="q1c" value="C" /><label
+                for="q1c"
+                >C) 7/12</label
+              >
+              <input type="radio" name="q1" id="q1d" value="D" /><label
+                for="q1d"
+                >D) 1/6</label
+              >
+              <input type="radio" name="q1" id="q1e" value="E" /><label
+                for="q1e"
+                >E) 2/5</label
+              >
+            </div>
+          </div>
+
+          <!-- Questão 2 -->
+          <div class="question-container bg-gray-50 p-6 rounded-lg shadow-sm">
+            <div class="flex justify-between items-center mb-4">
+              <p class="font-semibold text-lg">
+                <strong>Questão 2:</strong> Um agricultor colheu 60 sacas de
+                milho. Ele vendeu 2/5 da colheita para um mercado local. Do que
+                restou, ele usou 1/3 para alimentar seus animais. O número de
+                sacas de milho que restaram para o agricultor, após a venda e o
+                uso para os animais, foi:
+              </p>
+              <div class="text-center ml-4">
+                <div class="question-timer text-2xl font-bold text-amber-900">
+                  03:00
+                </div>
+                <button
+                  type="button"
+                  class="start-timer-btn mt-1 px-3 py-1 text-sm bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600 transition"
+                >
+                  Ativar Timer
+                </button>
+              </div>
+            </div>
+            <div>
+              <input type="radio" name="q2" id="q2a" value="A" /><label
+                for="q2a"
+                >A) 12</label
+              >
+              <input type="radio" name="q2" id="q2b" value="B" /><label
+                for="q2b"
+                >B) 16</label
+              >
+              <input type="radio" name="q2" id="q2c" value="C" /><label
+                for="q2c"
+                >C) 24</label
+              >
+              <input type="radio" name="q2" id="q2d" value="D" /><label
+                for="q2d"
+                >D) 36</label
+              >
+              <input type="radio" name="q2" id="q2e" value="E" /><label
+                for="q2e"
+                >E) 40</label
+              >
+            </div>
+          </div>
+
+          <!-- Questão 3 -->
+          <div class="question-container bg-gray-50 p-6 rounded-lg shadow-sm">
+            <div class="flex justify-between items-center mb-4">
+              <p class="font-semibold text-lg">
+                <strong>Questão 3:</strong> Uma costureira comprou uma peça de
+                tecido com 15 metros de comprimento. Para fazer cada vestido,
+                ela utiliza 3/2 de metro de tecido. O número máximo de vestidos
+                que ela consegue fazer com a peça inteira é:
+              </p>
+              <div class="text-center ml-4">
+                <div class="question-timer text-2xl font-bold text-amber-900">
+                  03:00
+                </div>
+                <button
+                  type="button"
+                  class="start-timer-btn mt-1 px-3 py-1 text-sm bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600 transition"
+                >
+                  Ativar Timer
+                </button>
+              </div>
+            </div>
+            <div>
+              <input type="radio" name="q3" id="q3a" value="A" /><label
+                for="q3a"
+                >A) 8</label
+              >
+              <input type="radio" name="q3" id="q3b" value="B" /><label
+                for="q3b"
+                >B) 9</label
+              >
+              <input type="radio" name="q3" id="q3c" value="C" /><label
+                for="q3c"
+                >C) 10</label
+              >
+              <input type="radio" name="q3" id="q3d" value="D" /><label
+                for="q3d"
+                >D) 12</label
+              >
+              <input type="radio" name="q3" id="q3e" value="E" /><label
+                for="q3e"
+                >E) 15</label
+              >
+            </div>
+          </div>
+
+          <!-- Questão 4 -->
+          <div class="question-container bg-gray-50 p-6 rounded-lg shadow-sm">
+            <div class="flex justify-between items-center mb-4">
+              <p class="font-semibold text-lg">
+                <strong>Questão 4:</strong> Um estudante recebe uma mesada de R$
+                500,00. Ele gasta 1/5 do valor com transporte e 1/2 do
+                <strong>restante</strong> com alimentação. Após esses gastos,
+                ele decide usar 1/4 do que sobrou para comprar um livro. O valor
+                do livro foi:
+              </p>
+              <div class="text-center ml-4">
+                <div class="question-timer text-2xl font-bold text-amber-900">
+                  03:00
+                </div>
+                <button
+                  type="button"
+                  class="start-timer-btn mt-1 px-3 py-1 text-sm bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600 transition"
+                >
+                  Ativar Timer
+                </button>
+              </div>
+            </div>
+            <div>
+              <input type="radio" name="q4" id="q4a" value="A" /><label
+                for="q4a"
+                >A) R$ 40,00</label
+              >
+              <input type="radio" name="q4" id="q4b" value="B" /><label
+                for="q4b"
+                >B) R$ 50,00</label
+              >
+              <input type="radio" name="q4" id="q4c" value="C" /><label
+                for="q4c"
+                >C) R$ 100,00</label
+              >
+              <input type="radio" name="q4" id="q4d" value="D" /><label
+                for="q4d"
+                >D) R$ 200,00</label
+              >
+              <input type="radio" name="q4" id="q4e" value="E" /><label
+                for="q4e"
+                >E) R$ 250,00</label
+              >
+            </div>
+          </div>
+
+          <!-- Questão 5 -->
+          <div class="question-container bg-gray-50 p-6 rounded-lg shadow-sm">
+            <div class="flex justify-between items-center mb-4">
+              <p class="font-semibold text-lg">
+                <strong>Questão 5:</strong> O valor da expressão numérica 10 + [
+                (1/2 + 1/3) x 6 ] ÷ 5 é:
+              </p>
+              <div class="text-center ml-4">
+                <div class="question-timer text-2xl font-bold text-amber-900">
+                  03:00
+                </div>
+                <button
+                  type="button"
+                  class="start-timer-btn mt-1 px-3 py-1 text-sm bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600 transition"
+                >
+                  Ativar Timer
+                </button>
+              </div>
+            </div>
+            <div>
+              <input type="radio" name="q5" id="q5a" value="A" /><label
+                for="q5a"
+                >A) 3</label
+              >
+              <input type="radio" name="q5" id="q5b" value="B" /><label
+                for="q5b"
+                >B) 5</label
+              >
+              <input type="radio" name="q5" id="q5c" value="C" /><label
+                for="q5c"
+                >C) 10</label
+              >
+              <input type="radio" name="q5" id="q5d" value="D" /><label
+                for="q5d"
+                >D) 11</label
+              >
+              <input type="radio" name="q5" id="q5e" value="E" /><label
+                for="q5e"
+                >E) 15</label
+              >
+            </div>
+          </div>
+
+          <button
+            type="button"
+            id="submit-quiz"
+            class="w-full py-4 text-xl font-bold text-white bg-teal-500 rounded-lg shadow-lg hover:bg-teal-600 transition-transform transform hover:scale-105"
+          >
+            Finalizar e Ver Resultado
+          </button>
+        </form>
+      </section>
+
+      <!-- Seção de Resultados (oculta) -->
+      <section
+        id="resultados"
+        class="hidden mt-12 text-center bg-blue-50 border-2 border-blue-200 rounded-xl p-8"
+      >
+        <h2 class="text-3xl font-bold text-blue-800">Seu Desempenho</h2>
+        <p id="score-text" class="text-2xl mt-4 text-blue-700"></p>
+      </section>
+
+      <!-- Seção Gabarito Comentado (oculta) -->
+      <section id="gabarito" class="hidden mt-12">
+        <h2
+          class="text-2xl font-bold text-gray-700 border-b-4 border-teal-400 pb-2 mb-6"
+        >
+          Gabarito Comentado
+        </h2>
+        <div class="space-y-8">
+          <div>
+            <h3 class="font-bold text-lg mb-2">Questão 1: Alternativa B</h3>
+            <p>
+              O problema pede a fração que sobrou para Carlos. Primeiro, vamos
+              somar as frações que João e Maria comeram.
+            </p>
+            <pre>
+**Passo 1: Somar as frações de João e Maria.**
+A conta é 1/3 + 1/4. O MMC entre 3 e 4 é 12.
+- Transformando 1/3: (12 ÷ 3) × 1 = 4. A fração vira 4/12.
+- Transformando 1/4: (12 ÷ 4) × 1 = 3. A fração vira 3/12.
+- Somando: 4/12 + 3/12 = 7/12.
+
+**Passo 2: Subtrair o total comido do total da pizza.**
+A pizza inteira é 12/12.
+12/12 - 7/12 = 5/12.
+
+**Resposta:** A fração que sobrou para Carlos foi 5/12.
+                    </pre
+            >
+          </div>
+          <div>
+            <h3 class="font-bold text-lg mb-2">Questão 2: Alternativa C</h3>
+            <p>Este é um problema de múltiplos passos que exige atenção.</p>
+            <pre>
+**Passo 1: Calcular quantas sacas foram vendidas.**
+O agricultor vendeu 2/5 de 60 sacas.
+2/5 × 60 = 120/5 = 24 sacas.
+
+**Passo 2: Calcular quantas sacas restaram após a venda.**
+60 - 24 = 36 sacas.
+
+**Passo 3: Calcular quantas sacas foram usadas para os animais.**
+Ele usou 1/3 do que restou (36 sacas).
+1/3 × 36 = 36/3 = 12 sacas.
+
+**Passo 4: Calcular o resto final.**
+36 - 12 = 24 sacas.
+
+**Resposta:** Restaram 24 sacas de milho.
+                    </pre
+            >
+          </div>
+          <div>
+            <h3 class="font-bold text-lg mb-2">Questão 3: Alternativa C</h3>
+            <p>
+              Para saber quantos vestidos ela pode fazer, precisamos dividir o
+              total de tecido pelo tecido usado por vestido.
+            </p>
+            <pre>
+**Passo 1: Montar a operação de divisão.**
+A conta é 15 ÷ 3/2.
+
+**Passo 2: Aplicar a regra "Mantém, Troca, Inverte".**
+A nova conta é 15/1 × 2/3.
+
+**Passo 3: Resolver a multiplicação.**
+(15 × 2) / (1 × 3) = 30 / 3 = 10.
+
+**Resposta:** Ela consegue fazer 10 vestidos.
+                    </pre
+            >
+          </div>
+          <div>
+            <h3 class="font-bold text-lg mb-2">Questão 4: Alternativa B</h3>
+            <p>
+              Vamos seguir os gastos passo a passo, sempre calculando sobre o
+              valor restante.
+            </p>
+            <pre>
+**Passo 1: Gasto com transporte e primeiro resto.**
+Gasto: 1/5 × 500 = R$ 100,00.
+Restou: 500 - 100 = R$ 400,00.
+
+**Passo 2: Gasto com alimentação e segundo resto.**
+Gasto: 1/2 do restante = 1/2 × 400 = R$ 200,00.
+Restou: 400 - 200 = R$ 200,00.
+
+**Passo 3: Calcular o valor do livro.**
+Valor do livro: 1/4 do que sobrou = 1/4 × 200 = R$ 50,00.
+
+**Resposta:** O valor do livro foi de R$ 50,00.
+                    </pre
+            >
+          </div>
+          <div>
+            <h3 class="font-bold text-lg mb-2">Questão 5: Alternativa D</h3>
+            <p>Devemos seguir a ordem de precedência PEMDAS.</p>
+            <pre>
+**Expressão:** 10 + [ (1/2 + 1/3) × 6 ] ÷ 5
+
+**Passo 1 (Parênteses):** 1/2 + 1/3
+MMC(2,3) = 6. Frações equivalentes: 3/6 + 2/6 = 5/6.
+Expressão vira: 10 + [ 5/6 × 6 ] ÷ 5.
+
+**Passo 2 (Colchetes):** 5/6 × 6
+5/6 × 6/1 = 30/6 = 5.
+Expressão vira: 10 + 5 ÷ 5.
+
+**Passo 3 (Divisão):** 5 ÷ 5
+5 ÷ 5 = 1.
+Expressão vira: 10 + 1.
+
+**Passo 4 (Adição):** 10 + 1 = 11.
+
+**Resposta:** O valor da expressão é 11.
+                    </pre
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Botões Finais -->
+      <footer
+        class="no-print mt-12 pt-8 border-t-2 border-gray-200 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6"
+      >
+        <a
+          href="aulas.html"
+          class="w-full sm:w-auto px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 transition text-center"
+          >Voltar para o Menu de Aulas</a
+        >
+        <button
+          onclick="window.print()"
+          class="w-full sm:w-auto px-6 py-3 bg-sky-600 text-white font-semibold rounded-lg shadow-md hover:bg-sky-700 transition"
+        >
+          Salvar como PDF ou Imprimir
+        </button>
+      </footer>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // --- LÓGICA DO TIMER POMODORO ---
+        const pomodoroDisplay = document.getElementById('pomodoro-timer')
+        const pomodoroStartBtn = document.getElementById('pomodoro-start')
+        const pomodoroPauseBtn = document.getElementById('pomodoro-pause')
+        const pomodoroResetBtn = document.getElementById('pomodoro-reset')
+
+        let pomodoroInterval
+        let pomodoroTime = 25 * 60
+        let isPomodoroPaused = true
+
+        function updatePomodoroDisplay() {
+          const minutes = Math.floor(pomodoroTime / 60)
+          const seconds = pomodoroTime % 60
+          pomodoroDisplay.textContent = `${String(minutes).padStart(
+            2,
+            '0'
+          )}:${String(seconds).padStart(2, '0')}`
+        }
+
+        pomodoroStartBtn.addEventListener('click', () => {
+          if (isPomodoroPaused) {
+            isPomodoroPaused = false
+            pomodoroInterval = setInterval(() => {
+              pomodoroTime--
+              updatePomodoroDisplay()
+              if (pomodoroTime <= 0) {
+                clearInterval(pomodoroInterval)
+                alert('Pomodoro finalizado! Hora de uma pausa.')
+              }
+            }, 1000)
+          }
+        })
+
+        pomodoroPauseBtn.addEventListener('click', () => {
+          isPomodoroPaused = true
+          clearInterval(pomodoroInterval)
+        })
+
+        pomodoroResetBtn.addEventListener('click', () => {
+          isPomodoroPaused = true
+          clearInterval(pomodoroInterval)
+          pomodoroTime = 25 * 60
+          updatePomodoroDisplay()
+        })
+
+        // --- LÓGICA DO QUIZ E TIMERS INDIVIDUAIS ---
+        const quizForm = document.getElementById('quiz')
+        const submitButton = document.getElementById('submit-quiz')
+        const resultadosSection = document.getElementById('resultados')
+        const gabaritoSection = document.getElementById('gabarito')
+        const scoreText = document.getElementById('score-text')
+
+        const questionContainers = document.querySelectorAll(
+          '.question-container'
+        )
+        let activeTimers = []
+
+        const correctAnswers = { q1: 'B', q2: 'C', q3: 'C', q4: 'B', q5: 'D' }
+
+        questionContainers.forEach((container, index) => {
+          const startBtn = container.querySelector('.start-timer-btn')
+          const timerDisplay = container.querySelector('.question-timer')
+          const radios = container.querySelectorAll('input[type="radio"]')
+          let time = 3 * 60
+          let intervalId
+
+          startBtn.addEventListener('click', () => {
+            startBtn.disabled = true
+            startBtn.textContent = 'Ativado'
+            startBtn.classList.add('opacity-50', 'cursor-not-allowed')
+
+            intervalId = setInterval(() => {
+              time--
+              const minutes = Math.floor(time / 60)
+              const seconds = time % 60
+              timerDisplay.textContent = `${String(minutes).padStart(
+                2,
+                '0'
+              )}:${String(seconds).padStart(2, '0')}`
+
+              if (time <= 0) {
+                clearInterval(intervalId)
+                timerDisplay.textContent = 'Esgotado!'
+                radios.forEach((radio) => (radio.disabled = true))
+                container.classList.add(
+                  'bg-red-100',
+                  'border',
+                  'border-red-300'
+                )
+              }
+            }, 1000)
+            activeTimers.push(intervalId)
+          })
+        })
+
+        function checkAnswers() {
+          activeTimers.forEach((id) => clearInterval(id))
+          let score = 0
+          const totalQuestions = Object.keys(correctAnswers).length
+
+          for (const question in correctAnswers) {
+            const selector = `input[name="${question}"]:checked`
+            const userAnswerNode = quizForm.querySelector(selector)
+            const userAnswer = userAnswerNode ? userAnswerNode.value : null
+
+            const correctAnswer = correctAnswers[question]
+            const correctLabel = document.querySelector(
+              `label[for="${question}${correctAnswer.toLowerCase()}"]`
+            )
+
+            if (correctLabel) {
+              correctLabel.classList.add('correct')
+            }
+
+            if (userAnswer === correctAnswer) {
+              score++
+            } else if (userAnswerNode && !userAnswerNode.disabled) {
+              const incorrectLabel = document.querySelector(
+                `label[for="${userAnswerNode.id}"]`
+              )
+              if (incorrectLabel) {
+                incorrectLabel.classList.add('incorrect')
+              }
+            }
+          }
+
+          scoreText.textContent = `Você acertou ${score} de ${totalQuestions} questões.`
+          resultadosSection.classList.remove('hidden')
+          gabaritoSection.classList.remove('hidden')
+
+          submitButton.disabled = true
+          submitButton.textContent = 'Resultados Exibidos'
+          submitButton.classList.add('opacity-50', 'cursor-not-allowed')
+
+          quizForm
+            .querySelectorAll('input[type="radio"]')
+            .forEach((radio) => (radio.disabled = true))
+          quizForm
+            .querySelectorAll('.start-timer-btn')
+            .forEach((btn) => (btn.disabled = true))
+
+          resultadosSection.scrollIntoView({ behavior: 'smooth' })
+        }
+
+        submitButton.addEventListener('click', checkAnswers)
+      })
+    </script>
+
+    <script type="module">
+    import { verificarAulaAtual } from "../../firebase/firebase-conta.js";
+      document.addEventListener("DOMContentLoaded", () => {
+        const path = window.location.pathname;
+        const match = path.match(/aula(\d+)\.html/);
+        if (match && match[1]) {
+          const numeroDaAula = parseInt(match[1]);
+          verificarAulaAtual("matematica", numeroDaAula);
+        } else {
+          console.error(
+            "Não foi possível determinar o número da aula a partir da URL."
+          );
+        }
+      });    
+      </script>
+  </body>
+</html>

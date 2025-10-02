@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 7: Problemas com Frações do "Restante"</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* --- Estilos Globais e Fundo --- */
+      :root {
+        --cor-primaria: #4a90e2; /* Azul Suave */
+        --cor-secundaria: #50e3c2; /* Verde Água */
+        --cor-sucesso: #7ed321; /* Verde Limão */
+        --cor-perigo: #d0021b; /* Vermelho Forte */
+        --cor-fundo-claro: rgba(255, 255, 255, 0.98);
+        --cor-texto: #333;
+        --cor-borda: #e0e0e0;
+        --sombra-caixa: 0 6px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      body {
+        font-family: 'Inter', sans-serif;
+        line-height: 1.8;
+        color: var(--cor-texto);
+        margin: 0;
+        background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+      }
+
+      /* --- Container Principal --- */
+      .container {
+        max-width: 900px;
+        margin: 2.5rem auto;
+        padding: 2.5rem;
+        background-color: var(--cor-fundo-claro);
+        border-radius: 16px;
+        box-shadow: var(--sombra-caixa);
+      }
+
+      /* --- Títulos e Textos --- */
+      h1,
+      h2,
+      h3 {
+        font-weight: 700;
+        border-bottom: 3px solid var(--cor-primaria);
+        padding-bottom: 0.6rem;
+        margin-top: 2.5rem;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 2.4rem;
+        margin-bottom: 2.5rem;
+        color: #2c3e50; /* Azul Escuro */
+        border: none;
+      }
+
+      h2 {
+        color: #2c3e50;
+      }
+
+      h3 {
+        color: var(--cor-primaria);
+        border-bottom-style: dashed;
+        border-bottom-width: 2px;
+      }
+
+      strong {
+        color: var(--cor-primaria);
+        font-weight: 600;
+      }
+
+      .destaque {
+        background-color: #f0f7ff;
+        border-left: 5px solid var(--cor-primaria);
+        padding: 1.2rem;
+        margin: 1.5rem 0;
+        border-radius: 8px;
+        font-size: 1.05rem;
+      }
+
+      /* --- Seção do Timer Pomodoro --- */
+      .pomodoro-timer {
+        text-align: center;
+        background-color: #f9f9f9;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 2.5rem;
+        border: 1px solid var(--cor-borda);
+      }
+
+      .pomodoro-timer h2 {
+        margin-top: 0;
+        border: none;
+        color: #333;
+      }
+
+      #pomodoro-display {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin: 1rem 0;
+        color: var(--cor-primaria);
+      }
+
+      /* --- Botões --- */
+      .btn {
+        display: inline-block;
+        padding: 12px 24px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        border: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        margin: 0.3rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-primario {
+        background-color: var(--cor-primaria);
+        color: white;
+      }
+
+      .btn-primario:hover {
+        background-color: #3a7cc4;
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-secundario {
+        background-color: var(--cor-secundaria);
+        color: white;
+      }
+
+      .btn-secundario:hover {
+        background-color: #48c9b0;
+      }
+
+      .btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      /* --- Esquemas Visuais (Resolução) --- */
+      pre {
+        background-color: #f5f7fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1.05rem;
+        border: 1px solid #dfe3e8;
+        line-height: 1.6;
+      }
+
+      /* --- Player de Vídeo --- */
+      .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* Proporção 16:9 */
+        height: 0;
+        overflow: hidden;
+        max-width: 100%;
+        background: #000;
+        border-radius: 12px;
+        margin: 2.5rem 0;
+        box-shadow: var(--sombra-caixa);
+      }
+
+      .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* --- Seção de Exercícios --- */
+      .aviso-timer {
+        background-color: #fffbe6;
+        color: #8a6d3b;
+        padding: 1.2rem;
+        border: 1px solid #ffeeba;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 600;
+        margin: 2.5rem 0;
+      }
+
+      .exercicio {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        border: 1px solid var(--cor-borda);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+      }
+
+      .exercicio:hover {
+        border-color: var(--cor-primaria);
+      }
+
+      .exercicio p {
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
+
+      .opcoes label {
+        display: block;
+        margin: 0.7rem 0;
+        padding: 0.8rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        border: 1px solid #eee;
+      }
+
+      .opcoes label:hover {
+        background-color: #f0f7ff;
+      }
+
+      .opcoes input[type='radio'] {
+        margin-right: 12px;
+        transform: scale(1.1);
+      }
+
+      .timer-questao {
+        font-weight: bold;
+        margin-left: 1rem;
+        color: var(--cor-primaria);
+      }
+
+      /* --- Estilos de Feedback (Correto/Incorreto) --- */
+      .correta {
+        border-color: var(--cor-sucesso) !important;
+        background-color: #f1fff0;
+      }
+
+      .incorreta {
+        border-color: var(--cor-perigo) !important;
+        background-color: #fff0f1;
+      }
+
+      .label-correta {
+        background-color: #dff0d8 !important;
+        font-weight: bold;
+        border-color: var(--cor-sucesso);
+      }
+
+      /* --- Seções Ocultas --- */
+      .hidden {
+        display: none;
+      }
+
+      #resultado,
+      #gabarito-comentado {
+        margin-top: 2.5rem;
+        padding: 2rem;
+        border-radius: 12px;
+        background-color: #f9f9f9;
+      }
+
+      #resultado h2,
+      #gabarito-comentado h2 {
+        margin-top: 0;
+        border: none;
+        color: #333;
+      }
+
+      /* --- Botões de Navegação Final --- */
+      .botoes-navegacao {
+        text-align: center;
+        margin-top: 2.5rem;
+        padding-top: 2rem;
+        border-top: 2px solid var(--cor-borda);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Título da Aula -->
+      <h1>Aula 7: Problemas com Frações do "Restante"</h1>
+
+      <!-- Timer Pomodoro -->
+      <div class="pomodoro-timer">
+        <h2>Timer de Estudos (Pomodoro)</h2>
+        <div id="pomodoro-display">25:00</div>
+        <div>
+          <button id="start-pomodoro" class="btn btn-primario">
+            Iniciar Foco
+          </button>
+          <button id="pause-pomodoro" class="btn btn-secundario">Pausar</button>
+          <button
+            id="reset-pomodoro"
+            class="btn"
+            style="background-color: #f39c12; color: white"
+          >
+            Resetar
+          </button>
+        </div>
+      </div>
+
+      <!-- Conteúdo da Aula -->
+      <section id="conteudo-aula">
+        <h2>O Conceito Fundamental: O Que é o "Restante"?</h2>
+        <h3>Entendendo a Ideia Central e o Erro Mais Comum</h3>
+        <p>
+          Em muitos problemas de matemática, especialmente no ENEM, você
+          encontrará situações em que uma ação acontece em etapas. Por exemplo,
+          alguém gasta uma parte do dinheiro e, <strong>depois</strong>, gasta
+          outra parte <strong>do que sobrou</strong>. Essa parte que sobrou é o
+          que chamamos de "restante".
+        </p>
+        <div class="destaque">
+          <p>
+            O conceito é simples: o
+            <strong>"restante" é o novo total</strong> sobre o qual você fará o
+            próximo cálculo. A referência para o cálculo muda a cada etapa.
+          </p>
+        </div>
+        <p>
+          O erro mais comum que os alunos cometem é calcular a segunda fração
+          usando o valor original, e não o valor que sobrou. Pense em uma pizza
+          com 8 fatias. Se você come 1/4 dela (ou seja, 2 fatias), o "restante"
+          são 6 fatias. Se um amigo come 1/3 <strong>do restante</strong>, ele
+          come 1/3 das 6 fatias que sobraram (2 fatias), e não 1/3 das 8 fatias
+          originais. Entender essa mudança de referência é o segredo para
+          resolver esses problemas.
+        </p>
+
+        <h3>Visualizando o Todo e o Restante: O Método das Barras</h3>
+        <p>
+          A melhor forma de não se confundir é desenhando. O "método das barras"
+          usa um retângulo para representar o valor total e nos ajuda a
+          visualizar o que está acontecendo.
+        </p>
+        <p>Vamos ver como funciona:</p>
+        <ol>
+          <li>
+            <strong>Desenhe uma barra:</strong> Esta barra representa o seu
+            valor total, o seu 100%.
+          </li>
+          <li>
+            <strong>Divida a barra:</strong> Olhe para o denominador (o número
+            de baixo) da primeira fração. Divida a sua barra nesse número de
+            partes iguais. Por exemplo, para a fração 1/4, divida a barra em 4
+            partes.
+          </li>
+          <li>
+            <strong>Pinte o que foi gasto:</strong> Pinte o número de partes
+            indicado pelo numerador (o número de cima). Para 1/4, você pintaria
+            1 parte.
+          </li>
+          <li>
+            <strong>Identifique o restante:</strong> As partes que não foram
+            pintadas são o seu <strong>RESTANTE</strong>. É sobre essa nova área
+            que você fará o próximo cálculo.
+          </li>
+        </ol>
+
+        <p>
+          <strong>Exemplo Visual:</strong> Gastei 1/4 e depois 1/3 do restante.
+        </p>
+        <pre>
+**Passo 1: Representar o gasto de 1/4.**
+O total é a barra inteira. Dividimos em 4 partes e pintamos 1.
+
++-------+-------+-------+-------+
+| GASTO | REST. | REST. | REST. |
++-------+-------+-------+-------+
+   1/4     3/4 (o que sobrou)
+
+Visualmente, o restante são as 3 partes que sobraram.
+
+**Passo 2: Calcular 1/3 DO RESTANTE.**
+Agora, nosso foco é apenas na área do restante (as 3 partes).
+O problema diz para gastar 1/3 *dessa área*.
+Como temos 3 partes, gastar 1/3 significa pintar 1 dessas partes.
+
++-------+-------+-------+-------+
+| GASTO | GASTO | SOBRA | SOBRA |
+|  1/4  | 1/3 do| FINAL | FINAL |
+|       | Rest. |       |       |
++-------+-------+-------+-------+
+
+Esse segundo gasto, que era 1/3 do restante, corresponde a 1/4 do total.
+            </pre
+        >
+
+        <h2>Resolvendo o Problema Básico: Passo a Passo</h2>
+        <h3>O Método em 3 Passos Claros</h3>
+        <p>
+          Para organizar o raciocínio e não se perder, siga sempre estes três
+          passos.
+        </p>
+        <ol>
+          <li>
+            <strong
+              >Passo 1: Calcular o primeiro gasto e o primeiro restante.</strong
+            >
+            <ul>
+              <li>Primeiro, identifique a fração que foi gasta.</li>
+              <li>
+                Depois, calcule a fração que sobrou (o restante). Para fazer
+                isso, subtraia a fração gasta do total, que é sempre
+                representado pelo número 1 (ou uma fração como 4/4, 5/5, etc.).
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong>Passo 2: Calcular o segundo gasto.</strong>
+            <ul>
+              <li>
+                Este é o passo mais importante. O segundo gasto é uma fração
+                <strong>DO</strong> restante. Em matemática, a palavra "de"
+                entre duas frações significa <strong>MULTIPLICAÇÃO</strong>.
+              </li>
+              <li>
+                Você vai multiplicar a segunda fração pela fração do restante
+                que você encontrou no Passo 1.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong>Passo 3: Responder à pergunta do problema.</strong>
+            <ul>
+              <li>
+                Leia com atenção o que o problema pede. Ele pode querer saber o
+                total gasto (soma dos gastos), o que sobrou no final (subtração
+                do total gasto de 1) ou outra informação. Use os valores que
+                você calculou nos passos anteriores para encontrar a resposta.
+              </li>
+            </ul>
+          </li>
+        </ol>
+
+        <h3>Exemplo Prático 1: O Salário de Joana</h3>
+        <p>
+          <strong>Problema:</strong> Joana usou 1/4 do seu salário para pagar o
+          aluguel. Em seguida, gastou 1/3 <strong>do que sobrou</strong> com
+          compras no supermercado. Que fração do salário total ela gastou? Que
+          fração sobrou no final?
+        </p>
+        <pre>
+**Passo 1: Aluguel e o que restou (o primeiro restante).**
+
+- Gasto com aluguel: 1/4 do salário.
+- Para saber o que sobrou, pegamos o salário inteiro (que é 1) e tiramos o gasto.
+
+  Salário Inteiro      1          4
+(representado por)   ---   -->   ---  (usamos o mesmo denominador)
+                     1          4
+
+  Gasto com Aluguel          -  1
+                             ---
+                              4
+------------------------------------
+  Fração que Restou            3
+(Primeiro Restante)          ---
+                              4
+
+--> Conclusão do Passo 1: Após o aluguel, Joana ficou com 3/4 do salário.
+
+**Passo 2: Gasto com supermercado (calculado sobre o RESTANTE).**
+
+- O gasto foi de 1/3 DE 3/4. A palavra "DE" significa MULTIPLICAR.
+
+  1         3
+----   x   ----   =
+  3         4
+
+// Multiplicamos os de cima e os de baixo.
+  1   x   3          3
+-----------   =   ----
+  3   x   4         12
+
+// Simplificando a fração 3/12 (dividindo tudo por 3).
+  3  ÷  3          1
+----      -->   ----
+ 12  ÷  3          4
+
+--> Conclusão do Passo 2: O gasto com supermercado foi 1/4 do salário TOTAL.
+
+**Passo 3: Respondendo às perguntas.**
+
+A) Qual a fração TOTAL que ela gastou?
+   Somamos os gastos: (Aluguel) + (Supermercado)
+
+  Gasto com Aluguel          1/4
+  Gasto com Supermercado   + 1/4
+------------------------------------
+  Fração Total Gasta         2/4  --> Simplificando: 1/2
+
+B) Que fração do salário sobrou NO FINAL?
+   (Salário Inteiro) - (Total Gasto)
+
+  Salário Inteiro         1 (ou 2/2)
+  Total Gasto           - 1/2
+------------------------------------
+  Fração que Sobrou         1/2
+     no Final
+            </pre
+        >
+        <p>
+          <strong>Resposta Final:</strong> Joana gastou um total de 1/2 de seu
+          salário e sobrou 1/2.
+        </p>
+
+        <h2>
+          Aumentando a Complexidade: Múltiplas Frações e Valores Concretos
+        </h2>
+        <p>
+          Agora, vamos aplicar a mesma lógica a um problema que envolve um valor
+          inicial concreto, como litros ou reais. O raciocínio com as frações é
+          exatamente o mesmo, mas a cada passo calculamos o valor real
+          correspondente.
+        </p>
+        <h3>Exemplo Prático 2: A Capacidade do Tanque de Combustível</h3>
+        <p>
+          <strong>Problema:</strong> Um carro com um tanque de 60 litros estava
+          cheio. O motorista gastou 2/5 da capacidade em uma viagem. Do
+          combustível que restou no tanque, ele gastou 1/2 para ir ao trabalho
+          durante a semana. Quantos litros de combustível sobraram no final?
+        </p>
+        <pre>
+**Passo 1: Gasto na viagem e quantos litros restaram.**
+
+- Gasto na viagem: 2/5 DE 60 litros.
+  (2/5) * 60 = (2 * 60) / 5 = 120 / 5 = 24 litros.
+
+- Litros restantes no tanque:
+  Capacidade Total          60 litros
+  Gasto na Viagem         - 24 litros
+------------------------------------
+  Litros Restantes          36 litros
+
+--> Conclusão do Passo 1: Após a viagem, restaram 36 litros.
+
+**Passo 2: Gasto para ir ao trabalho (calculado sobre o RESTANTE).**
+
+- Gasto para o trabalho: 1/2 DE 36 litros.
+  (1/2) * 36 = 36 / 2 = 18 litros.
+
+--> Conclusão do Passo 2: O motorista gastou 18 litros para ir ao trabalho.
+
+**Passo 3: Respondendo à pergunta (litros que sobraram no final).**
+
+- Pegamos os litros que restavam e subtraímos o novo gasto.
+  Litros após a Viagem      36 litros
+  Gasto para o Trabalho   - 18 litros
+------------------------------------
+  Litros que Sobraram       18 litros
+       no Final
+            </pre
+        >
+        <p>
+          <strong>Resposta Final:</strong> Sobraram 18 litros de combustível no
+          tanque.
+        </p>
+
+        <h2>O Desafio Clássico do ENEM: Descobrindo o Valor Inicial</h2>
+        <p>
+          Este é o tipo de problema mais avançado e muito comum em provas. Nele,
+          o valor inicial não é dado. Em vez disso, o problema informa o valor
+          que sobrou <strong>no final</strong> e pede para você descobrir qual
+          era o valor total no início. Para resolver, usamos o raciocínio
+          inverso: começamos pelo fim e vamos "desfazendo" as operações.
+        </p>
+
+        <h3>Raciocínio Inverso: Trabalhando de Trás para Frente</h3>
+        <div class="destaque">
+          <p>
+            A lógica é a seguinte: se o problema nos dá o valor final que
+            sobrou, primeiro precisamos descobrir a que
+            <strong>fração</strong> daquela etapa o valor corresponde. Com essa
+            equivalência (fração = valor), conseguimos descobrir o valor
+            "inteiro" daquela etapa. Repetimos esse processo até chegar ao valor
+            inicial.
+          </p>
+        </div>
+
+        <h3>Exemplo Prático 3: O Dinheiro para a Viagem</h3>
+        <p>
+          <strong>Problema:</strong> Pedro gastou 1/3 do dinheiro que levou para
+          uma viagem com a passagem. Do restante, gastou 3/4 com a hospedagem.
+          Se ele voltou para casa com R$ 250,00, quanto dinheiro Pedro levou
+          inicialmente para a viagem?
+        </p>
+        <pre>
+**Passo 1: Analisar o ÚLTIMO gasto e o que sobrou no FIM.**
+
+- Na segunda etapa, Pedro gastou 3/4 com a hospedagem.
+- A fração que sobrou *dessa segunda etapa* foi:
+  1 - 3/4 = 4/4 - 3/4 = 1/4.
+
+- O Pulo do Gato: O problema diz que o VALOR que sobrou foi R$ 250.
+  Portanto, 1/4 do dinheiro que ele tinha ANTES de pagar a hospedagem
+  equivale a R$ 250.
+
+- Se 1/4 = R$ 250, então o total que ele tinha (4/4) era:
+  4 * R$ 250,00 = R$ 1.000,00.
+
+--> Conclusão do Passo 1: Antes da hospedagem, Pedro tinha R$ 1.000.
+    Este valor é o "primeiro restante" do problema.
+
+**Passo 2: Analisar o PRIMEIRO gasto e o valor total inicial.**
+
+- Na primeira etapa, Pedro gastou 1/3 do total com a passagem.
+- A fração que sobrou (o "primeiro restante") foi:
+  1 - 1/3 = 3/3 - 1/3 = 2/3.
+
+- A Conexão Final: No Passo 1, descobrimos que o VALOR do
+  primeiro restante era de R$ 1.000.
+  Portanto, 2/3 do dinheiro total = R$ 1.000.
+
+- Se 2/3 do total é R$ 1.000, primeiro vamos descobrir quanto vale 1/3:
+  1/3 do total = R$ 1.000,00 ÷ 2 = R$ 500,00.
+
+- Agora que sabemos o valor de 1/3, achamos o total (3/3):
+  Total Inicial = 3 * R$ 500,00 = R$ 1.500,00.
+            </pre
+        >
+        <p>
+          <strong>Resposta Final:</strong> Pedro levou R$ 1.500,00 para a
+          viagem.
+        </p>
+      </section>
+
+      <!-- Seção de Vídeo -->
+      <section id="video-aula">
+        <h2>Vídeo Aula Complementar</h2>
+        <div class="video-container">
+          <!-- Substitua o 'dQw4w9WgXcQ' pelo ID do seu vídeo do YouTube -->
+          <iframe
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </section>
+
+      <!-- Seção de Exercícios -->
+      <section id="exercicios">
+        <h2>Questões Estilo ENEM</h2>
+        <div class="aviso-timer">
+          <strong>Atenção:</strong> Você terá 3 minutos para cada questão,
+          simulando o tempo do ENEM. Antes de começar a ler, ative o timer! Se o
+          tempo acabar, a questão será bloqueada e considerada errada.
+        </div>
+
+        <form id="quiz-form">
+          <!-- Questão 1 -->
+          <div class="exercicio" id="q1">
+            <p>
+              1. De seu salário mensal, um trabalhador gasta 1/5 com moradia. Do
+              que resta, ele aplica 1/2 na poupança. A fração do salário
+              original que sobra para outras despesas é:
+            </p>
+            <div class="opcoes">
+              <label><input type="radio" name="q1" value="a" /> a) 3/10</label>
+              <label><input type="radio" name="q1" value="b" /> b) 2/5</label>
+              <label><input type="radio" name="q1" value="c" /> c) 1/2</label>
+              <label><input type="radio" name="q1" value="d" /> d) 3/5</label>
+              <label><input type="radio" name="q1" value="e" /> e) 7/10</label>
+            </div>
+            <button
+              type="button"
+              class="btn btn-secundario btn-timer"
+              data-questao="1"
+            >
+              Iniciar Timer
+            </button>
+            <span class="timer-questao" id="timer-q1">03:00</span>
+          </div>
+
+          <!-- Questão 2 -->
+          <div class="exercicio" id="q2">
+            <p>
+              2. Um fazendeiro possui uma propriedade de 120 hectares. Ele vende
+              1/3 da propriedade e, do restante, utiliza 3/4 para o plantio de
+              milho. A área da propriedade que não foi vendida nem utilizada
+              para o plantio de milho é de:
+            </p>
+            <div class="opcoes">
+              <label
+                ><input type="radio" name="q2" value="a" /> a) 20
+                hectares</label
+              >
+              <label
+                ><input type="radio" name="q2" value="b" /> b) 30
+                hectares</label
+              >
+              <label
+                ><input type="radio" name="q2" value="c" /> c) 40
+                hectares</label
+              >
+              <label
+                ><input type="radio" name="q2" value="d" /> d) 60
+                hectares</label
+              >
+              <label
+                ><input type="radio" name="q2" value="e" /> e) 80
+                hectares</label
+              >
+            </div>
+            <button
+              type="button"
+              class="btn btn-secundario btn-timer"
+              data-questao="2"
+            >
+              Iniciar Timer
+            </button>
+            <span class="timer-questao" id="timer-q2">03:00</span>
+          </div>
+
+          <!-- Questão 3 -->
+          <div class="exercicio" id="q3">
+            <p>
+              3. Mariana comprou uma coleção de livros. No primeiro mês, leu 1/4
+              dos livros. No segundo mês, emprestou para uma amiga 1/3 dos
+              livros que ainda não havia lido. No terceiro mês, vendeu 1/2 do
+              que ainda lhe restava. A fração da coleção original que permaneceu
+              com Mariana é:
+            </p>
+            <div class="opcoes">
+              <label><input type="radio" name="q3" value="a" /> a) 1/12</label>
+              <label><input type="radio" name="q3" value="b" /> b) 1/6</label>
+              <label><input type="radio" name="q3" value="c" /> c) 5/12</label>
+              <label><input type="radio" name="q3" value="d" /> d) 1/4</label>
+              <label><input type="radio" name="q3" value="e" /> e) 1/3</label>
+            </div>
+            <button
+              type="button"
+              class="btn btn-secundario btn-timer"
+              data-questao="3"
+            >
+              Iniciar Timer
+            </button>
+            <span class="timer-questao" id="timer-q3">03:00</span>
+          </div>
+
+          <!-- Questão 4 -->
+          <div class="exercicio" id="q4">
+            <p>
+              4. Um estudante gastou 1/2 de sua mesada com transporte. Do que
+              sobrou, ele gastou 2/5 com alimentação, restando-lhe ainda R$
+              300,00. O valor total da mesada desse estudante era de:
+            </p>
+            <div class="opcoes">
+              <label
+                ><input type="radio" name="q4" value="a" /> a) R$ 800,00</label
+              >
+              <label
+                ><input type="radio" name="q4" value="b" /> b) R$ 900,00</label
+              >
+              <label
+                ><input type="radio" name="q4" value="c" /> c) R$
+                1.000,00</label
+              >
+              <label
+                ><input type="radio" name="q4" value="d" /> d) R$
+                1.200,00</label
+              >
+              <label
+                ><input type="radio" name="q4" value="e" /> e) R$
+                1.500,00</label
+              >
+            </div>
+            <button
+              type="button"
+              class="btn btn-secundario btn-timer"
+              data-questao="4"
+            >
+              Iniciar Timer
+            </button>
+            <span class="timer-questao" id="timer-q4">03:00</span>
+          </div>
+
+          <!-- Questão 5 -->
+          <div class="exercicio" id="q5">
+            <p>
+              5. Um ciclista planeja uma viagem de longa distância. No primeiro
+              dia, ele percorre 2/5 do trajeto total. No segundo dia, ele
+              percorre 1/3 do que faltava. Se, após o segundo dia, ainda faltam
+              200 km para completar a viagem, qual era a distância total do
+              trajeto?
+            </p>
+            <div class="opcoes">
+              <label
+                ><input type="radio" name="q5" value="a" /> a) 400 km</label
+              >
+              <label
+                ><input type="radio" name="q5" value="b" /> b) 450 km</label
+              >
+              <label
+                ><input type="radio" name="q5" value="c" /> c) 600 km</label
+              >
+              <label
+                ><input type="radio" name="q5" value="d" /> d) 750 km</label
+              >
+              <label
+                ><input type="radio" name="q5" value="e" /> e) 500 km</label
+              >
+            </div>
+            <button
+              type="button"
+              class="btn btn-secundario btn-timer"
+              data-questao="5"
+            >
+              Iniciar Timer
+            </button>
+            <span class="timer-questao" id="timer-q5">03:00</span>
+          </div>
+
+          <div style="text-align: center; margin-top: 2.5rem">
+            <button
+              type="button"
+              id="btn-finalizar"
+              class="btn btn-primario"
+              style="padding: 15px 30px; font-size: 1.2rem"
+            >
+              Finalizar e Ver Resultado
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Seção de Resultado (Oculta) -->
+      <section id="resultado" class="hidden">
+        <h2>Seu Resultado</h2>
+        <p
+          id="pontuacao"
+          style="font-size: 1.5rem; text-align: center; font-weight: bold"
+        ></p>
+      </section>
+
+      <!-- Seção de Gabarito Comentado (Oculta) -->
+      <section id="gabarito-comentado" class="hidden">
+        <h2>Gabarito Comentado</h2>
+
+        <div class="destaque">
+          <h3>Questão 1: Resposta Correta (b)</h3>
+          <pre>
+**Passo 1: Gasto com moradia e o que restou.**
+- Gasto: 1/5.
+- Restante: 5/5 - 1/5 = 4/5.
+
+**Passo 2: Aplicação na poupança (sobre o restante).**
+- Aplicou 1/2 DE 4/5.
+- 1/2 * 4/5 = 4/10 = 2/5 do salário original.
+
+**Passo 3: Calcular o que sobrou no final.**
+- Tinha 4/5 (restante 1) e gastou 2/5 (poupança).
+- Sobra final: 4/5 - 2/5 = 2/5.
+                </pre
+          >
+        </div>
+
+        <div class="destaque">
+          <h3>Questão 2: Resposta Correta (a)</h3>
+          <pre>
+**Passo 1: Venda da propriedade e área restante.**
+- Vendeu: 1/3 de 120 = 40 hectares.
+- Área restante: 120 - 40 = 80 hectares.
+
+**Passo 2: Plantio de milho (sobre a área restante).**
+- Plantou: 3/4 de 80 hectares.
+- (3/4) * 80 = 240 / 4 = 60 hectares.
+
+**Passo 3: Calcular a área não utilizada.**
+- Da área restante (80 ha), usou 60 ha.
+- Área não utilizada: 80 - 60 = 20 hectares.
+                </pre
+          >
+        </div>
+
+        <div class="destaque">
+          <h3>Questão 3: Resposta Correta (d)</h3>
+          <pre>
+**Etapa 1: Leitura do primeiro mês.**
+- Leu: 1/4.
+- Restante 1: 4/4 - 1/4 = 3/4.
+
+**Etapa 2: Empréstimo no segundo mês.**
+- Emprestou: 1/3 DO RESTANTE (1/3 de 3/4).
+- 1/3 * 3/4 = 3/12 = 1/4 da coleção original.
+- Restante 2: 3/4 (o que tinha) - 1/4 (o que emprestou) = 2/4 = 1/2.
+
+**Etapa 3: Venda no terceiro mês.**
+- Vendeu: 1/2 DO NOVO RESTANTE (1/2 de 1/2).
+- 1/2 * 1/2 = 1/4 da coleção original.
+- Restante Final: 1/2 (o que tinha) - 1/4 (o que vendeu) = 1/4.
+                </pre
+          >
+        </div>
+
+        <div class="destaque">
+          <h3>Questão 4: Resposta Correta (c)</h3>
+          <pre>
+**Passo 1: Analisar o último gasto e o que sobrou.**
+- Gastou 2/5 com alimentação, então sobrou 3/5 (5/5 - 2/5).
+- 3/5 do "primeiro restante" = R$ 300,00.
+- Se 3 partes = 300, então 1 parte = 100.
+- O "primeiro restante" (5 partes) = 5 * 100 = R$ 500,00.
+
+**Passo 2: Analisar o primeiro gasto e o valor inicial.**
+- Gastou 1/2 com transporte, então sobrou 1/2 (o "primeiro restante").
+- 1/2 da mesada = R$ 500,00.
+- Mesada inteira = 2 * 500 = R$ 1.000,00.
+                </pre
+          >
+        </div>
+
+        <div class="destaque">
+          <h3>Questão 5: Resposta Correta (e)</h3>
+          <pre>
+**Passo 1: Calcular a fração que ainda falta.**
+- Dia 1: Percorreu 2/5. Faltam 3/5.
+- Dia 2: Percorreu 1/3 DO QUE FALTAVA (1/3 de 3/5).
+- 1/3 * 3/5 = 3/15 = 1/5 do trajeto total.
+- Fração que ainda falta: 3/5 (o que faltava) - 1/5 (percorreu) = 2/5.
+
+**Passo 2: Usar o valor final para descobrir o total.**
+- 2/5 do trajeto total = 200 km.
+- Se 2 partes = 200 km, então 1 parte = 100 km.
+- O trajeto total (5 partes) = 5 * 100 = 500 km.
+                </pre
+          >
+        </div>
+      </section>
+
+      <!-- Botões de Navegação Final -->
+      <div class="botoes-navegacao">
+        <a href="aulas.html" class="btn btn-secundario"
+          >Voltar para o Menu de Aulas</a
+        >
+        <button onclick="window.print()" class="btn btn-primario">
+          Salvar como PDF ou Imprimir
+        </button>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // --- Lógica do Timer Pomodoro ---
+        const pomodoroDisplay = document.getElementById('pomodoro-display')
+        const startPomodoroBtn = document.getElementById('start-pomodoro')
+        const pausePomodoroBtn = document.getElementById('pause-pomodoro')
+        const resetPomodoroBtn = document.getElementById('reset-pomodoro')
+
+        let pomodoroInterval
+        let pomodoroSeconds = 25 * 60
+        let isPomodoroPaused = true
+
+        function updatePomodoroDisplay() {
+          const minutes = Math.floor(pomodoroSeconds / 60)
+          const seconds = pomodoroSeconds % 60
+          pomodoroDisplay.textContent = `${minutes
+            .toString()
+            .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+        }
+
+        function startPomodoro() {
+          if (isPomodoroPaused) {
+            isPomodoroPaused = false
+            pomodoroInterval = setInterval(() => {
+              pomodoroSeconds--
+              updatePomodoroDisplay()
+              if (pomodoroSeconds <= 0) {
+                clearInterval(pomodoroInterval)
+                alert('Pomodoro finalizado! Hora de uma pausa.')
+                isPomodoroPaused = true
+              }
+            }, 1000)
+          }
+        }
+
+        function pausePomodoro() {
+          isPomodoroPaused = true
+          clearInterval(pomodoroInterval)
+        }
+
+        function resetPomodoro() {
+          pausePomodoro()
+          pomodoroSeconds = 25 * 60
+          updatePomodoroDisplay()
+        }
+
+        startPomodoroBtn.addEventListener('click', startPomodoro)
+        pausePomodoroBtn.addEventListener('click', pausePomodoro)
+        resetPomodoroBtn.addEventListener('click', resetPomodoro)
+
+        // --- Lógica dos Timers das Questões ---
+        const timers = {}
+        const timerButtons = document.querySelectorAll('.btn-timer')
+
+        timerButtons.forEach((button) => {
+          button.addEventListener('click', () => {
+            const questaoId = button.dataset.questao
+            button.disabled = true
+
+            let time = 180 // 3 minutos
+            const timerDisplay = document.getElementById(`timer-q${questaoId}`)
+
+            timers[questaoId] = setInterval(() => {
+              time--
+              const minutes = Math.floor(time / 60)
+              const seconds = time % 60
+              timerDisplay.textContent = `${minutes
+                .toString()
+                .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+
+              if (time <= 0) {
+                clearInterval(timers[questaoId])
+                timerDisplay.textContent = 'Tempo Esgotado!'
+                timerDisplay.style.color = 'var(--cor-perigo)'
+                const inputs = document.querySelectorAll(
+                  `input[name="q${questaoId}"]`
+                )
+                inputs.forEach((input) => (input.disabled = true))
+              }
+            }, 1000)
+          })
+        })
+
+        // --- Lógica do Quiz ---
+        const btnFinalizar = document.getElementById('btn-finalizar')
+        const gabarito = {
+          q1: 'b',
+          q2: 'a',
+          q3: 'd',
+          q4: 'c',
+          q5: 'e',
+        }
+
+        btnFinalizar.addEventListener('click', () => {
+          Object.values(timers).forEach(clearInterval)
+
+          let pontuacao = 0
+          const form = document.getElementById('quiz-form')
+
+          for (const [questao, respostaCorreta] of Object.entries(gabarito)) {
+            const containerExercicio = document.getElementById(questao)
+            const inputSelecionado = form.querySelector(
+              `input[name="${questao}"]:checked`
+            )
+
+            const allInputs = document.querySelectorAll(
+              `input[name="${questao}"]`
+            )
+            allInputs.forEach((input) => (input.disabled = true))
+
+            const labelCorreta = document.querySelector(
+              `label:has(input[name="${questao}"][value="${respostaCorreta}"])`
+            )
+            if (labelCorreta) {
+              labelCorreta.classList.add('label-correta')
+            }
+
+            if (inputSelecionado) {
+              if (inputSelecionado.value === respostaCorreta) {
+                pontuacao++
+                containerExercicio.classList.add('correta')
+              } else {
+                containerExercicio.classList.add('incorreta')
+              }
+            } else {
+              containerExercicio.classList.add('incorreta')
+            }
+          }
+
+          const resultadoSection = document.getElementById('resultado')
+          const gabaritoSection = document.getElementById('gabarito-comentado')
+          const pontuacaoDisplay = document.getElementById('pontuacao')
+
+          pontuacaoDisplay.textContent = `Você acertou ${pontuacao} de ${
+            Object.keys(gabarito).length
+          } questões.`
+          resultadoSection.classList.remove('hidden')
+          gabaritoSection.classList.remove('hidden')
+          btnFinalizar.disabled = true
+          resultadoSection.scrollIntoView({ behavior: 'smooth' })
+        })
+      })
+    </script>
+  </body>
+</html>

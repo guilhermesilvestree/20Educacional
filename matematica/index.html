@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matemática | Ascensão Cósmica</title>
+    <link rel="icon" href="../assets/imagens/logo-branca-20Png.png" type="image/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cor-fundo: #0A0A10;
+            --cor-fundo-secundario: #161622;
+            --cor-texto: #EAEAEA;
+            --cor-sutil: #A0A0B0;
+            --cor-borda-padrao: rgba(255, 255, 255, 0.2);
+            --cor-botao-fundo: #FFFFFF;
+            --cor-botao-texto: #0A0A10;
+            
+            --cor-matematica: #4CAF50;
+            --cor-visitado: #27ae60;
+            --cor-concluido: #5856D6;
+            --cor-destaque-1: #00A8FF;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+        }
+        
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--cor-fundo);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+        }
+        #loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            border-top-color: var(--cor-destaque-1);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .background-stages {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+        
+        .stage-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center center;
+            transition: opacity 1s ease-in-out;
+        }
+
+        #stage-1 { background: linear-gradient(180deg, #1a2233 0%, #121a21 100%); opacity: 1; }
+        #stage-2 { background: #0a0a10 url('https://www.transparenttextures.com/patterns/stardust.png'); opacity: 0; }
+        #stage-3 { background: linear-gradient(180deg, rgba(4,5,24,1) 0%, rgba(61,16,84,1) 100%), url('https://www.transparenttextures.com/patterns/stardust.png'); opacity: 0; }
+        #stage-4 { background: linear-gradient(180deg, rgba(61,16,84,1) 0%, #0a0a10 100%), url('https://www.transparenttextures.com/patterns/stardust.png'); opacity: 0; }
+        #stage-5 { background: #0A0A10; opacity: 0; }
+        
+        #constellation-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.5;
+        }
+        
+        .back-button {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            z-index: 100;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--cor-botao-texto);
+            padding: 10px 18px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .back-button:hover { 
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
+        }
+        
+        .main-header {
+            background: rgba(22, 22, 38, 0.7);
+            border: 1px solid var(--cor-borda-padrao);
+            border-radius: 20px;
+            padding: 25px 30px;
+            max-width: 900px;
+            margin: 0 auto;
+            margin-top: 80px;
+            margin-bottom: 80px;
+            backdrop-filter: blur(10px);
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 15px;
+        }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .header-title i {
+            color: var(--cor-matematica);
+            width: 40px;
+            height: 40px;
+        }
+        .header-title h1 {
+            font-size: 2.8rem;
+            padding: 0;
+            margin: 0;
+            color: var(--cor-matematica);
+            text-shadow: 0 0 20px rgba(76, 175, 80, 0.7);
+        }
+        .header-progress {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            max-width: 380px;
+        }
+        #progress-details {
+            font-size: 0.9rem;
+            color: var(--cor-sutil);
+            white-space: nowrap;
+        }
+        .progress-bar-container {
+            flex-grow: 1;
+            height: 12px;
+            background-color: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #81c784);
+            border-radius: 10px;
+            transition: width 1.5s ease-out;
+        }
+        #progress-percentage {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--cor-texto);
+        }
+        .header-bottom p {
+            color: var(--cor-sutil);
+            font-size: 1rem;
+            text-align: left;
+        }
+        .header-bottom strong {
+            color: var(--cor-texto);
+            font-weight: 600;
+        }
+
+        .journey-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+        #journey-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: visible;
+        }
+        #journey-path-progress {
+            stroke: var(--cor-matematica);
+            stroke-width: 4px;
+            fill: none;
+            filter: drop-shadow(0 0 5px var(--cor-matematica));
+            transition: stroke-dashoffset 1.5s ease-in-out;
+            visibility: hidden;
+        }
+        #journey-path-bg {
+            stroke: rgba(140, 140, 160, 0.4);
+            stroke-width: 2px;
+            stroke-dasharray: 4 8;
+            fill: none;
+        }
+        .journey-divider {
+            position: absolute;
+            width: 100%;
+            z-index: 10;
+            text-align: center;
+            transform: translateY(-50%);
+        }
+        .divider-title {
+            display: inline-block;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--cor-destaque-1);
+            padding: 15px 30px;
+            background: rgba(10, 10, 16, 0.8);
+            border: 1px solid rgba(0, 168, 255, 0.3);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            text-shadow: 0 0 15px var(--cor-destaque-1);
+        }
+        .lesson-item {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 160px;
+            transform: translate(-50%, -50%);
+            text-decoration: none;
+        }
+        .lesson-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid var(--cor-borda-padrao);
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--cor-texto);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.6), 0 5px 20px rgba(0,0,0,0.4);
+            margin-bottom: 15px;
+        }
+        .lesson-circle:hover { 
+            transform: scale(1.2); 
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3), 0 5px 25px rgba(0,0,0,0.5), 0 0 30px var(--cor-destaque-1);
+        }
+        .planet-1 { background: radial-gradient(circle at 20% 20%, #ff9a44, #e52e71); }
+        .planet-2 { background: radial-gradient(circle at 70% 70%, #00d2ff, #3a7bd5); }
+        .planet-3 { background: radial-gradient(circle at 30% 70%, #f0f0f0, #c3c3c3); }
+        .planet-4 { background: radial-gradient(circle at 80% 30%, #a770ef, #cf8bf3, #fdb99b); }
+        .lesson-title { font-size: 1rem; font-weight: 500; color: var(--cor-sutil); line-height: 1.4; }
+        .lesson-item.locked { opacity: 0.4; filter: grayscale(1); pointer-events: none; }
+        .lesson-item.locked .lesson-circle { cursor: not-allowed; background: #222; }
+        .lesson-item.visited .lesson-circle { border-color: var(--cor-visitado); }
+        .lesson-item.active .lesson-circle {
+            border-color: var(--cor-destaque-1);
+            box-shadow: 0 0 25px var(--cor-destaque-1), inset 0 0 25px rgba(0,0,0,0.6);
+            animation: pulse-active 2s infinite;
+        }
+        .lesson-item.completed .lesson-circle { 
+            border: 4px solid var(--cor-concluido); 
+            opacity: 0.7;
+            background-blend-mode: luminosity;
+        }
+        .lesson-item.completed .lesson-title { color: var(--cor-concluido); font-weight: 600; }
+        @keyframes pulse-active { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+        @media (max-width: 900px) {
+            .header-top { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .header-progress { max-width: none; }
+        }
+        @media (max-width: 768px) {
+             .back-button { top: 20px; left: 20px; transform: none; }
+             .main-header { margin-top: 100px; margin-bottom: 60px; }
+             .header-title h1 { font-size: 2.5rem; }
+             .journey-container { max-width: 100%; padding: 0 20px; }
+             .divider-title { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="background-stages">
+        <div class="stage-background" id="stage-1"></div>
+        <div class="stage-background" id="stage-2"></div>
+        <div class="stage-background" id="stage-3"></div>
+        <div class="stage-background" id="stage-4"></div>
+        <div class="stage-background" id="stage-5"></div>
+    </div>
+    <canvas id="constellation-background"></canvas>
+
+    <a href="../menu.html" class="back-button">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <span>Voltar</span>
+    </a>
+
+    <header class="main-header">
+        <div class="header-top">
+            <div class="header-title">
+                <i data-lucide="function-square"></i>
+                <h1>Matemática</h1>
+            </div>
+            <div class="header-progress">
+                <span id="progress-details">0/100 Aulas</span>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <span id="progress-percentage">0%</span>
+            </div>
+        </div>
+        <div class="header-bottom">
+            <p>Sua jornada pela matéria de maior peso no ENEM. <strong id="current-module-info"></strong></p>
+        </div>
+    </header>
+
+    <main>
+        <div class="journey-container" id="journey-container">
+            <svg id="journey-svg">
+                <path id="journey-path-bg"></path>
+                <path id="journey-path-progress"></path>
+            </svg>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script type="module">
+        import { verificarLogin, carregarProgresso, registrarVisitaAula } from '../firebase/firebase-conta.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            verificarLogin(async () => {
+                await initializeJourney();
+                const loader = document.getElementById('loading-overlay');
+                if (loader) {
+                    loader.classList.add('hidden');
+                }
+            });
+        });
+
+        async function initializeJourney() {
+            const journeyContainer = document.getElementById('journey-container');
+            if (!journeyContainer) return;
+            const pathBG = document.getElementById('journey-path-bg');
+            const pathProgress = document.getElementById('journey-path-progress');
+            const MATERIA_ATUAL = 'matematica';
+
+            const modules = [ { title: "Fundamentos e Aritmética Aplicada", lessons: 35 }, { title: "Geometria Plana e Espacial", lessons: 25 }, { title: "Funções, Álgebra e a Análise de Gráficos", lessons: 15 }, { title: "Estatística, Probabilidade e Análise Combinatória", lessons: 20 }, { title: "Consolidação Estratégica e Simulação", lessons: 5 } ];
+            const TOTAL_LESSONS = 100;
+            const lessonTitles = [ "Operações Fundamentais com Inteiros e Decimais", "Operações Fundamentais com Frações e Ordem de Precedência", "Cálculo de Mínimo Múltiplo Comum (MMC) e Máximo Divisor Comum (MDC)", "Interpretação e Aplicação de MMC e MDC", "Conversão entre Frações e Números Decimais", "Operações com Frações em Problemas Práticos", "Problemas com Frações do 'Restante'", "O Conceito Fundamental de Porcentagem", "Acréscimos e Descontos Simples", "Fatores de Multiplicação e Aumentos/Descontos Sucessivos", "Variação Percentual", "Problemas Integrados de Porcentagem", "O Conceito de Razão", "O Conceito de Proporção", "Resolvendo Problemas com Proporção Direta", "Divisão em Partes Diretamente Proporcionais", "Divisão em Partes Inversamente Proporcionais", "Identificando Grandezas Direta e Inversamente Proporcionais", "Regra de Três Simples Direta", "Regra de Três Simples Inversa", "Regra de Três Composta", "Análise Crítica de Problemas de Regra de Três", "O Conceito de Escala e Conversão de Unidades", "Calculando a Distância Real a partir da Escala", "Calculando a Distância no Desenho a partir da Escala", "Escala de Área e Volume", "Conversão de Unidades de Comprimento", "Conversão de Unidades de Área", "Conversão de Unidades de Volume e Capacidade", "Conversão de Unidades de Massa e Tempo", "Propriedades da Potenciação", "Propriedades da Radiciação", "Simplificação de Expressões com Potências e Raízes", "Escrita e Operações com Notação Científica", "Ordem de Grandeza e Comparação", "Ângulos: Definições e Classificações", "Retas Paralelas Cortadas por uma Transversal", "Triângulos: Classificação e Propriedades Fundamentais", "Teorema de Tales", "Semelhança de Triângulos", "Teorema de Pitágoras: A Relação Fundamental", "Aplicações de Pitágoras em Quadriláteros", "Aplicações de Pitágoras em Triângulos e Hexágonos", "Definindo Seno, Cosseno e Tangente", "Ângulos Notáveis (30°, 45°, 60°)", "Resolvendo Problemas com Trigonometria", "Comprimento da Circunferência e de Arcos", "Área do Círculo e de Setores Circulares", "Áreas de Quadriláteros Notáveis", "Áreas de Triângulos", "Áreas de Figuras Compostas e Hachuradas", "Vistas Ortogonais (Frontal, Superior e Lateral)", "Planificação de Sólidos Geométricos", "Prismas: Elementos e Cálculo de Áreas", "Prismas: Cálculo de Volume", "Cilindros: Áreas e Volume", "Pirâmides: Elementos e Cálculo de Áreas", "Pirâmides: Cálculo de Volume", "Cones: Áreas e Volume", "Esfera: Área de Superfície e Volume", "O Conceito de Função", "Análise de Gráficos Genéricos", "Função Afim (1º Grau): Forma Algébrica e Gráfico", "Função Afim: Interpretando os Coeficientes 'a' e 'b'", "Modelagem de Problemas com Função Afim", "Resolvendo Problemas com Função Afim", "Função Quadrática (2° Grau): Forma Algébrica e Gráfico", "Função Quadrática: Raízes e Vértice", "Modelagem de Problemas de Máximo e Mínimo", "Resolvendo Problemas de Máximo e Mínimo", "Função Exponencial: Forma Algébrica e Gráfico", "Modelagem com Função Exponencial: Crescimento", "Modelagem com Função Exponencial: Decaimento", "Logaritmos: Definição e Propriedades Operatórias", "Função Logarítmica e Escalas Logarítmicas", "Leitura e Interpretação de Gráficos de Barras e Colunas", "Leitura e Interpretação de Gráficos de Linhas e Setores", "Leitura e Interpretação de Tabelas (Simples e Dupla Entrada)", "Inferências e Análise Crítica de Dados", "Média Aritmética Simples e Ponderada", "Moda", "Mediana", "Comparando Média, Moda e Mediana", "O Conceito de Dispersão (Variância)", "Interpretando o Desvio Padrão", "Princípio Fundamental da Contagem (PFC)", "Permutação Simples e com Repetição", "Arranjo Simples", "Combinação Simples", "Decidindo entre Arranjo, Combinação e Permutação", "Probabilidade: Conceito Fundamental", "Probabilidade em Problemas com Dados e Moedas", "Probabilidade em Problemas com Urnas e Sorteios", "Probabilidade da União de Eventos", "Probabilidade Condicional", "Estratégia de Prova (TRI) e Resolução de Questões Fáceis", "Resolução de Questões Médias e Difíceis", "Masterclass em Modelagem Matemática", "Simulação de Prova Completa Cronometrada", "Análise Detalhada de Erros e Ajuste Final" ];
+            
+            const DIVIDER_HEIGHT = 300;
+            const LESSON_HEIGHT_SPACING = 220; 
+            let totalHeight = 0;
+            const contentMap = [];
+
+            modules.forEach((module, moduleIndex) => {
+                if (moduleIndex > 0) {
+                    contentMap.push({ type: 'divider', title: module.title, y: totalHeight });
+                    totalHeight += DIVIDER_HEIGHT;
+                }
+                for (let i = 0; i < module.lessons; i++) {
+                    const lessonIndex = contentMap.filter(c => c.type === 'lesson').length;
+                    contentMap.push({ type: 'lesson', index: lessonIndex, y: totalHeight });
+                    totalHeight += LESSON_HEIGHT_SPACING;
+                }
+            });
+            journeyContainer.style.height = `${totalHeight}px`;
+
+            function generateJourney() {
+                const containerWidth = journeyContainer.offsetWidth;
+                if (containerWidth === 0) return;
+                
+                const midX = containerWidth / 2;
+                const amplitude = containerWidth / 4;
+                let pathData = `M ${midX} 0`;
+                let lessonCounter = 0;
+
+                contentMap.forEach(item => {
+                    const y = item.y + (item.type === 'lesson' ? LESSON_HEIGHT_SPACING / 2 : DIVIDER_HEIGHT / 2);
+                    if(item.type === 'lesson') { lessonCounter++; }
+                    const x = midX + Math.sin(lessonCounter * 0.4) * amplitude;
+                    const prevY = y - (item.type === 'lesson' ? LESSON_HEIGHT_SPACING / 2 : DIVIDER_HEIGHT / 2);
+                    const controlX = midX + Math.sin((lessonCounter - 0.5) * 0.4) * amplitude * -1;
+                    pathData += ` S ${controlX} ${prevY}, ${x} ${y}`;
+                });
+                
+                pathBG.setAttribute('d', pathData);
+                pathProgress.setAttribute('d', pathData);
+                const path = pathProgress;
+                const pathLength = path.getTotalLength();
+                
+                const dynamicItems = journeyContainer.querySelectorAll('.lesson-item, .journey-divider');
+                dynamicItems.forEach(item => item.remove());
+
+                contentMap.forEach(item => {
+                    if (item.type === 'divider') {
+                        const divider = document.createElement('div');
+                        divider.className = 'journey-divider';
+                        divider.style.top = `${item.y + DIVIDER_HEIGHT / 2}px`;
+                        divider.innerHTML = `<h2 class="divider-title">${item.title}</h2>`;
+                        journeyContainer.appendChild(divider);
+                    } else {
+                        const distance = (item.y + LESSON_HEIGHT_SPACING / 2) / totalHeight * pathLength;
+                        const point = path.getPointAtLength(distance);
+                        if (!point) return;
+                        const lessonId = `mat-${item.index + 1}`;
+                        const lessonEl = document.createElement('a');
+                        lessonEl.href = `aulas/aula${item.index + 1}.html`;
+                        lessonEl.className = 'lesson-item';
+                        lessonEl.dataset.lessonId = lessonId;
+                        lessonEl.style.left = `${point.x}px`;
+                        lessonEl.style.top = `${point.y}px`;
+                        lessonEl.innerHTML = `<div class="lesson-circle planet-${(item.index % 4) + 1}">${item.index + 1}</div><p class="lesson-title">${lessonTitles[item.index] || `Aula ${item.index + 1}`}</p>`;
+                        journeyContainer.appendChild(lessonEl);
+                    }
+                });
+            }
+
+            async function checkAndUpdateUI() {
+                const statusData = await carregarProgresso(MATERIA_ATUAL);
+                let lastCompletedLesson = 0;
+                Object.keys(statusData).forEach(key => {
+                    const lessonNum = parseInt(key.split('-')[1]);
+                    if (lessonNum > lastCompletedLesson) lastCompletedLesson = lessonNum;
+                });
+                const nextLesson = lastCompletedLesson + 1;
+
+                document.querySelectorAll('.lesson-item').forEach((item) => {
+                    const lessonNumber = parseInt(item.dataset.lessonId.split('-')[1]);
+                    item.className = 'lesson-item';
+                    if (statusData[item.dataset.lessonId]) item.classList.add('visited');
+                    if (lessonNumber === nextLesson) item.classList.add('active');
+                    if (lessonNumber > nextLesson && nextLesson <= TOTAL_LESSONS) item.classList.add('locked');
+                });
+
+                const percentage = (lastCompletedLesson / TOTAL_LESSONS) * 100;
+                let cumulativeLessons = 0;
+                let currentModuleTitle = 'Jornada não iniciada';
+                if(lastCompletedLesson > 0) {
+                    for (const module of modules) {
+                        cumulativeLessons += module.lessons;
+                        if (lastCompletedLesson < cumulativeLessons) {
+                            currentModuleTitle = module.title;
+                            break;
+                        }
+                    }
+                } else {
+                    currentModuleTitle = modules[0].title;
+                }
+                if (lastCompletedLesson === TOTAL_LESSONS) {
+                    currentModuleTitle = "Jornada Concluída!";
+                }
+
+                document.getElementById('progress-percentage').textContent = `${Math.floor(percentage)}%`;
+                document.getElementById('progress-bar').style.width = `${percentage}%`;
+                document.getElementById('progress-details').textContent = `${lastCompletedLesson}/${TOTAL_LESSONS} Aulas`;
+                document.getElementById('current-module-info').textContent = `Você está no módulo: ${currentModuleTitle}.`;
+
+                const pathLength = pathProgress.getTotalLength();
+                if (pathLength > 0) {
+                    const lastLessonMapItem = contentMap.find(c => c.type === 'lesson' && c.index === (lastCompletedLesson - 1));
+                    const progressY = lastLessonMapItem ? lastLessonMapItem.y + LESSON_HEIGHT_SPACING / 2 : 0;
+                    const progressDistance = (progressY / totalHeight) * pathLength;
+                    
+                    pathProgress.style.strokeDasharray = `${pathLength}`;
+                    pathProgress.style.strokeDashoffset = `${pathLength}`;
+                    pathProgress.style.visibility = 'visible';
+                    pathProgress.getBoundingClientRect(); 
+                    pathProgress.style.strokeDashoffset = `${pathLength - progressDistance}`;
+                }
+            }
+
+            journeyContainer.addEventListener('click', async (event) => {
+                const item = event.target.closest('.lesson-item');
+                if (!item || item.classList.contains('locked')) {
+                    event.preventDefault(); return;
+                }
+                event.preventDefault();
+                const lessonId = item.dataset.lessonId;
+                await registrarVisitaAula(MATERIA_ATUAL, lessonId);
+                window.location.href = item.href;
+            });
+
+            function updateBackgrounds() {
+                const scrollY = window.scrollY;
+                const pageHeight = document.body.scrollHeight - window.innerHeight;
+                if (pageHeight <= 0) return;
+                const scrollFraction = scrollY / pageHeight;
+                const stageIndex = Math.min(modules.length - 1, Math.floor(scrollFraction * modules.length));
+                document.querySelectorAll('.stage-background').forEach((el, index) => {
+                    el.style.opacity = (index === stageIndex) ? 1 : 0;
+                });
+            }
+            
+            generateJourney();
+            await checkAndUpdateUI();
+            window.addEventListener('scroll', updateBackgrounds);
+            window.addEventListener('resize', generateJourney);
+            updateBackgrounds();
+
+            const canvas = document.getElementById('constellation-background');
+            if (canvas) { 
+                const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight; let particlesArray = []; class Particle { constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.directionX = (Math.random() * 0.4) - 0.2; this.directionY = (Math.random() * 0.4) - 0.2; this.size = Math.random() * 2 + 1; this.color = `hsl(${Math.random() * 360}, 90%, 65%)`; } draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = this.color; ctx.fill(); } update() { if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX; if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY; this.x += this.directionX; this.y += this.directionY; this.draw(); } } function init() { particlesArray = []; let n = (canvas.height * canvas.width) / 15000; for (let i = 0; i < n; i++) { particlesArray.push(new Particle()); } } function connect() { let opacityValue = 1; for (let a = 0; a < particlesArray.length; a++) { for (let b = a; b < particlesArray.length; b++) { let distance = Math.sqrt(Math.pow(particlesArray[a].x - particlesArray[b].x, 2) + Math.pow(particlesArray[a].y - particlesArray[b].y, 2)); if (distance < 150) { opacityValue = 1 - (distance / 150); let rgb = hexToRgb(particlesArray[a].color); if(rgb) ctx.strokeStyle = `rgba(${rgb}, ${opacityValue})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(particlesArray[a].x, particlesArray[a].y); ctx.lineTo(particlesArray[b].x, particlesArray[b].y); ctx.stroke(); } } } } function hexToRgb(hsl) { if(!hsl) return null; let sep = hsl.indexOf(",") > -1 ? "," : " "; hsl = hsl.substr(4).split(")")[0].split(sep); let h = hsl[0], s = hsl[1].substr(0, hsl[1].length - 1) / 100, l = hsl[2].substr(0, hsl[2].length - 1) / 100; let c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs((h / 60) % 2 - 1)), m = l - c / 2, r = 0, g = 0, b = 0; if (0 <= h && h < 60) { r = c; g = x; b = 0; } else if (60 <= h && h < 120) { r = x; g = c; b = 0; } else if (120 <= h && h < 180) { r = 0; g = c; b = x; } else if (180 <= h && h < 240) { r = 0; g = x; b = c; } else if (240 <= h && h < 300) { r = x; g = 0; b = c; } else if (300 <= h && h < 360) { r = c; g = 0; b = x; } r = Math.round((r + m) * 255); g = Math.round((g + m) * 255); b = Math.round((b + m) * 255); return r + "," + g + "," + b; } function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); } connect(); requestAnimationFrame(animate); } init(); animate(); window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; init(); }); 
+            }
+        }
+    </script>
+</body>
+</html>

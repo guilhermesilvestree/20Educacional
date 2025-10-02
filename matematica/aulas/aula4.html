@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 4: Interpretação e Aplicação de MMC e MDC</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;600;700&display=swap');
+
+      :root {
+        --primary-color: #0d2149; /* Azul escuro profundo */
+        --secondary-color: #4caf50; /* Verde sucesso */
+        --accent-color: #2196f3; /* Azul vibrante */
+        --background-light: #fdfdfd;
+        --text-color: #212529;
+        --text-light: #495057;
+        --border-color: #e0e0e0;
+        --correct-color: #4caf50;
+        --incorrect-color: #f44336;
+        --timer-color: #ffc107; /* Amarelo alerta */
+      }
+
+      body {
+        font-family: 'Roboto', sans-serif;
+        line-height: 1.7;
+        margin: 0;
+        padding: 0;
+        color: var(--text-color);
+        background-color: #0a192f;
+        background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuXzAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHg9IjE2IiB5PSIxNiIgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIj48Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIxIiBmaWxsPSIjNDQ2Njk5Ii8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZGh0PSIxMDAlIiBmaWxsPSIjMDgxYzNkIi8+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuXzApIi8+PC9zdmc+);
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 25px auto;
+        padding: 30px;
+        background-color: var(--background-light);
+        border-radius: 15px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: 'Montserrat', sans-serif;
+        color: var(--primary-color);
+        border-bottom: 3px solid var(--accent-color);
+        padding-bottom: 10px;
+        margin-top: 25px;
+        font-weight: 700;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 2.4em;
+        border: none;
+      }
+
+      h2 {
+        font-size: 2em;
+      }
+
+      h3 {
+        font-size: 1.6em;
+        border-bottom: 2px solid var(--border-color);
+        font-weight: 600;
+      }
+
+      p,
+      li {
+        color: var(--text-light);
+        font-size: 1.1em;
+        text-align: justify;
+      }
+
+      strong {
+        color: var(--primary-color);
+        font-weight: 700;
+      }
+
+      .highlight {
+        background-color: rgba(33, 150, 243, 0.1);
+        padding: 3px 8px;
+        border-radius: 5px;
+        font-weight: bold;
+        color: #0d47a1;
+      }
+
+      .keyword {
+        background-color: rgba(255, 193, 7, 0.2);
+        padding: 3px 8px;
+        border-radius: 5px;
+        font-weight: bold;
+        color: #856404;
+        border-bottom: 2px solid var(--timer-color);
+      }
+
+      .visual-calc {
+        background-color: #f8f9fa;
+        border: 1px solid var(--border-color);
+        padding: 20px;
+        border-radius: 8px;
+        font-family: 'Courier New', Courier, monospace;
+        white-space: pre;
+        overflow-x: auto;
+        font-size: 1.2em;
+        line-height: 1.6;
+        margin-top: 15px;
+      }
+
+      .visual-calc .comment {
+        color: #007bff;
+        font-style: italic;
+      }
+
+      .visual-calc .marked {
+        font-weight: bold;
+        color: var(--secondary-color);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 30px 0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      th,
+      td {
+        border: 1px solid var(--border-color);
+        padding: 15px;
+        text-align: left;
+      }
+
+      th {
+        background-color: var(--primary-color);
+        color: white;
+        font-family: 'Montserrat', sans-serif;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f8f9fa;
+      }
+
+      .exercise-section,
+      .results-section,
+      .solutions-section {
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 3px solid var(--primary-color);
+      }
+
+      .question-block {
+        background-color: #ffffff;
+        border: 1px solid var(--border-color);
+        border-left: 6px solid var(--accent-color);
+        padding: 25px;
+        margin-bottom: 30px;
+        border-radius: 0 8px 8px 0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .question-block p {
+        font-weight: bold;
+        font-size: 1.15em;
+      }
+
+      .options label {
+        display: block;
+        margin: 10px 0;
+        padding: 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid var(--border-color);
+        background-color: #f9f9f9;
+      }
+
+      .options label:hover {
+        background-color: #e9ecef;
+        border-color: var(--accent-color);
+      }
+
+      .options input[type='radio'] {
+        margin-right: 12px;
+      }
+
+      .correct {
+        background-color: #e8f5e9 !important;
+        border-color: var(--correct-color) !important;
+        font-weight: bold;
+        color: #1b5e20;
+      }
+
+      .incorrect {
+        background-color: #ffebee !important;
+        border-color: var(--incorrect-color) !important;
+        color: #b71c1c;
+      }
+
+      .correct::before {
+        content: '✔ ';
+        color: var(--correct-color);
+        font-weight: bold;
+      }
+
+      .incorrect::before {
+        content: '✖ ';
+        color: var(--incorrect-color);
+        font-weight: bold;
+      }
+
+      #results,
+      #solutions {
+        display: none;
+      }
+
+      .button-container {
+        text-align: center;
+        margin-top: 30px;
+      }
+
+      .action-button {
+        background: linear-gradient(45deg, var(--secondary-color), #5cb85c);
+        color: white;
+        border: none;
+        padding: 15px 35px;
+        font-size: 1.2em;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Montserrat', sans-serif;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        font-weight: 600;
+      }
+
+      .action-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .action-button:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .secondary-button {
+        background: linear-gradient(45deg, #6c757d, #868e96);
+        margin-left: 10px;
+      }
+
+      .video-placeholder {
+        background-color: #000;
+        color: #fff;
+        text-align: center;
+        padding: 60px 20px;
+        border-radius: 12px;
+        margin: 40px 0;
+        position: relative;
+        overflow: hidden;
+        border: 3px solid var(--accent-color);
+      }
+
+      .video-placeholder a {
+        color: var(--accent-color);
+        text-decoration: none;
+        font-size: 1.2em;
+        display: inline-block;
+        transition: color 0.3s;
+      }
+
+      .video-placeholder a:hover {
+        color: #fff;
+      }
+
+      .video-placeholder .play-button {
+        font-size: 4em;
+        cursor: pointer;
+        transition: transform 0.3s;
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      .video-placeholder a:hover .play-button {
+        transform: scale(1.1);
+      }
+
+      .pomodoro-timer,
+      .question-timer {
+        text-align: center;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      .pomodoro-timer {
+        background-color: #e3f2fd;
+        border: 1px solid #90caf9;
+      }
+
+      .pomodoro-timer h3 {
+        border: none;
+        margin-top: 0;
+      }
+
+      #pomodoro-display {
+        font-size: 2.5em;
+        font-weight: bold;
+        color: var(--primary-color);
+      }
+
+      .pomodoro-controls button {
+        background-color: var(--accent-color);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        margin: 5px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 1em;
+        transition: background-color 0.3s;
+      }
+      .pomodoro-controls button:hover {
+        background-color: #1976d2;
+      }
+
+      .question-timer {
+        background-color: #fffde7;
+        border: 1px solid var(--timer-color);
+        margin-top: 15px;
+      }
+
+      .timer-display {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: var(--incorrect-color);
+      }
+
+      .timer-button {
+        background-color: var(--timer-color);
+        color: var(--text-color);
+        border: none;
+        padding: 8px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .timer-button:hover {
+        background-color: #ffb300;
+      }
+
+      .timer-warning {
+        background-color: #fff3cd;
+        color: #856404;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 20px;
+        border-left: 5px solid #ffeeba;
+      }
+
+      @media print {
+        body {
+          background-image: none;
+          background-color: white;
+        }
+        .container {
+          box-shadow: none;
+          margin: 0;
+          max-width: 100%;
+          border-radius: 0;
+        }
+        .pomodoro-timer,
+        .button-container,
+        .timer-warning,
+        .question-timer button,
+        .video-placeholder {
+          display: none;
+        }
+        #results,
+        #solutions {
+          display: block !important;
+        }
+        .question-block {
+          page-break-inside: avoid;
+          box-shadow: none;
+          border: 1px solid #ccc;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Aula 4: Interpretação e Aplicação de MMC e MDC</h1>
+
+      <div class="pomodoro-timer">
+        <h3>Timer Pomodoro de Estudos</h3>
+        <div id="pomodoro-display">25:00</div>
+        <div class="pomodoro-controls">
+          <button id="start-pomodoro">Iniciar Foco</button>
+          <button id="pause-pomodoro">Pausar</button>
+          <button id="reset-pomodoro">Resetar</button>
+        </div>
+      </div>
+
+      <div id="lesson-content">
+        <h2>Parte 1: A Missão do MDC - Dividir para Conquistar</h2>
+        <p>
+          Imagine que você é o organizador de uma grande gincana e precisa
+          montar kits com doces para os participantes. Você tem 3 caixas: uma
+          com 50 chocolates, outra com 100 balas e uma terceira com 150
+          pirulitos. Sua missão é criar o
+          <strong>maior número possível de kits idênticos</strong>, usando todos
+          os doces, sem que sobre nenhum. O
+          <strong>Máximo Divisor Comum (MDC)</strong> é exatamente a ferramenta
+          que resolve esse problema! Ele encontra o número mágico de kits que
+          você pode montar.
+        </p>
+        <p>
+          O MDC é a sua ferramenta para problemas que envolvem
+          <span class="highlight"
+            >dividir, organizar ou repartir coisas em partes iguais e do maior
+            tamanho possível</span
+          >. Pense no MDC como a solução para organizar tudo da forma mais
+          eficiente, sem deixar sobras.
+        </p>
+
+        <h3>1.1 As Pistas no Enunciado: Palavras-Chave e Ideias do MDC</h3>
+        <p>
+          Para saber se um problema é de MDC, você precisa se tornar um detetive
+          de palavras. Os enunciados do ENEM sempre deixam pistas. Procure por
+          estes termos e ideias, que são como impressões digitais do MDC:
+        </p>
+        <ul>
+          <li>
+            <span class="keyword">Dividir</span> (A ação principal que você vai
+            executar)
+          </li>
+          <li>
+            <span class="keyword">Repartir</span> (Sinônimo de dividir, muito
+            comum em problemas)
+          </li>
+          <li>
+            <span class="keyword">Distribuir</span> (Outra forma de dizer que
+            algo será dividido igualmente)
+          </li>
+          <li>
+            <span class="keyword">Separar em partes iguais</span> (Deixa a ideia
+            de igualdade explícita)
+          </li>
+          <li>
+            <span class="keyword">Agrupar</span> (Formar grupos com a mesma
+            composição)
+          </li>
+          <li>
+            <span class="keyword"
+              >Maior tamanho/comprimento/valor possível</span
+            >
+            (A pista mais forte! Grita "MÁXIMO")
+          </li>
+          <li>
+            <span class="keyword">Máximo</span> (Às vezes, a palavra aparece
+            diretamente)
+          </li>
+          <li>
+            <span class="keyword">Mesmo número de...</span> (Reforça a ideia de
+            partes idênticas)
+          </li>
+          <li>
+            <span class="keyword">Grupos com a mesma quantidade</span> (Mesma
+            lógica da anterior)
+          </li>
+        </ul>
+        <p>
+          A lógica de um problema de MDC é sempre a de **decomposição
+          otimizada**. Imagine que você tem barras de chocolate de 12 cm e 18
+          cm. Você quer cortá-las em pedaços do mesmo tamanho, mas quer que
+          esses pedaços sejam os maiores possíveis para evitar ter muitos
+          pedacinhos. O MDC de 12 e 18 é 6. Isso significa que o maior tamanho
+          de pedaço que você pode cortar é 6 cm. A barra de 12 cm dará 2 pedaços
+          e a de 18 cm dará 3 pedaços. Tudo se encaixa perfeitamente, sem
+          sobras!
+        </p>
+        <p>
+          A pergunta que você está tentando responder é:
+          <span class="highlight"
+            >"Qual é o maior número que consegue dividir exatamente todos os
+            valores que o problema me deu?"</span
+          >. Esse número é o MDC.
+        </p>
+
+        <h3>1.2 Exemplo Prático do ENEM: O Desafio do Arquiteto</h3>
+        <p>
+          <strong>Enunciado (ENEM 2015):</strong>
+          <i
+            >Um arquiteto está reformando uma casa. De modo a contribuir com o
+            meio ambiente, decide reaproveitar tábuas de madeira retiradas da
+            casa. Ele dispõe de 40 tábuas de 540 cm, 30 de 810 cm e 10 de 1.080
+            cm, todas de mesma largura e espessura. Ele pediu a um carpinteiro
+            que cortasse as tábuas em pedaços de mesmo comprimento, sem deixar
+            sobras, e de modo que as novas peças ficassem com o maior tamanho
+            possível, mas de comprimento menor que 2 m.</i
+          >
+        </p>
+
+        <h4>Plano de Ataque:</h4>
+        <ol>
+          <li>
+            <strong>Investigar o Cenário:</strong> Ler o enunciado e sublinhar
+            as palavras-chave.
+          </li>
+          <li>
+            <strong>Identificar a Ferramenta:</strong> As pistas apontam para
+            MDC? Sim! "Cortar", "mesmo comprimento", "maior tamanho possível".
+          </li>
+          <li>
+            <strong>Executar o Cálculo:</strong> Calcular o MDC entre 540, 810 e
+            1080.
+          </li>
+          <li>
+            <strong>Analisar o Resultado:</strong> O resultado faz sentido? Ele
+            atende a TODAS as condições do problema (como ser menor que 2m)?
+          </li>
+        </ol>
+
+        <h3>1.3 Resolução Visual Comentada</h3>
+        <p>
+          Para calcular o MDC pela fatoração simultânea, a regra de ouro é:
+          <strong
+            >só vale o número primo que divide TODO MUNDO da linha ao mesmo
+            tempo</strong
+          >. Vamos ser "exclusivistas": só os fatores VIPs, que servem para
+          todos, entram na festa do MDC.
+        </p>
+        <div class="visual-calc">
+          540, 810, 1080 | <span class="marked">2</span>
+          <span class="comment"
+            >&lt;-- VIP! O 2 dividiu 540, 810 e 1080. Marcamos ele.</span
+          >
+          270, 405, 540 | 2
+          <span class="comment"
+            >&lt;-- Comum. O 2 divide 270 e 540, mas não o 405. Não marca.</span
+          >
+          135, 405, 270 | 2
+          <span class="comment"
+            >&lt;-- Comum. O 2 só divide o 270. Não marca.</span
+          >
+          135, 405, 135 | <span class="marked">3</span>
+          <span class="comment"
+            >&lt;-- VIP! O 3 dividiu todos. Marcamos ele. (Dica: some os
+            algarismos).</span
+          >
+          45, 135, 45 | <span class="marked">3</span>
+          <span class="comment"
+            >&lt;-- VIP! O 3 dividiu todos novamente. Marcamos.</span
+          >
+          15, 45, 15 | <span class="marked">3</span>
+          <span class="comment"
+            >&lt;-- VIP! O 3 dividiu todos mais uma vez. Marcamos.</span
+          >
+          5, 15, 5 | 3
+          <span class="comment"
+            >&lt;-- Comum. O 3 só divide o 15. Não marca.</span
+          >
+          5, 5, 5 | <span class="marked">5</span>
+          <span class="comment">&lt;-- VIP! O 5 dividiu todos. Marcamos.</span>
+          1, 1, 1 |
+        </div>
+        <p>O MDC é a multiplicação apenas dos fatores VIPs que marcamos:</p>
+        <p>
+          MDC(540, 810, 1080) = 2 &times; 3 &times; 3 &times; 3 &times; 5 = 2
+          &times; 3&sup3; &times; 5 = <strong>270</strong>
+        </p>
+        <p>
+          <strong>Atenção à Pegadinha do ENEM:</strong> O maior tamanho possível
+          é 270 cm. Mas o enunciado diz que o comprimento deve ser "menor que 2
+          m" (ou seja, menor que 200 cm). O ENEM adora fazer isso! Ele testa se
+          você voltou ao enunciado para checar as condições. Como 270 cm é maior
+          que 200 cm, essa não é a resposta final. O problema continuaria,
+          pedindo o próximo maior divisor comum (que seria 135 cm). Isso mostra
+          a importância de ler o enunciado até a última palavra!
+        </p>
+
+        <h2>Parte 2: A Missão do MMC - O Ponto de Encontro</h2>
+        <p>
+          Se o MDC é sobre dividir o que temos agora, o
+          <strong>Mínimo Múltiplo Comum (MMC)</strong> é sobre prever o futuro.
+          Imagine que dois cometas visitam a Terra: um passa a cada 10 anos e
+          outro a cada 15 anos. Se eles passaram juntos este ano, quando eles se
+          encontrarão aqui novamente? O MMC resolve isso!
+        </p>
+        <p>
+          Ele resolve problemas que buscam um
+          <span class="highlight"
+            >ponto de encontro, uma coincidência ou a sincronização de eventos
+            que se repetem</span
+          >.
+        </p>
+
+        <h3>2.1 As Pistas no Enunciado: Palavras-Chave e Ideias do MMC</h3>
+        <p>
+          Para identificar um problema de MMC, as pistas são sobre tempo, ciclos
+          e repetição. Fique de olho em:
+        </p>
+        <ul>
+          <li>
+            <span class="keyword">Encontro</span> (O objetivo final do problema)
+          </li>
+          <li>
+            <span class="keyword">Coincidir / Coincidência</span> (Quando coisas
+            diferentes acontecem no mesmo instante)
+          </li>
+          <li>
+            <span class="keyword">Quando irá acontecer novamente?</span> (A
+            pergunta clássica do MMC)
+          </li>
+          <li>
+            <span class="keyword">Ao mesmo tempo</span> (Busca por
+            simultaneidade)
+          </li>
+          <li>
+            <span class="keyword">Juntos novamente</span> (Reforça a ideia de
+            encontro)
+          </li>
+          <li>
+            <span class="keyword">A próxima vez em que...</span> (Procura o
+            primeiro evento futuro)
+          </li>
+          <li>
+            <span class="keyword">Menor tempo possível</span> (A pista que grita
+            "MÍNIMO")
+          </li>
+          <li>
+            <span class="keyword">Ciclos / Eventos periódicos</span> (Luzes que
+            piscam, planetas que se alinham, folgas de funcionários)
+          </li>
+        </ul>
+        <p>
+          A lógica aqui é a de **sincronização de ciclos**. Imagine que você e
+          seu amigo correm em uma pista. Você completa uma volta em 2 minutos,
+          ele em 3. Vocês largam juntos. Depois de 2 minutos, você está na
+          largada, mas ele não. Depois de 3 minutos, ele está na largada, mas
+          você não. Em que momento vocês dois estarão na largada juntos de novo?
+          No minuto 6! Você terá dado 3 voltas e ele 2. O número 6 é o MMC de 2
+          e 3.
+        </p>
+        <p>
+          A pergunta que você está tentando responder é:
+          <span class="highlight"
+            >"Qual é o primeiro número (geralmente tempo) que é múltiplo de
+            todos os ciclos ao mesmo tempo?"</span
+          >. Esse número é o MMC.
+        </p>
+
+        <h3>2.2 Exemplo Prático Clássico: A Corrida dos Veículos</h3>
+        <p>
+          <strong>Enunciado:</strong>
+          <i
+            >Três veículos participam de uma corrida em um circuito oval. Eles
+            largam juntos do mesmo ponto. O primeiro veículo completa uma volta
+            em 6 minutos, o segundo em 9 minutos e o terceiro em 18 minutos.
+            Depois de quanto tempo os três veículos passarão juntos novamente
+            pelo ponto de largada?</i
+          >
+        </p>
+        <p>
+          <strong>Análise de Detetive:</strong> As pistas são óbvias: "...<span
+            class="keyword"
+            >largam juntos</span
+          >...", "...<span class="keyword">completam uma volta em...</span>"
+          (ciclos) e a pergunta final "...<span class="keyword"
+            >passarão juntos novamente</span
+          >...". É um caso clássico de MMC.
+        </p>
+
+        <h3>2.3 Resolução Visual Comentada</h3>
+        <p>
+          No cálculo do MMC, somos "inclusivos": <strong>todos</strong> os
+          fatores primos da decomposição são convidados para a multiplicação
+          final. Não importa se um fator só divide um número da linha, ele entra
+          na conta!
+        </p>
+        <div class="visual-calc">
+          6, 9, 18 | 2
+          <span class="comment"
+            >&lt;-- Começamos pelo 2. Ele divide o 6 e o 18.</span
+          >
+          3, 9, 9 | 3
+          <span class="comment"
+            >&lt;-- Agora por 3. Ele divide todo mundo.</span
+          >
+          1, 3, 3 | 3
+          <span class="comment">&lt;-- Mais uma vez por 3 para finalizar.</span>
+          1, 1, 1 |
+          <span class="comment">&lt;-- Chegamos ao fim! Missão cumprida.</span>
+        </div>
+        <p>O MMC é o produto de <strong>toda a coluna de fatores</strong>:</p>
+        <p>MMC(6, 9, 18) = 2 &times; 3 &times; 3 = <strong>18</strong></p>
+        <p>
+          <strong>Interpretando o resultado:</strong> Após 18 minutos, eles se
+          encontrarão novamente na linha de largada. Nesse exato momento, o
+          primeiro veículo terá dado 3 voltas (18/6), o segundo terá dado 2
+          voltas (18/9) e o terceiro terá dado 1 volta completa (18/18). É o
+          primeiro instante em que todos completam um número inteiro de voltas
+          ao mesmo tempo. É a sincronia perfeita!
+        </p>
+
+        <h2>Parte 3: O Confronto Final - Tabela Comparativa MDC vs. MMC</h2>
+        <p>
+          Para nunca mais confundir, use esta tabela como seu guia rápido. Ela é
+          o resumo definitivo da batalha entre MDC e MMC.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>Máximo Divisor Comum (MDC)</th>
+              <th>Mínimo Múltiplo Comum (MMC)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Ideia Central</strong></td>
+              <td>DECOMPOSIÇÃO / ORGANIZAÇÃO</td>
+              <td>SINCRONIZAÇÃO / ENCONTRO</td>
+            </tr>
+            <tr>
+              <td><strong>Pergunta-Chave</strong></td>
+              <td>
+                Qual o <strong>maior</strong> pedaço que
+                <strong>cabe</strong> dentro dos números?
+              </td>
+              <td>
+                Qual o <strong>menor</strong> tempo para que os eventos
+                <strong>coincidam</strong> no futuro?
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Verbos de Ação</strong></td>
+              <td>Dividir, cortar, repartir, separar, agrupar.</td>
+              <td>Encontrar, coincidir, acontecer novamente.</td>
+            </tr>
+            <tr>
+              <td><strong>Palavras-Chave</strong></td>
+              <td>"maior possível", "máximo", "mesmo tamanho".</td>
+              <td>"menor tempo", "próxima vez", "juntos novamente".</td>
+            </tr>
+            <tr>
+              <td><strong>Direção da Lógica</strong></td>
+              <td>
+                Do <strong>TODO</strong> para as <strong>PARTES</strong>.
+                (Olhando para dentro)
+              </td>
+              <td>
+                Das <strong>PARTES</strong> para um
+                <strong>ENCONTRO FUTURO</strong>. (Olhando para frente)
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          Pense assim: O <strong>MDC</strong> é como um
+          <strong>minerador</strong>. Ele pega as rochas (os números grandes) e
+          procura a maior gema (o divisor) que existe em comum dentro de todas
+          elas. O <strong>MMC</strong> é como um <strong>astrônomo</strong>. Ele
+          observa os planetas (os ciclos) e calcula quando será o próximo
+          alinhamento perfeito deles no futuro.
+        </p>
+      </div>
+
+      <div class="video-placeholder">
+        <h2>Vídeo Aula Complementar</h2>
+        <a
+          href="COLOQUE_O_LINK_DO_YOUTUBE_AQUI"
+          target="_blank"
+          title="Clique para assistir à vídeo aula"
+        >
+          <span class="play-button">&#9658;</span>
+          <span
+            >Clique aqui para assistir a uma aula em vídeo sobre este
+            tema.</span
+          >
+        </a>
+      </div>
+
+      <div class="exercise-section">
+        <h2>Parte 4: Teste seus Superpoderes - Prática Estilo ENEM</h2>
+        <div class="timer-warning">
+          Atenção: antes de começar a ler cada questão, ative o timer
+          individual. Você terá 3 minutos por questão, simulando o tempo do
+          ENEM. Se o tempo acabar, a questão será bloqueada e considerada
+          errada.
+        </div>
+        <form id="quiz-form">
+          <div class="question-block">
+            <p>
+              1. (MDC - Adaptada) No primeiro dia de aula de uma escola, uma
+              professora reuniu no pátio 532 meninas e 456 meninos. Ao propor
+              uma dinâmica, a professora pediu aos alunos que se dividissem na
+              <strong>maior quantidade de grupos possível</strong>. Os grupos
+              deveriam ter a <strong>mesma quantidade de pessoas</strong>, e
+              cada grupo deveria ter o mesmo número de meninos e o mesmo número
+              de meninas. Qual é o total de alunos em cada grupo?
+            </p>
+            <div class="question-timer">
+              <button
+                type="button"
+                class="timer-button"
+                onclick="startTimer(0, 180, this)"
+              >
+                Iniciar Timer (3:00)
+              </button>
+              <span class="timer-display" id="timer-0">03:00</span>
+            </div>
+            <div class="options" id="q1-options">
+              <label><input type="radio" name="q1" value="a" /> a) 6</label>
+              <label><input type="radio" name="q1" value="b" /> b) 7</label>
+              <label><input type="radio" name="q1" value="c" /> c) 13</label>
+              <label><input type="radio" name="q1" value="d" /> d) 19</label>
+              <label><input type="radio" name="q1" value="e" /> e) 76</label>
+            </div>
+          </div>
+
+          <div class="question-block">
+            <p>
+              2. (MMC - UEL Adaptada) Três ciclistas percorrem um circuito
+              saindo todos ao mesmo tempo, do mesmo ponto, e com o mesmo
+              sentido. O primeiro faz o percurso em 40 segundos, o segundo em 36
+              segundos e o terceiro em 30 segundos. Depois de quanto tempo os
+              três ciclistas se <strong>reencontrarão novamente</strong> no
+              ponto de partida pela primeira vez, e quantas voltas terá dado
+              cada ciclista?
+            </p>
+            <div class="question-timer">
+              <button
+                type="button"
+                class="timer-button"
+                onclick="startTimer(1, 180, this)"
+              >
+                Iniciar Timer (3:00)
+              </button>
+              <span class="timer-display" id="timer-1">03:00</span>
+            </div>
+            <div class="options" id="q2-options">
+              <label
+                ><input type="radio" name="q2" value="a" /> a) 5 minutos; 10, 11
+                e 13 voltas, respectivamente.</label
+              >
+              <label
+                ><input type="radio" name="q2" value="b" /> b) 6 minutos; 9, 10
+                e 12 voltas, respectivamente.</label
+              >
+              <label
+                ><input type="radio" name="q2" value="c" /> c) 7 minutos; 10, 11
+                e 12 voltas, respectivamente.</label
+              >
+              <label
+                ><input type="radio" name="q2" value="d" /> d) 8 minutos; 8, 9 e
+                10 voltas, respectivamente.</label
+              >
+              <label
+                ><input type="radio" name="q2" value="e" /> e) 9 minutos; 9, 11
+                e 12 voltas, respectivamente.</label
+              >
+            </div>
+          </div>
+
+          <div class="question-block">
+            <p>
+              3. (MDC - UFPE Adaptada) Uma escola deverá
+              <strong>distribuir</strong> um total de 1260 bolas de gude
+              amarelas e 9072 bolas de gude verdes entre alguns de seus alunos.
+              Cada aluno contemplado receberá o <strong>mesmo número</strong> de
+              bolas amarelas e o <strong>mesmo número</strong> de bolas verdes.
+              Se a escola possui 300 alunos e o
+              <strong>maior número possível</strong> de alunos da escola deverá
+              ser contemplado, qual o total de bolas que cada aluno contemplado
+              receberá?
+            </p>
+            <div class="question-timer">
+              <button
+                type="button"
+                class="timer-button"
+                onclick="startTimer(2, 180, this)"
+              >
+                Iniciar Timer (3:00)
+              </button>
+              <span class="timer-display" id="timer-2">03:00</span>
+            </div>
+            <div class="options" id="q3-options">
+              <label><input type="radio" name="q3" value="a" /> a) 38</label>
+              <label><input type="radio" name="q3" value="b" /> b) 39</label>
+              <label><input type="radio" name="q3" value="c" /> c) 40</label>
+              <label><input type="radio" name="q3" value="d" /> d) 41</label>
+              <label><input type="radio" name="q3" value="e" /> e) 42</label>
+            </div>
+          </div>
+
+          <div class="question-block">
+            <p>
+              4. (MMC - FUVEST Adaptada) No alto da torre de uma emissora de
+              televisão, duas luzes "piscam" com frequências diferentes. A
+              primeira "pisca" 15 vezes por minuto e a segunda "pisca" 10 vezes
+              por minuto. Se, num certo instante, as luzes piscam
+              <strong>simultaneamente</strong>, após quantos segundos elas
+              voltarão a "piscar" <strong>simultaneamente</strong>?
+            </p>
+            <div class="question-timer">
+              <button
+                type="button"
+                class="timer-button"
+                onclick="startTimer(3, 180, this)"
+              >
+                Iniciar Timer (3:00)
+              </button>
+              <span class="timer-display" id="timer-3">03:00</span>
+            </div>
+            <div class="options" id="q4-options">
+              <label><input type="radio" name="q4" value="a" /> a) 10</label>
+              <label><input type="radio" name="q4" value="b" /> b) 12</label>
+              <label><input type="radio" name="q4" value="c" /> c) 15</label>
+              <label><input type="radio" name="q4" value="d" /> d) 20</label>
+              <label><input type="radio" name="q4" value="e" /> e) 30</label>
+            </div>
+          </div>
+
+          <div class="question-block">
+            <p>
+              5. (MDC - Mackenzie Adaptada) Nas últimas eleições, três partidos
+              políticos tiveram direito, por dia, a 90 s, 108 s e 144 s de tempo
+              gratuito de propaganda na televisão, com diferentes números de
+              aparições. O tempo de cada aparição, para todos os partidos, foi
+              sempre o <strong>mesmo e o maior possível</strong>. A soma do
+              número das aparições diárias dos partidos na TV foi de:
+            </p>
+            <div class="question-timer">
+              <button
+                type="button"
+                class="timer-button"
+                onclick="startTimer(4, 180, this)"
+              >
+                Iniciar Timer (3:00)
+              </button>
+              <span class="timer-display" id="timer-4">03:00</span>
+            </div>
+            <div class="options" id="q5-options">
+              <label><input type="radio" name="q5" value="a" /> a) 15</label>
+              <label><input type="radio" name="q5" value="b" /> b) 16</label>
+              <label><input type="radio" name="q5" value="c" /> c) 17</label>
+              <label><input type="radio" name="q5" value="d" /> d) 19</label>
+              <label><input type="radio" name="q5" value="e" /> e) 21</label>
+            </div>
+          </div>
+        </form>
+        <div class="button-container">
+          <button id="submit-quiz" class="action-button">
+            Finalizar e Ver Resultado
+          </button>
+        </div>
+      </div>
+
+      <div id="results" class="results-section">
+        <h2>Seu Resultado</h2>
+        <p id="score"></p>
+      </div>
+
+      <div id="solutions" class="solutions-section">
+        <h2>Gabarito Comentado</h2>
+
+        <div class="question-block">
+          <h3>Questão 1</h3>
+          <p><strong>Resposta Correta: C) 13</strong></p>
+          <p>
+            <strong>Análise:</strong> O enunciado pede para
+            <strong>dividir</strong> os alunos em grupos. As palavras-chave
+            "<span class="keyword">maior quantidade de grupos possível</span>" e
+            "<span class="keyword">mesma quantidade</span>" de meninos e meninas
+            em cada grupo indicam que precisamos usar o Máximo Divisor Comum
+            (MDC). O MDC entre o número de meninas (532) e o de meninos (456)
+            nos dará o número de grupos que podem ser formados.
+          </p>
+          <p><strong>Cálculo:</strong> Vamos calcular o MDC(532, 456).</p>
+          <div class="visual-calc">
+            532, 456 | <span class="marked">2</span> 266, 228 |
+            <span class="marked">2</span> 133, 114 | 2 133, 57 | 3 133, 19 | 7
+            19, 19 | <span class="marked">19</span>
+            1, 1 |
+          </div>
+          <p>
+            O MDC é o produto dos fatores marcados: MDC = 2 &times; 2 &times; 19
+            = <strong>76</strong>. Isso significa que o maior número de grupos
+            que podem ser formados é 76.
+          </p>
+          <p>
+            <strong>Resposta Final:</strong> A pergunta é "qual o total de
+            alunos em cada grupo?". O MDC (76) é o número de grupos, não de
+            pessoas por grupo. Para achar isso, dividimos o total de meninas e
+            meninos pelo número de grupos.
+          </p>
+          <ul>
+            <li>Meninas por grupo: 532 / 76 = 7</li>
+            <li>Meninos por grupo: 456 / 76 = 6</li>
+            <li>Total de alunos por grupo: 7 + 6 = <strong>13</strong></li>
+          </ul>
+        </div>
+
+        <div class="question-block">
+          <h3>Questão 2</h3>
+          <p>
+            <strong
+              >Resposta Correta: B) 6 minutos; 9, 10 e 12 voltas,
+              respectivamente.</strong
+            >
+          </p>
+          <p>
+            <strong>Análise:</strong> O problema descreve três eventos cíclicos
+            (os tempos de volta de cada ciclista) e pergunta quando eles se
+            "<span class="keyword">reencontrarão novamente</span>". Essa ideia
+            de encontro futuro e sincronização de ciclos é um caso clássico de
+            Mínimo Múltiplo Comum (MMC).
+          </p>
+          <p>
+            <strong>Cálculo:</strong> Vamos calcular o MMC entre os tempos 40,
+            36 e 30.
+          </p>
+          <div class="visual-calc">
+            40, 36, 30 | 2 20, 18, 15 | 2 10, 9, 15 | 2 5, 9, 15 | 3 5, 3, 5 | 3
+            5, 1, 5 | 5 1, 1, 1 |
+          </div>
+          <p>
+            O MMC é o produto de todos os fatores: MMC = 2 &times; 2 &times; 2
+            &times; 3 &times; 3 &times; 5 = <strong>360</strong>. O resultado é
+            360 segundos. Convertendo para minutos: 360 / 60 =
+            <strong>6 minutos</strong>.
+          </p>
+          <p>
+            <strong>Resposta Final:</strong> Agora, calculamos o número de
+            voltas de cada ciclista nesse tempo.
+          </p>
+          <ul>
+            <li>
+              Ciclista 1 (40s/volta): 360s / 40s = <strong>9 voltas</strong>.
+            </li>
+            <li>
+              Ciclista 2 (36s/volta): 360s / 36s = <strong>10 voltas</strong>.
+            </li>
+            <li>
+              Ciclista 3 (30s/volta): 360s / 30s = <strong>12 voltas</strong>.
+            </li>
+          </ul>
+        </div>
+
+        <div class="question-block">
+          <h3>Questão 3</h3>
+          <p><strong>Resposta Correta: D) 41</strong></p>
+          <p>
+            <strong>Análise:</strong> A escola quer
+            <strong>distribuir</strong> as bolas em quantidades iguais para o
+            "<span class="keyword">maior número possível</span> de alunos". Essa
+            é a assinatura de um problema de MDC. O MDC entre as quantidades de
+            bolas nos dará o número de alunos que poderão ser contemplados.
+          </p>
+          <p><strong>Cálculo:</strong> Vamos calcular o MDC(1260, 9072).</p>
+          <div class="visual-calc">
+            1260, 9072 | <span class="marked">2</span> 630, 4536 |
+            <span class="marked">2</span> 315, 2268 |
+            <span class="marked">3</span> 105, 756 |
+            <span class="marked">3</span> 35, 252 |
+            <span class="marked">7</span>
+            5, 36 |
+          </div>
+          <p>
+            O MDC é o produto dos fatores que dividiram ambos: MDC = 2 &times; 2
+            &times; 3 &times; 3 &times; 7 = <strong>252</strong>. Isso significa
+            que o maior número de alunos que podem receber as bolas é 252 (e 252
+            é menor que 300, então é um número válido).
+          </p>
+          <p>
+            <strong>Resposta Final:</strong> A pergunta é "qual o total de bolas
+            que cada aluno contemplado receberá?". O MDC (252) é o número de
+            alunos.
+          </p>
+          <ul>
+            <li>Bolas amarelas por aluno: 1260 / 252 = 5</li>
+            <li>Bolas verdes por aluno: 9072 / 252 = 36</li>
+            <li>Total de bolas por aluno: 5 + 36 = <strong>41</strong></li>
+          </ul>
+        </div>
+
+        <div class="question-block">
+          <h3>Questão 4</h3>
+          <p><strong>Resposta Correta: B) 12</strong></p>
+          <p>
+            <strong>Análise:</strong> A questão descreve dois eventos periódicos
+            e pergunta quando eles ocorrerão "<span class="keyword"
+              >simultaneamente</span
+            >" de novo. Este é um problema de MMC. A "pegadinha" está na
+            unidade: a frequência é dada em "vezes por minuto", mas a resposta é
+            pedida em segundos. Precisamos primeiro calcular o intervalo de
+            tempo (período) de cada piscada.
+          </p>
+          <p><strong>Cálculo:</strong></p>
+          <ol>
+            <li>
+              <strong
+                >Converter frequência para período (tempo por piscada):</strong
+              >
+              <ul>
+                <li>
+                  Luz 1: 15 vezes por minuto (60s) &rarr; 60s / 15 =
+                  <strong>4 segundos</strong> por piscada.
+                </li>
+                <li>
+                  Luz 2: 10 vezes por minuto (60s) &rarr; 60s / 10 =
+                  <strong>6 segundos</strong> por piscada.
+                </li>
+              </ul>
+            </li>
+            <li>
+              <strong>Calcular o MMC dos períodos:</strong> Agora, calculamos o
+              MMC(4, 6).
+            </li>
+          </ol>
+          <div class="visual-calc">4, 6 | 2 2, 3 | 2 1, 3 | 3 1, 1 |</div>
+          <p>MMC = 2 &times; 2 &times; 3 = <strong>12</strong>.</p>
+          <p>
+            <strong>Resposta Final:</strong> As luzes voltarão a piscar
+            simultaneamente após 12 segundos.
+          </p>
+        </div>
+
+        <div class="question-block">
+          <h3>Questão 5</h3>
+          <p><strong>Resposta Correta: D) 19</strong></p>
+          <p>
+            <strong>Análise:</strong> O problema afirma que o tempo de cada
+            aparição foi o <strong>mesmo e o maior possível</strong>. Essa
+            combinação de "dividir em partes iguais" e "maior possível" é a
+            definição de um problema de MDC. O MDC entre os tempos totais nos
+            dará a duração de cada inserção de propaganda.
+          </p>
+          <p><strong>Cálculo:</strong> Vamos calcular o MDC(90, 108, 144).</p>
+          <div class="visual-calc">
+            90, 108, 144 | <span class="marked">2</span> 45, 54, 72 |
+            <span class="marked">3</span> 15, 18, 24 | 3
+            <span class="comment"> &lt;-- Não marca, o 3 não divide 5</span>
+            5, 6, 8 |
+          </div>
+          <p>
+            O MDC é o produto dos fatores que dividiram os três números: MDC = 2
+            &times; 3 &times; 3 = <strong>18</strong>. Cada aparição na TV tem
+            18 segundos.
+          </p>
+          <p>
+            <strong>Resposta Final:</strong> A pergunta é a "soma do número das
+            aparições diárias".
+          </p>
+          <ul>
+            <li>Partido 1: 90s / 18s = 5 aparições.</li>
+            <li>Partido 2: 108s / 18s = 6 aparições.</li>
+            <li>Partido 3: 144s / 18s = 8 aparições.</li>
+            <li>Soma total de aparições: 5 + 6 + 8 = <strong>19</strong>.</li>
+          </ul>
+        </div>
+
+        <div class="button-container">
+          <button
+            class="action-button secondary-button"
+            onclick="window.location.href='aulas.html'"
+          >
+            Voltar ao Menu
+          </button>
+          <button class="action-button" onclick="window.print()">
+            Salvar/Imprimir
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // --- Pomodoro Timer Logic ---
+      const pomodoroDisplay = document.getElementById('pomodoro-display')
+      const startBtn = document.getElementById('start-pomodoro')
+      const pauseBtn = document.getElementById('pause-pomodoro')
+      const resetBtn = document.getElementById('reset-pomodoro')
+
+      let pomodoroInterval
+      let pomodoroTime = 25 * 60
+
+      function updatePomodoroDisplay() {
+        const minutes = Math.floor(pomodoroTime / 60)
+        const seconds = pomodoroTime % 60
+        pomodoroDisplay.textContent = `${minutes
+          .toString()
+          .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+      }
+
+      startBtn.addEventListener('click', () => {
+        clearInterval(pomodoroInterval)
+        pomodoroInterval = setInterval(() => {
+          if (pomodoroTime > 0) {
+            pomodoroTime--
+            updatePomodoroDisplay()
+          } else {
+            clearInterval(pomodoroInterval)
+            alert('Tempo de foco finalizado! Faça uma pausa de 5 minutos.')
+          }
+        }, 1000)
+      })
+
+      pauseBtn.addEventListener('click', () => {
+        clearInterval(pomodoroInterval)
+      })
+
+      resetBtn.addEventListener('click', () => {
+        clearInterval(pomodoroInterval)
+        pomodoroTime = 25 * 60
+        updatePomodoroDisplay()
+      })
+
+      // --- Quiz Logic ---
+      const correctAnswers = {
+        q1: 'c',
+        q2: 'b',
+        q3: 'd',
+        q4: 'b',
+        q5: 'd',
+      }
+
+      const questionTimers = {}
+
+      function startTimer(questionIndex, duration, button) {
+        button.disabled = true
+        let timer = duration
+        const display = document.getElementById(`timer-${questionIndex}`)
+
+        questionTimers[questionIndex] = setInterval(() => {
+          const minutes = Math.floor(timer / 60)
+          const seconds = timer % 60
+          display.textContent = `${minutes
+            .toString()
+            .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+
+          if (--timer < 0) {
+            clearInterval(questionTimers[questionIndex])
+            display.textContent = 'TEMPO ESGOTADO!'
+            display.style.color = 'red'
+            const options = document.querySelectorAll(
+              `input[name="q${questionIndex + 1}"]`
+            )
+            options.forEach((input) => (input.disabled = true))
+          }
+        }, 1000)
+      }
+
+      document.getElementById('submit-quiz').addEventListener('click', () => {
+        let score = 0
+        const totalQuestions = Object.keys(correctAnswers).length
+
+        for (const key in questionTimers) {
+          clearInterval(questionTimers[key])
+        }
+
+        for (let i = 1; i <= totalQuestions; i++) {
+          const questionName = `q${i}`
+          const selectedOption = document.querySelector(
+            `input[name="${questionName}"]:checked`
+          )
+          const options = document.querySelectorAll(
+            `input[name="${questionName}"]`
+          )
+
+          options.forEach((input) => {
+            const label = input.parentElement
+            if (input.value === correctAnswers[questionName]) {
+              label.classList.add('correct')
+            }
+            input.disabled = true
+          })
+
+          if (selectedOption) {
+            const label = selectedOption.parentElement
+            if (selectedOption.value === correctAnswers[questionName]) {
+              score++
+            } else {
+              label.classList.add('incorrect')
+            }
+          }
+        }
+
+        document.getElementById(
+          'score'
+        ).textContent = `Você acertou ${score} de ${totalQuestions} questões.`
+        document.getElementById('results').style.display = 'block'
+        document.getElementById('solutions').style.display = 'block'
+        document.getElementById('submit-quiz').disabled = true
+
+        window.scrollTo({
+          top: document.getElementById('results').offsetTop - 20,
+          behavior: 'smooth',
+        })
+      })
+    </script>
+  </body>
+</html>

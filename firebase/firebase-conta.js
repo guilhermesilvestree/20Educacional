@@ -1,6 +1,5 @@
 // firebase/firebase-conta.js
 
-// Importações do Firebase (mantenha como estava no seu firebase-config.js)
 import { auth, db } from "./firebase-config.js";
 import {
   GoogleAuthProvider,
@@ -15,7 +14,6 @@ import {
 
 const APP_STORAGE_KEY = "perfilUser";
 
-// Função para salvar os dados do usuário no localStorage
 function saveAppData(data) {
   try {
     localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(data));
@@ -24,10 +22,11 @@ function saveAppData(data) {
   }
 }
 
-/**
- * Função principal de Login com Google.
- * Cuida da autenticação, criação do usuário no Firestore e salvamento no localStorage.
- */
+function getUserId() {
+    const appData = JSON.parse(localStorage.getItem(APP_STORAGE_KEY));
+    return appData?.userData?.uid;
+}
+
 export async function loginComGoogle() {
   const provider = new GoogleAuthProvider();
   try {
@@ -36,62 +35,112 @@ export async function loginComGoogle() {
     const userDocRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(userDocRef);
 
-    let userRole = "student"; // Define um papel padrão
+    let userRole = "student";
     if (docSnap.exists()) {
       userRole = docSnap.data().role || "student";
     } else {
       await setDoc(userDocRef, {
-        name: user.displayName,
-        email: user.email,
-        uid: user.uid,
-        avatar: user.photoURL,
-        role: "student",
-        createdAt: serverTimestamp(),
+        name: user.displayName, email: user.email, uid: user.uid,
+        avatar: user.photoURL, role: "student", createdAt: serverTimestamp(),
       });
     }
-
     const newAppData = {
-      userData: {
-        name: user.displayName,
-        avatar: user.photoURL,
-        uid: user.uid,
-        role: userRole,
-      },
+      userData: { name: user.displayName, avatar: user.photoURL, uid: user.uid, role: userRole },
       essaySession: null,
     };
-
     saveAppData(newAppData);
-    window.location.href = "menu.html"; // Redireciona para o menu após o sucesso
+    window.location.href = "menu.html";
   } catch (error) {
     console.error("Erro no login com Google:", error.code, error.message);
     alert(`Erro ao fazer login: ${error.message}`);
   }
 }
 
-/**
- * Verifica se o usuário está logado.
- * Se não estiver, redireciona para a página de login.
- * Se estiver, executa uma função de callback passando os dados do usuário.
- * @param {function} onUserLoggedIn - A função a ser executada se o usuário estiver logado.
- */
 export function verificarLogin(onUserLoggedIn) {
   const appData = JSON.parse(localStorage.getItem(APP_STORAGE_KEY));
-
   if (!appData || !appData.userData) {
-    window.location.href = "/"; // Redireciona se não houver dados
+    window.location.href = "/"; 
     return;
   }
-
-  // Se o usuário está logado, chama a função de callback com os dados dele
   if (onUserLoggedIn && typeof onUserLoggedIn === "function") {
     onUserLoggedIn(appData.userData);
   }
 }
 
-/**
- * Realiza o logout do usuário.
- */
 export function logout() {
   localStorage.removeItem(APP_STORAGE_KEY);
   window.location.href = "/";
+}
+
+export async function carregarProgresso(materia) {
+    const userId = getUserId();
+    if (!userId) {
+        console.error("Nenhum usuário logado para carregar o progresso.");
+        return {};
+    }
+    try {
+        const progressDocRef = doc(db, `users/${userId}/progress`, materia);
+        const docSnap = await getDoc(progressDocRef);
+        if (docSnap.exists()) {
+            return docSnap.data();
+        } else {
+            return {};
+        }
+    } catch (error) {
+        console.error(`Erro ao carregar progresso de ${materia}:`, error);
+        return {};
+    }
+}
+
+export async function verificarAulaAtual(materia, numeroAulaAtual) {
+    if (numeroAulaAtual === 1) {
+        return;
+    }
+    const statusData = await carregarProgresso(materia);
+    
+    let ultimaAulaConcluida = 0;
+    if (statusData && Object.keys(statusData).length > 0) {
+        const lessonNumbers = Object.keys(statusData)
+            .map(key => parseInt(key.split('-')[1]))
+            .filter(num => !isNaN(num));
+        if (lessonNumbers.length > 0) {
+            ultimaAulaConcluida = Math.max(...lessonNumbers);
+        }
+    }
+    const proximaAulaPermitida = ultimaAulaConcluida + 1;
+    if (numeroAulaAtual > proximaAulaPermitida) {
+        alert("Você precisa completar as aulas anteriores antes de acessar esta. Retornando à trilha de aprendizado.");
+        window.location.href = '../index.html'; 
+    }
+}
+
+/**
+ * [NOVA FUNÇÃO] Registra a visita a uma aula, salvando o estado e um timestamp.
+ * @param {string} materia - O nome da matéria (ex: 'matematica').
+ * @param {string} lessonId - O ID da aula (ex: 'mat-1').
+ */
+export async function registrarVisitaAula(materia, lessonId) {
+    const userId = getUserId();
+    if (!userId) {
+        console.error("Nenhum usuário logado para salvar o progresso.");
+        return;
+    }
+    try {
+        const progressDocRef = doc(db, `users/${userId}/progress`, materia);
+        
+        // Cria um objeto que atualiza apenas o campo da aula específica usando dot notation
+        const updateData = {
+            [lessonId]: {
+                state: 'visited',
+                lastVisited: serverTimestamp() // Usa o timestamp do servidor do Firebase
+            }
+        };
+
+        // Usa setDoc com { merge: true } para atualizar ou criar o campo sem sobrescrever o resto
+        await setDoc(progressDocRef, updateData, { merge: true });
+        console.log(`Visita à aula ${lessonId} registrada com sucesso.`);
+
+    } catch (error) {
+        console.error(`Erro ao registrar visita à aula ${lessonId}:`, error);
+    }
 }

@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 3: MMC e MDC para o ENEM</title>
+    <style>
+      /* --- GERAL & RESET --- */
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+      :root {
+        --bg-color: #f0f2f5; /* Fundo cinza claro */
+        --surface-color: #ffffff; /* Fundo branco para o conteúdo */
+        --primary-text: #1d2129; /* Texto escuro para títulos */
+        --secondary-text: #4b4f56; /* Texto cinza escuro para parágrafos */
+        --accent-color: #8a2be2; /* Roxo Azulado Vibrante */
+        --accent-hover: #7b25c9;
+        --correct-color: #28a745;
+        --incorrect-color: #dc3545;
+        --highlight-bg: #8a2be222; /* Fundo do highlight mais sutil */
+        --border-color: #ddd; /* Borda cinza clara */
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg-color);
+        color: var(--secondary-text);
+        line-height: 1.7;
+        font-size: 16px;
+      }
+
+      /* --- CONTAINER PRINCIPAL --- */
+      .container {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 2.5rem;
+        background-color: var(--surface-color);
+        border-radius: 15px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      }
+
+      /* --- CABEÇALHO E TÍTULOS --- */
+      h1,
+      h2,
+      h3,
+      h4 {
+        color: var(--primary-text);
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--accent-color);
+        padding-left: 1rem;
+      }
+      h1 {
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+      }
+      h2 {
+        font-size: 1.8rem;
+        margin-top: 2.5rem;
+      }
+      h3 {
+        font-size: 1.4rem;
+        margin-top: 2rem;
+      }
+      h4 {
+        font-size: 1.1rem;
+        margin-top: 1.5rem;
+        border: none;
+        padding-left: 0;
+        color: #667;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      p,
+      ul,
+      ol {
+        margin-bottom: 1rem;
+        color: var(--secondary-text);
+      }
+
+      ul,
+      ol {
+        padding-left: 20px;
+      }
+
+      /* --- ELEMENTOS DIDÁTICOS --- */
+      strong,
+      b {
+        color: var(--accent-color);
+        font-weight: 600;
+      }
+
+      mark {
+        background-color: var(--highlight-bg);
+        color: var(--accent-color);
+        padding: 2px 5px;
+        border-radius: 4px;
+      }
+
+      /* --- ESQUEMAS VISUAIS (FATORAÇÃO, ETC) --- */
+      pre {
+        background-color: #2a283a;
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px solid #3a384a;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1rem;
+        line-height: 1.8;
+        color: #c0c0d0;
+        margin: 1.5rem 0;
+      }
+
+      /* --- TABELA DE NÚMEROS PRIMOS --- */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.5rem 0;
+      }
+      th,
+      td {
+        border: 1px solid var(--border-color);
+        padding: 12px;
+        text-align: center;
+      }
+      th {
+        background-color: #f8f9fa;
+        color: var(--primary-text);
+      }
+
+      /* --- TIMER POMODORO --- */
+      .pomodoro-timer {
+        text-align: center;
+        margin-bottom: 2.5rem;
+        padding: 1.5rem;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+      }
+      .pomodoro-timer h2 {
+        border: none;
+        padding-left: 0;
+        margin-bottom: 1rem;
+      }
+      #pomodoro-display {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--primary-text);
+      }
+      .pomodoro-controls button {
+        margin: 0 0.5rem;
+      }
+
+      /* --- VÍDEO DO YOUTUBE --- */
+      .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        height: 0;
+        overflow: hidden;
+        max-width: 100%;
+        background: #000;
+        border-radius: 8px;
+        margin: 2rem 0;
+      }
+      .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+
+      /* --- SEÇÃO DE QUESTÕES --- */
+      .quiz-warning {
+        background-color: var(--highlight-bg);
+        border: 1px solid var(--accent-color);
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 2rem 0;
+        text-align: center;
+        font-weight: 600;
+        color: var(--accent-color);
+      }
+
+      .question-block {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        transition: background-color 0.3s ease;
+      }
+
+      .question-block.blocked {
+        background-color: #f0f0f0;
+        opacity: 0.7;
+      }
+
+      .question-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .question-timer {
+        font-weight: 600;
+        font-size: 1.2rem;
+        color: var(--accent-color);
+      }
+
+      .question-block p {
+        font-weight: 600;
+        color: var(--primary-text);
+        margin-bottom: 1rem;
+        flex-basis: 100%;
+      }
+
+      .options label {
+        display: block;
+        padding: 0.8rem;
+        margin-bottom: 0.5rem;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        cursor: pointer;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+      }
+
+      .options label:hover {
+        background-color: #f8f9fa;
+      }
+
+      .options input[type='radio'] {
+        margin-right: 10px;
+      }
+
+      /* --- FEEDBACK VISUAL DAS RESPOSTAS --- */
+      .options label.correct {
+        background-color: rgba(40, 167, 69, 0.15);
+        border-color: var(--correct-color);
+        font-weight: bold;
+        color: #155724;
+      }
+      .options label.incorrect {
+        background-color: rgba(220, 53, 69, 0.15);
+        border-color: var(--incorrect-color);
+        color: #721c24;
+      }
+
+      /* --- BOTÕES --- */
+      button,
+      .button-link {
+        background-color: var(--accent-color);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      button:hover,
+      .button-link:hover {
+        background-color: var(--accent-hover);
+        transform: translateY(-2px);
+      }
+
+      button:disabled {
+        background-color: #999;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      #submitBtn {
+        width: 100%;
+        padding: 15px;
+        font-size: 1.2rem;
+        margin-top: 1rem;
+      }
+
+      /* --- SEÇÕES OCULTAS (RESULTADO E GABARITO) --- */
+      .hidden {
+        display: none;
+      }
+
+      #result {
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin: 2rem 0;
+        padding: 1.5rem;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        color: var(--primary-text);
+      }
+
+      #answerKey .resolution {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+      }
+
+      /* --- BOTÕES DO RODAPÉ --- */
+      .footer-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 3rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      /* --- ESTILOS PARA IMPRESSÃO --- */
+      @media print {
+        body {
+          background-image: none;
+          background-color: white;
+          color: black;
+        }
+        .container {
+          box-shadow: none;
+          border: none;
+          padding: 0;
+          margin: 0;
+          max-width: 100%;
+        }
+        h1,
+        h2,
+        h3,
+        h4,
+        p,
+        strong,
+        b,
+        mark,
+        pre,
+        table,
+        th,
+        td {
+          color: black !important;
+        }
+        .pomodoro-timer,
+        #quizForm,
+        #submitBtn,
+        .footer-buttons,
+        .video-container,
+        .quiz-warning {
+          display: none;
+        }
+        #result,
+        #answerKey {
+          display: block !important;
+        }
+        #answerKey .resolution {
+          background-color: #f0f0f0;
+          border: 1px solid #ccc;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- SEÇÃO TIMER POMODORO -->
+      <div class="pomodoro-timer">
+        <h2>Timer de Estudos (Pomodoro)</h2>
+        <div id="pomodoro-display">25:00</div>
+        <div class="pomodoro-controls">
+          <button id="startPomodoro">Iniciar</button>
+          <button id="pausePomodoro">Pausar</button>
+          <button id="resetPomodoro">Resetar</button>
+        </div>
+      </div>
+
+      <!-- CONTEÚDO DA AULA -->
+      <h1>
+        Aula 3: Cálculo de Mínimo Múltiplo Comum (MMC) e Máximo Divisor Comum
+        (MDC)
+      </h1>
+
+      <section id="aula">
+        <h2>Conceitos Fundamentais - A Base de Tudo</h2>
+        <p>
+          Antes de mergulhar no cálculo de MMC e MDC, é fundamental garantir que
+          a base esteja sólida. Muitas dificuldades nesses tópicos vêm de
+          dúvidas em conceitos mais simples que são os pilares para todo o
+          resto. Vamos revisar, passo a passo, os três conceitos essenciais:
+          múltiplos, divisores e números primos.
+        </p>
+
+        <h3>O que são Múltiplos? A Tabuada Infinita</h3>
+        <p>
+          Pense nos múltiplos de um número como os "pulos" que um sapo dá em uma
+          reta numérica. Se o sapo só pode dar pulos de tamanho 3, ele vai parar
+          nos pontos 0, 3, 6, 9, 12... Esses são os múltiplos de 3.
+          Matematicamente, são os resultados da tabuada desse número.
+        </p>
+        <p>
+          O conjunto dos múltiplos de 5 é representado por M(5) = {0, 5, 10, 15,
+          20,...}. Note que essa lista não tem fim, ou seja, o conjunto dos
+          múltiplos de qualquer número (exceto o zero) é infinito. Uma regra
+          importante é que o <mark>zero é múltiplo de qualquer número</mark>.
+        </p>
+
+        <h4>Múltiplos Comuns: O Ponto de Encontro</h4>
+        <p>
+          Quando analisamos os múltiplos de dois ou mais números, podemos
+          encontrar valores que aparecem em todas as listas. Esses são os
+          <b>múltiplos comuns</b>. Voltando ao exemplo dos ônibus:
+        </p>
+        <ul>
+          <li>
+            <b>Linha A (de 10 em 10 min):</b> {10, 20, <mark>30</mark>, 40, 50,
+            <mark>60</mark>, 70, ...}
+          </li>
+          <li>
+            <b>Linha B (de 15 em 15 min):</b> {15, <mark>30</mark>, 45,
+            <mark>60</mark>, 75, ...}
+          </li>
+        </ul>
+        <p>
+          Os múltiplos comuns são 30, 60, etc. Isso significa que os ônibus das
+          duas linhas se encontrarão no ponto nos minutos 30, 60, e assim por
+          diante. O <b>menor</b> desses encontros (o primeiro a acontecer) é o
+          que chamamos de MMC.
+        </p>
+
+        <h3>O que são Divisores? A Divisão Exata</h3>
+        <p>
+          Divisores são o conceito "inverso" dos múltiplos. Um número é divisor
+          de outro quando a divisão entre eles é exata, ou seja, o
+          <mark>resto é zero</mark>. Pense em dividir uma pizza de 12 fatias:
+          você pode dividir igualmente entre 2 pessoas (6 fatias cada), 3
+          pessoas (4 fatias cada) ou 4 pessoas (3 fatias cada). Então, 2, 3 e 4
+          são divisores de 12.
+        </p>
+        <p>
+          A conexão é direta: se 20 é um múltiplo de 4, então 4 é um divisor de
+          20. Diferente dos múltiplos, o conjunto de divisores de um número é
+          <mark>finito</mark>, ou seja, ele tem um fim.
+        </p>
+
+        <h4>Divisores Comuns: A Divisão Sincronizada</h4>
+        <p>
+          Assim como nos múltiplos, podemos encontrar divisores que dois ou mais
+          números têm em comum. Por exemplo, vamos encontrar os divisores de 18
+          e 24:
+        </p>
+        <ul>
+          <li>
+            <b>Divisores de 18:</b> {<mark>1</mark>, <mark>2</mark>,
+            <mark>3</mark>, <mark>6</mark>, 9, 18}
+          </li>
+          <li>
+            <b>Divisores de 24:</b> {<mark>1</mark>, <mark>2</mark>,
+            <mark>3</mark>, 4, <mark>6</mark>, 8, 12, 24}
+          </li>
+        </ul>
+        <p>
+          Os divisores comuns são {1, 2, 3, 6}. Isso significa que poderíamos
+          dividir 18 e 24 em grupos de 1, 2, 3 ou 6. O <b>maior</b> desses
+          divisores (a maior forma de divisão sincronizada) é o que chamamos de
+          MDC.
+        </p>
+
+        <h3>Números Primos: Os Blocos de Construção da Matemática</h3>
+        <p>
+          Pense nos números primos como os "tijolos" ou "átomos" com os quais
+          todos os outros números são construídos. A definição é simples: um
+          número natural é primo se ele possui
+          <mark
+            >exatamente dois divisores distintos: o número 1 e ele mesmo</mark
+          >.
+        </p>
+        <ul>
+          <li>
+            <b>Exemplo:</b> O número 7 é primo. Seus únicos divisores são 1 e 7.
+          </li>
+          <li>
+            <b>Contraexemplo:</b> O número 6 não é primo. Seus divisores são 1,
+            2, 3 e 6. Como ele tem mais de dois divisores, ele é chamado de
+            <b>número composto</b>.
+          </li>
+        </ul>
+
+        <h4>A Importância dos Primos: Teorema Fundamental da Aritmética</h4>
+        <p>
+          De forma simples, este teorema diz que
+          <b
+            >qualquer número composto pode ser escrito de uma forma única como
+            uma multiplicação de números primos</b
+          >. É como se os primos fossem os "átomos" e os números compostos
+          fossem as "moléculas" que eles formam. A fatoração é o processo de
+          quebrar a molécula para ver quais átomos a compõem. É por isso que a
+          fatoração em primos é a base para calcular MMC e MDC.
+        </p>
+
+        <h4>Tabela: Os Primeiros Números Primos (Até 100)</h4>
+        <table>
+          <tbody>
+            <tr>
+              <td>2</td>
+              <td>3</td>
+              <td>5</td>
+              <td>7</td>
+              <td>11</td>
+              <td>13</td>
+              <td>17</td>
+              <td>19</td>
+              <td>23</td>
+              <td>29</td>
+            </tr>
+            <tr>
+              <td>31</td>
+              <td>37</td>
+              <td>41</td>
+              <td>43</td>
+              <td>47</td>
+              <td>53</td>
+              <td>59</td>
+              <td>61</td>
+              <td>67</td>
+              <td>71</td>
+            </tr>
+            <tr>
+              <td>73</td>
+              <td>79</td>
+              <td>83</td>
+              <td>89</td>
+              <td>97</td>
+              <td colspan="5"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Mínimo Múltiplo Comum (MMC) - O Ponto de Encontro</h2>
+        <p>
+          O Mínimo Múltiplo Comum (MMC) entre dois ou mais números é o
+          <mark>menor múltiplo</mark> (diferente de zero) que esses números têm
+          em comum. A ideia central do MMC é encontrar um
+          <strong>ponto de encontro futuro</strong> ou um momento de
+          <strong>sincronização</strong>.
+        </p>
+        <p>
+          <b>A Pergunta-Chave do MMC:</b> "A situação envolve coisas que
+          acontecem de tempos em tempos (ciclos) e quer saber quando elas vão
+          acontecer <mark>juntas novamente</mark> ou <mark>coincidir</mark> no
+          futuro?". Se a resposta for sim, o problema é de MMC.
+        </p>
+
+        <h4>Método Intuitivo: Listando os Múltiplos</h4>
+        <p>
+          Para entender o conceito, podemos simplesmente listar os múltiplos dos
+          números até encontrar o primeiro que se repete. O "Mínimo" é
+          importante porque os múltiplos comuns são infinitos (30, 60, 90... no
+          exemplo dos ônibus), e o que geralmente resolve o problema é o
+          *primeiro* encontro.
+        </p>
+        <ul>
+          <li>M(8) = {8, 16, <b>24</b>, 32, 40, 48, ...}</li>
+          <li>M(12) = {12, <b>24</b>, 36, 48, ...}</li>
+        </ul>
+        <p>
+          O primeiro múltiplo que aparece em ambas as listas é o 24. Portanto, o
+          MMC(8, 12) = 24. Este método funciona, mas é muito lento e
+          impraticável para números grandes. Por isso, usamos a fatoração.
+        </p>
+
+        <h3>Método 1: Fatoração Simultânea (O Método Rápido para o ENEM)</h3>
+        <p>
+          Este é o método mais eficiente. Ele consiste em decompor todos os
+          números ao mesmo tempo em fatores primos.
+        </p>
+
+        <h4>Exemplo Prático Contextualizado</h4>
+        <p>
+          Ana toma um remédio para dor de 8 em 8 horas e um anti-inflamatório de
+          12 em 12 horas. Se ela tomou os dois juntos às 10h da manhã de uma
+          segunda-feira, em que dia e horário ela tomará os dois remédios juntos
+          novamente?
+        </p>
+
+        <h4>Resolução Visual Detalhada</h4>
+        <pre>
+   8 ,  12 | 2   &lt;-- Começamos com o menor primo, 2. (8/2=4) e (12/2=6).
+   4 ,   6 | 2   &lt;-- Continuamos com o 2. (4/2=2) e (6/2=3).
+   2 ,   3 | 2   &lt;-- O 2 ainda divide o 2. O 3 não divide, então COPIA. (2/2=1).
+   1 ,   3 | 3   &lt;-- Agora, o menor primo que divide o 3 é ele mesmo. (3/3=1).
+   1 ,   1 |     &lt;-- Processo finalizado.
+
+Cálculo do MMC: 2 &times; 2 &times; 2 &times; 3 = 24
+            </pre
+        >
+        <p>
+          <b>Resposta Contextualizada:</b> O resultado 24 significa que os
+          horários coincidirão a cada 24 horas. Se Ana tomou os dois juntos às
+          10h de segunda, ela tomará os dois juntos novamente 24 horas depois,
+          ou seja, <b>às 10h da manhã de terça-feira</b>.
+        </p>
+
+        <h2>Máximo Divisor Comum (MDC) - A Maior Divisão Possível</h2>
+        <p>
+          O Máximo Divisor Comum (MDC) entre dois ou mais números é o
+          <mark>maior número</mark> que consegue dividir todos eles ao mesmo
+          tempo, sem deixar resto. A ideia central do MDC é resolver problemas
+          de <strong>divisão</strong> ou <strong>distribuição</strong> em grupos
+          iguais, de forma que o tamanho dos grupos seja o
+          <mark>maior possível</mark>, sem que haja sobras.
+        </p>
+        <p>
+          <b>A Pergunta-Chave do MDC:</b> "A situação envolve dividir
+          quantidades diferentes em grupos/pedaços de
+          <mark>mesmo tamanho</mark> e pede o
+          <mark>maior tamanho/quantidade possível</mark> para esses
+          grupos/pedaços, sem sobras?". Se a resposta for sim, o problema é de
+          MDC.
+        </p>
+
+        <h4>Método Intuitivo: Listando os Divisores</h4>
+        <p>
+          Podemos listar todos os divisores de cada número e encontrar o maior
+          que eles têm em comum. O "Máximo" é importante porque, no problema da
+          florista, ela poderia fazer 2 buquês ou 3 buquês, mas o objetivo era o
+          *maior número possível* de buquês idênticos.
+        </p>
+        <ul>
+          <li>D(18) = {1, 2, 3, <b>6</b>, 9, 18}</li>
+          <li>D(24) = {1, 2, 3, 4, <b>6</b>, 8, 12, 24}</li>
+        </ul>
+        <p>
+          Os divisores comuns são {1, 2, 3, 6}. O maior deles é o 6. Portanto, o
+          MDC(18, 24) = 6. Novamente, este método é lento para números grandes.
+        </p>
+
+        <h3>Método 1: Fatoração Simultânea (Adaptado)</h3>
+        <p>
+          O processo é parecido com o do MMC, mas com um detalhe crucial: você
+          só multiplica os fatores primos que
+          <mark>dividem TODOS os números da linha ao mesmo tempo</mark>.
+        </p>
+
+        <h4>Exemplo Prático Contextualizado</h4>
+        <p>
+          Uma florista tem 18 rosas e 24 cravos. Ela quer montar o
+          <mark>maior número de buquês possível</mark>, de modo que todos sejam
+          idênticos. Quantos buquês ela conseguirá montar?
+        </p>
+
+        <h4>Resolução Visual Detalhada</h4>
+        <pre>
+  18 ,  24 | <b>(2)</b> &lt;-- O 2 divide o 18 E o 24? Sim. MARCAMOS.
+   9 ,  12 | 2   &lt;-- O 2 divide o 9 E o 12? Não, só o 12. NÃO marcamos.
+   9 ,   6 | 2   &lt;-- O 2 divide o 9 E o 6? Não, só o 6. NÃO marcamos.
+   9 ,   3 | <b>(3)</b> &lt;-- O 3 divide o 9 E o 3? Sim. MARCAMOS.
+   3 ,   1 | 3   &lt;-- O 3 divide o 3 E o 1? Não, só o 3. NÃO marcamos.
+   1 ,   1 |
+
+Cálculo do MDC (apenas os marcados): 2 &times; 3 = 6
+            </pre
+        >
+        <p>
+          <b>Resposta Contextualizada:</b> O MDC, 6, é o
+          <b>maior número de buquês</b> que ela pode montar.
+        </p>
+
+        <h3>Método 2: Divisões Sucessivas (Algoritmo de Euclides)</h3>
+        <p>
+          Este método é ótimo para números grandes. O MDC é o
+          <mark>último resto diferente de zero</mark>.
+        </p>
+
+        <h4>Exemplo Prático Contextualizado</h4>
+        <p>
+          Um carpinteiro tem duas tábuas, uma com 140 cm e outra com 84 cm. Ele
+          precisa cortá-las em pedaços do <mark>maior tamanho possível</mark>,
+          todos com o mesmo comprimento. Qual será o comprimento de cada pedaço?
+        </p>
+
+        <h4>Resolução Visual Detalhada</h4>
+        <pre>
+| Quocientes -> |  1  |  1  |  2  |
+|---------------|-----|-----|-----|
+| Divid./Divis. | 140 |  84 |  56 | <b>28</b> | &lt;-- O MDC é o último divisor
+|---------------|-----|-----|-----|-----|
+| Restos ->     |  56 |  28 |   0 |
+            </pre
+        >
+        <p>
+          <b>Resposta Contextualizada:</b> O MDC(140, 84) é 28. Portanto, o
+          maior tamanho possível para cada pedaço de madeira é de <b>28 cm</b>.
+        </p>
+
+        <h2>Uma Propriedade Importante: A Relação entre MMC e MDC</h2>
+        <p>
+          Existe uma fórmula muito útil que relaciona o MMC e o MDC de
+          <b>dois</b> números (a e b). Essa propriedade pode economizar muito
+          tempo em algumas questões!
+        </p>
+        <p><mark>MMC(a, b) &times; MDC(a, b) = a &times; b</mark></p>
+        <p>
+          Ou seja, o produto entre o MMC e o MDC de dois números é sempre igual
+          ao produto dos próprios números.
+        </p>
+
+        <h4>Exemplo Prático</h4>
+        <p>Vamos usar os números 8 e 12 que já calculamos.</p>
+        <ul>
+          <li>MMC(8, 12) = 24</li>
+          <li>MDC(8, 12) = 4</li>
+        </ul>
+        <p><b>Verificando a propriedade:</b></p>
+        <p>MMC &times; MDC = 24 &times; 4 = 96</p>
+        <p>a &times; b = 8 &times; 12 = 96</p>
+        <p>
+          A igualdade é verdadeira! Se um problema te der o MMC e pedir o MDC
+          (ou vice-versa), você pode usar essa fórmula como um atalho.
+        </p>
+      </section>
+
+      <!-- SEÇÃO VÍDEO -->
+      <section id="video-aula">
+        <h2>Vídeo Aula Complementar</h2>
+        <div class="video-container">
+          <!-- Para adicionar o vídeo, substitua o link abaixo pelo link de "incorporar" do YouTube -->
+          <iframe
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          >
+          </iframe>
+        </div>
+      </section>
+
+      <!-- SEÇÃO DE QUESTÕES -->
+      <section id="exercicios">
+        <h2>Questões Estilo ENEM</h2>
+        <div class="quiz-warning">
+          Atenção: Cada questão tem um tempo recomendado de 3 minutos, similar
+          ao ENEM. Antes de começar a ler, ative o timer! Se o tempo acabar, a
+          questão será bloqueada.
+        </div>
+
+        <form id="quizForm">
+          <!-- Questão 1 -->
+          <div class="question-block" data-question="1">
+            <div class="question-header">
+              <p>
+                <b>1.</b> Três cometas são visíveis da Terra em ciclos
+                periódicos. O cometa A passa a cada 45 anos, o cometa B a cada
+                60 anos, e o cometa C a cada 120 anos. Se os três foram
+                observados juntos no céu em 2024, qual será o próximo ano em que
+                essa coincidência astronômica ocorrerá novamente?
+              </p>
+              <div>
+                <span class="question-timer">03:00</span>
+                <button type="button" class="start-timer-btn">
+                  Ativar Timer
+                </button>
+              </div>
+            </div>
+            <div class="options">
+              <label><input type="radio" name="q1" value="a" /> a) 2344</label>
+              <label><input type="radio" name="q1" value="b" /> b) 2384</label>
+              <label><input type="radio" name="q1" value="c" /> c) 2444</label>
+              <label><input type="radio" name="q1" value="d" /> d) 2504</label>
+              <label><input type="radio" name="q1" value="e" /> e) 2624</label>
+            </div>
+          </div>
+
+          <!-- Questão 2 -->
+          <div class="question-block" data-question="2">
+            <div class="question-header">
+              <p>
+                <b>2.</b> Uma escola deseja formar equipes para uma gincana com
+                todos os seus 108 alunos do sexo masculino e 144 do sexo
+                feminino. Todas as equipes devem ter a mesma composição. Para
+                maximizar o número de equipes formadas, quantos alunos cada
+                equipe terá no total?
+              </p>
+              <div>
+                <span class="question-timer">03:00</span>
+                <button type="button" class="start-timer-btn">
+                  Ativar Timer
+                </button>
+              </div>
+            </div>
+            <div class="options">
+              <label><input type="radio" name="q2" value="a" /> a) 3</label>
+              <label><input type="radio" name="q2" value="b" /> b) 4</label>
+              <label><input type="radio" name="q2" value="c" /> c) 7</label>
+              <label><input type="radio" name="q2" value="d" /> d) 12</label>
+              <label><input type="radio" name="q2" value="e" /> e) 36</label>
+            </div>
+          </div>
+
+          <!-- Questão 3 -->
+          <div class="question-block" data-question="3">
+            <div class="question-header">
+              <p>
+                <b>3.</b> Em um hospital, uma enfermeira administra medicamentos
+                a três pacientes. O paciente X recebe uma dose a cada 4 horas, o
+                Y a cada 6 horas, e o Z a cada 9 horas. Se os três receberam
+                seus medicamentos simultaneamente às 8h00 de uma terça-feira,
+                qual será o próximo horário em que eles receberão a medicação
+                juntos novamente?
+              </p>
+              <div>
+                <span class="question-timer">03:00</span>
+                <button type="button" class="start-timer-btn">
+                  Ativar Timer
+                </button>
+              </div>
+            </div>
+            <div class="options">
+              <label
+                ><input type="radio" name="q3" value="a" /> a) 20h00 da
+                terça-feira</label
+              >
+              <label
+                ><input type="radio" name="q3" value="b" /> b) 08h00 da
+                quarta-feira</label
+              >
+              <label
+                ><input type="radio" name="q3" value="c" /> c) 14h00 da
+                quarta-feira</label
+              >
+              <label
+                ><input type="radio" name="q3" value="d" /> d) 20h00 da
+                quarta-feira</label
+              >
+              <label
+                ><input type="radio" name="q3" value="e" /> e) 02h00 da
+                quinta-feira</label
+              >
+            </div>
+          </div>
+
+          <!-- Questão 4 -->
+          <div class="question-block" data-question="4">
+            <div class="question-header">
+              <p>
+                <b>4.</b> Um piso retangular com dimensões de 455 cm por 280 cm
+                deve ser completamente coberto por ladrilhos quadrados
+                idênticos, sem que nenhum seja cortado. Para utilizar o menor
+                número possível de ladrilhos, qual deve ser a medida do lado de
+                cada ladrilho?
+              </p>
+              <div>
+                <span class="question-timer">03:00</span>
+                <button type="button" class="start-timer-btn">
+                  Ativar Timer
+                </button>
+              </div>
+            </div>
+            <div class="options">
+              <label><input type="radio" name="q4" value="a" /> a) 5 cm</label>
+              <label><input type="radio" name="q4" value="b" /> b) 7 cm</label>
+              <label><input type="radio" name="q4" value="c" /> c) 25 cm</label>
+              <label><input type="radio" name="q4" value="d" /> d) 35 cm</label>
+              <label><input type="radio" name="q4" value="e" /> e) 70 cm</label>
+            </div>
+          </div>
+
+          <!-- Questão 5 -->
+          <div class="question-block" data-question="5">
+            <div class="question-header">
+              <p>
+                <b>5.</b> Dois rolos de corda, um com 96 metros e outro com 156
+                metros, precisam ser cortados em pedaços de mesmo comprimento,
+                sendo este o maior possível. Quantos pedaços de corda serão
+                obtidos no total?
+              </p>
+              <div>
+                <span class="question-timer">03:00</span>
+                <button type="button" class="start-timer-btn">
+                  Ativar Timer
+                </button>
+              </div>
+            </div>
+            <div class="options">
+              <label><input type="radio" name="q5" value="a" /> a) 12</label>
+              <label><input type="radio" name="q5" value="b" /> b) 13</label>
+              <label><input type="radio" name="q5" value="c" /> c) 21</label>
+              <label><input type="radio" name="q5" value="d" /> d) 24</label>
+              <label><input type="radio" name="q5" value="e" /> e) 252</label>
+            </div>
+          </div>
+        </form>
+
+        <button id="submitBtn">Finalizar e Ver Resultado</button>
+      </section>
+
+      <!-- SEÇÃO DE RESULTADO -->
+      <section id="result" class="hidden"></section>
+
+      <!-- SEÇÃO DE GABARITO COMENTADO -->
+      <section id="answerKey" class="hidden">
+        <h2>Gabarito Comentado</h2>
+        <!-- Resolução Questão 1 -->
+        <div class="resolution">
+          <h3>Questão 1</h3>
+          <p><b>Gabarito: B</b></p>
+          <p>
+            <b>Raciocínio:</b> O problema descreve três eventos cíclicos
+            (passagem dos cometas) e pergunta quando eles ocorrerão
+            <b>juntos novamente</b>. Essa é a característica principal de um
+            problema de Mínimo Múltiplo Comum (MMC). Precisamos calcular o MMC
+            de 45, 60 e 120.
+          </p>
+          <pre>
+  45,  60, 120 | 2
+  45,  30,  60 | 2
+  45,  15,  30 | 2
+  45,  15,  15 | 3
+  15,   5,   5 | 3
+   5,   5,   5 | 5
+   1,   1,   1 |
+                </pre
+          >
+          <p>
+            <b>Cálculo:</b> MMC = 2 &times; 2 &times; 2 &times; 3 &times; 3
+            &times; 5 = 360.
+          </p>
+          <p>
+            <b>Resposta:</b> O resultado, 360, representa o número de anos que
+            levará para os cometas se alinharem novamente. Como a última vez foi
+            em 2024, a próxima será: 2024 + 360 = 2384.
+          </p>
+        </div>
+        <!-- Resolução Questão 2 -->
+        <div class="resolution">
+          <h3>Questão 2</h3>
+          <p><b>Gabarito: C</b></p>
+          <p>
+            <b>Raciocínio:</b> O problema pede para dividir duas quantidades
+            diferentes no <b>maior número de grupos (equipes) possível</b>. A
+            ideia de "dividir" em "maior quantidade possível" de grupos
+            idênticos é a chave para um problema de Máximo Divisor Comum (MDC).
+            O valor do MDC será o número de equipes.
+          </p>
+          <pre>
+ 108, 144 | <b>(2)</b>
+  54,  72 | <b>(2)</b>
+  27,  36 | 2
+  27,  18 | 2
+  27,   9 | <b>(3)</b>
+   9,   3 | <b>(3)</b>
+   3,   1 | 3
+   1,   1 |
+                </pre
+          >
+          <p><b>Cálculo:</b> MDC = 2 &times; 2 &times; 3 &times; 3 = 36.</p>
+          <p>
+            <b>Resposta:</b> O MDC (36) representa o número máximo de equipes. A
+            pergunta é sobre o <b>número de alunos por equipe</b>. Meninos por
+            equipe: 108 / 36 = 3. Meninas por equipe: 144 / 36 = 4. Total de
+            alunos por equipe: 3 + 4 = 7.
+          </p>
+        </div>
+        <!-- Resolução Questão 3 -->
+        <div class="resolution">
+          <h3>Questão 3</h3>
+          <p><b>Gabarito: D</b></p>
+          <p>
+            <b>Raciocínio:</b> Temos eventos que se repetem em intervalos de
+            tempo diferentes (4h, 6h, 9h) e a pergunta é sobre quando eles
+            <b>coincidirão novamente</b>. É um problema de MMC.
+          </p>
+          <pre>
+  4, 6, 9 | 2
+  2, 3, 9 | 2
+  1, 3, 9 | 3
+  1, 1, 3 | 3
+  1, 1, 1 |
+                </pre
+          >
+          <p><b>Cálculo:</b> MMC = 2 &times; 2 &times; 3 &times; 3 = 36.</p>
+          <p>
+            <b>Resposta:</b> A coincidência ocorrerá a cada 36 horas. 36 horas =
+            24h (1 dia) + 12h. Se o evento inicial foi às 8h00 de terça, 24h
+            depois será 8h00 de quarta. Mais 12h, teremos 20h00 da quarta-feira.
+          </p>
+        </div>
+        <!-- Resolução Questão 4 -->
+        <div class="resolution">
+          <h3>Questão 4</h3>
+          <p><b>Gabarito: D</b></p>
+          <p>
+            <b>Raciocínio:</b> A frase "menor número possível de ladrilhos" é
+            uma forma indireta de pedir pelo "maior tamanho possível para cada
+            ladrilho". Como o ladrilho deve dividir o comprimento e a largura
+            sem sobras, buscamos o Máximo Divisor Comum (MDC) de 455 e 280.
+          </p>
+          <p><b>Cálculo (Algoritmo de Euclides):</b></p>
+          <pre>
+1. 455 / 280 = 1, resto 175.
+2. 280 / 175 = 1, resto 105.
+3. 175 / 105 = 1, resto 70.
+4. 105 / 70 = 1, resto 35.
+5. 70 / 35 = 2, resto 0.
+                </pre
+          >
+          <p>
+            <b>Resposta:</b> O último resto não nulo é 35. Portanto, a medida do
+            lado de cada ladrilho deve ser de 35 cm.
+          </p>
+        </div>
+        <!-- Resolução Questão 5 -->
+        <div class="resolution">
+          <h3>Questão 5</h3>
+          <p><b>Gabarito: C</b></p>
+          <p>
+            <b>Raciocínio:</b> O problema pede para cortar cordas em pedaços de
+            <b>mesmo comprimento</b> e que este seja o <b>maior possível</b>. É
+            um problema de MDC. O valor do MDC nos dará o tamanho de cada
+            pedaço.
+          </p>
+          <pre>
+  96, 156 | <b>(2)</b>
+  48,  78 | <b>(2)</b>
+  24,  39 | 2
+  12,  39 | 2
+   6,  39 | 2
+   3,  39 | <b>(3)</b>
+   1,  13 | 13
+   1,   1 |
+                </pre
+          >
+          <p><b>Cálculo:</b> MDC = 2 &times; 2 &times; 3 = 12.</p>
+          <p>
+            <b>Resposta:</b> O MDC (12) indica que cada pedaço terá 12 metros.
+            Agora, calculamos a quantidade de pedaços: Pedaços do primeiro rolo:
+            96 / 12 = 8. Pedaços do segundo rolo: 156 / 12 = 13. Total de
+            pedaços: 8 + 13 = 21.
+          </p>
+        </div>
+      </section>
+
+      <!-- BOTÕES DO RODAPÉ -->
+      <div class="footer-buttons">
+        <a href="aulas.html" class="button-link">Voltar para o Menu de Aulas</a>
+        <button id="printBtn">Salvar como PDF ou Imprimir</button>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // --- LÓGICA DO TIMER POMODORO ---
+        const pomodoroDisplay = document.getElementById('pomodoro-display')
+        const startPomodoroBtn = document.getElementById('startPomodoro')
+        const pausePomodoroBtn = document.getElementById('pausePomodoro')
+        const resetPomodoroBtn = document.getElementById('resetPomodoro')
+
+        let pomodoroInterval
+        let pomodoroTime = 25 * 60 // 25 minutos em segundos
+        let isPomodoroPaused = true
+
+        function updatePomodoroDisplay() {
+          const minutes = Math.floor(pomodoroTime / 60)
+          const seconds = pomodoroTime % 60
+          pomodoroDisplay.textContent = `${minutes
+            .toString()
+            .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+        }
+
+        function startPomodoro() {
+          if (isPomodoroPaused) {
+            isPomodoroPaused = false
+            pomodoroInterval = setInterval(() => {
+              pomodoroTime--
+              updatePomodoroDisplay()
+              if (pomodoroTime <= 0) {
+                clearInterval(pomodoroInterval)
+                alert('Pomodoro finalizado! Hora de uma pausa.')
+              }
+            }, 1000)
+          }
+        }
+
+        function pausePomodoro() {
+          isPomodoroPaused = true
+          clearInterval(pomodoroInterval)
+        }
+
+        function resetPomodoro() {
+          pausePomodoro()
+          pomodoroTime = 25 * 60
+          updatePomodoroDisplay()
+        }
+
+        startPomodoroBtn.addEventListener('click', startPomodoro)
+        pausePomodoroBtn.addEventListener('click', pausePomodoro)
+        resetPomodoroBtn.addEventListener('click', resetPomodoro)
+        updatePomodoroDisplay()
+
+        // --- LÓGICA DOS TIMERS DAS QUESTÕES ---
+        const questionTimers = {} // Armazena o estado de cada timer
+
+        document.querySelectorAll('.start-timer-btn').forEach((button) => {
+          button.addEventListener('click', () => {
+            const questionBlock = button.closest('.question-block')
+            const questionId = questionBlock.dataset.question
+
+            if (
+              !questionTimers[questionId] ||
+              questionTimers[questionId].isFinished
+            ) {
+              button.disabled = true
+
+              questionTimers[questionId] = {
+                timeLeft: 180, // 3 minutos
+                isFinished: false,
+                interval: null,
+              }
+
+              const timerDisplay =
+                questionBlock.querySelector('.question-timer')
+
+              questionTimers[questionId].interval = setInterval(() => {
+                const timer = questionTimers[questionId]
+                timer.timeLeft--
+
+                const minutes = Math.floor(timer.timeLeft / 60)
+                const seconds = timer.timeLeft % 60
+                timerDisplay.textContent = `${minutes
+                  .toString()
+                  .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+
+                if (timer.timeLeft <= 0) {
+                  clearInterval(timer.interval)
+                  timer.isFinished = true
+                  timerDisplay.textContent = 'Tempo Esgotado!'
+                  questionBlock.classList.add('blocked')
+                  questionBlock
+                    .querySelectorAll('input[type="radio"]')
+                    .forEach((rb) => (rb.disabled = true))
+                }
+              }, 1000)
+            }
+          })
+        })
+
+        // --- LÓGICA DO QUIZ ---
+        const submitBtn = document.getElementById('submitBtn')
+        const quizForm = document.getElementById('quizForm')
+        const resultSection = document.getElementById('result')
+        const answerKeySection = document.getElementById('answerKey')
+        const correctAnswers = { q1: 'b', q2: 'c', q3: 'd', q4: 'd', q5: 'c' }
+        const totalQuestions = Object.keys(correctAnswers).length
+
+        submitBtn.addEventListener('click', function () {
+          // Parar todos os timers
+          Object.values(questionTimers).forEach((timer) => {
+            if (timer.interval) clearInterval(timer.interval)
+          })
+
+          let score = 0
+          const formData = new FormData(quizForm)
+
+          // Desabilitar todos os inputs
+          quizForm.querySelectorAll('input[type="radio"]').forEach((radio) => {
+            radio.disabled = true
+          })
+
+          for (const [question, correctAnswer] of Object.entries(
+            correctAnswers
+          )) {
+            const questionBlock = document.querySelector(
+              `.question-block[data-question="${question.substring(1)}"]`
+            )
+            const userAnswer = formData.get(question)
+            const labels = questionBlock.querySelectorAll('label')
+
+            labels.forEach((label) => {
+              const input = label.querySelector('input')
+              if (input.value === correctAnswer) {
+                label.classList.add('correct')
+              }
+              if (input.value === userAnswer && userAnswer !== correctAnswer) {
+                label.classList.add('incorrect')
+              }
+            })
+
+            if (
+              userAnswer === correctAnswer &&
+              !questionBlock.classList.contains('blocked')
+            ) {
+              score++
+            }
+          }
+
+          resultSection.textContent = `Você acertou ${score} de ${totalQuestions} questões.`
+          resultSection.classList.remove('hidden')
+          answerKeySection.classList.remove('hidden')
+          this.disabled = true
+
+          // Rolar para a seção de resultados
+          resultSection.scrollIntoView({ behavior: 'smooth' })
+        })
+
+        // --- LÓGICA DO BOTÃO DE IMPRIMIR ---
+        const printBtn = document.getElementById('printBtn')
+        printBtn.addEventListener('click', () => {
+          window.print()
+        })
+      })
+    </script>
+  </body>
+</html>

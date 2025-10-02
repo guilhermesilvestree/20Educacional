@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 5: Conversão entre Frações e Números Decimais</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0c0a1d;
+            --surface-color: #ffffff;
+            --text-color: #333;
+            --primary-color: #4f46e5;
+            --secondary-color: #10b981;
+            --accent-color: #f59e0b;
+            --incorrect-color: #ef4444;
+            --correct-color: #22c55e;
+            --timer-bg: #eef2ff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+            color: var(--text-color);
+            line-height: 1.8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: var(--surface-color);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px 40px;
+            overflow: hidden;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+
+        h3 {
+            color: #5a5a5a;
+            font-size: 1.4rem;
+            margin-top: 30px;
+        }
+        
+        strong.highlight {
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+        
+        .dica-visual {
+            background-color: #f0fdf4;
+            border-left: 5px solid var(--secondary-color);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .pomodoro-timer {
+            background-color: var(--timer-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .pomodoro-timer h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        #pomodoro-display {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin: 10px 0;
+        }
+
+        .pomodoro-controls button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 0 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .pomodoro-controls button:hover {
+            background-color: #3f3aaf;
+        }
+
+        .calculation-box {
+            background-color: #f8fafc;
+            border-left: 5px solid var(--accent-color);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1rem;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            margin: 20px 0;
+            border-radius: 12px;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .quiz-warning {
+            background-color: #fffbeb;
+            border: 2px dashed var(--accent-color);
+            color: #b45309;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            margin: 30px 0;
+        }
+
+        .question-block {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .question-header strong {
+            color: var(--primary-color);
+        }
+        
+        .timer-control button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .timer-control button:hover {
+            background-color: #d97706;
+        }
+        
+        .timer-control button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .question-block p {
+            margin-top: 0;
+        }
+
+        .options label {
+            display: block;
+            background-color: #fff;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .options label:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        }
+        
+        .options input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .options label.correct {
+            background-color: #f0fdf4;
+            border-color: var(--correct-color);
+            color: #15803d;
+            font-weight: 600;
+        }
+
+        .options label.incorrect {
+            background-color: #fef2f2;
+            border-color: var(--incorrect-color);
+            color: #b91c1c;
+            font-weight: 600;
+        }
+
+        #submit-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        #submit-btn:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+        }
+        
+        #submit-btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #results, #answer-key {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        #results {
+            background-color: var(--timer-bg);
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        #answer-key h2 {
+            margin-top: 0;
+        }
+
+        .resolution {
+            background-color: #f8fafc;
+            padding: 20px;
+            margin-top: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .final-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+
+        .final-buttons button, .final-buttons a {
+            background-color: #6b7280;
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .final-buttons button:hover, .final-buttons a:hover {
+            background-color: #4b5563;
+        }
+
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+                border: none;
+                padding: 0;
+            }
+            .pomodoro-timer, .quiz-warning, .question-header .timer-control, #submit-btn, .final-buttons {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Aula 5: Conversão entre Frações e Números Decimais</h1>
+        </header>
+        
+        <div class="pomodoro-timer">
+            <h3>Timer de Estudos (Pomodoro)</h3>
+            <div id="pomodoro-display">25:00</div>
+            <div class="pomodoro-controls">
+                <button id="start-pomodoro">Iniciar</button>
+                <button id="pause-pomodoro">Pausar</button>
+                <button id="reset-pomodoro">Resetar</button>
+            </div>
+        </div>
+
+        <main>
+            <section id="lesson-content">
+                <h2>1. De Fração para Decimal: O Segredo é a Divisão</h2>
+                <p>A conversão mais fácil de todas. Lembre-se que <strong class="highlight">toda fração é, na verdade, uma conta de divisão disfarçada</strong>. O traço da fração significa "dividido por".</p>
+
+                <h3>1.1. A Regra de Ouro: Dividir o de Cima pelo de Baixo</h3>
+                <p>Para transformar qualquer fração em um número decimal, basta fazer uma única coisa: <strong>dividir o numerador (o número de cima) pelo denominador (o número de baixo)</strong>.</p>
+                
+                <h4><strong>Esquema Visual:</strong></h4>
+                <div class="calculation-box">
+  3
+-----  -->  É a mesma coisa que -->  3 ÷ 4
+  4
+                </div>
+
+                <h4><strong>Exemplo Prático: A Receita de Bolo</strong></h4>
+                <p>Você está seguindo uma receita que pede <strong>3/4</strong> de xícara de açúcar. Seu copo medidor, no entanto, só tem marcações em números decimais (0,25; 0,50; 0,75). Como saber a quantidade certa?</p>
+                <p><strong>Raciocínio:</strong> Precisamos transformar a fração 3/4 em um número decimal. Para isso, vamos dividir 3 por 4.</p>
+                
+                <h4><strong>Resolução Detalhada:</strong></h4>
+                <p>1. <strong>Montar a conta de divisão:</strong></p>
+                <div class="calculation-box">
+  3 | 4
+    '---
+                </div>
+                <p>2. <strong>Primeiro passo da divisão:</strong> O número 3 é menor que o 4. Não dá para dividir diretamente. O que fazemos?</p>
+                <ul>
+                    <li>Adicionamos um <strong class="highlight">0,</strong> na resposta (quociente).</li>
+                    <li>Adicionamos um <strong class="highlight">0</strong> ao lado do 3 (dividendo), transformando-o em 30.</li>
+                </ul>
+                <div class="calculation-box">
+  3 0 | 4
+  '---'----
+        0,
+                </div>
+                <p>3. <strong>Continuar a divisão:</strong> Agora temos 30 dividido por 4. Qual número na tabuada do 4 chega mais perto de 30, sem passar? É o 7. (7 x 4 = 28)</p>
+                <div class="calculation-box">
+  3 0 | 4
+- 2 8 '----
+-----   0,7
+    2
+                </div>
+                <p>4. <strong>Finalizar a conta:</strong> Sobrou 2. Como já colocamos a vírgula na resposta, podemos simplesmente adicionar um <strong>0</strong> ao lado do resto. O 2 vira 20. Agora, dividimos 20 por 4. Na tabuada do 4, 5 x 4 = 20.</p>
+                <div class="calculation-box">
+  3 0 | 4
+- 2 8 '----
+-----   0,75   <-- Resposta Final
+    2 0
+  - 2 0
+  -----
+      0      <-- Resto zero, a conta acabou!
+                </div>
+                <p><strong>Resposta:</strong> A fração 3/4 é igual a <strong>0,75</strong>. Você vai encher o copo medidor até a marca de 0,75.</p>
+
+                <hr style="margin: 40px 0; border: 1px solid #eee;">
+
+                <h2>2. De Decimal para Fração: O Caminho de Volta</h2>
+                <p>Aqui, temos dois casos principais que aparecem no ENEM: os números decimais que têm um fim (exatos) e aqueles que se repetem para sempre (dízimas periódicas).</p>
+                
+                <h3>2.1. Caso 1: Decimais que Acabam (Decimais Exatos)</h3>
+                <p>São os números com vírgula mais comuns, como 0,5; 1,25; 0,08.</p>
+                
+                <h4><strong>A Regra dos Zeros:</strong></h4>
+                <ol>
+                    <li><strong>Numerador (parte de cima):</strong> Escreva o número completo, mas <strong>sem a vírgula</strong>.</li>
+                    <li><strong>Denominador (parte de baixo):</strong> Coloque o número <strong>1</strong> e, depois dele, conte quantas casas decimais (números depois da vírgula) existem. A quantidade de casas será a quantidade de <strong>zeros</strong> que você vai colocar.</li>
+                </ol>
+                
+                <div class="dica-visual">
+                    <p><strong>Dica Visual (Por que isso funciona?):</strong> Pense no nome das casas decimais:</p>
+                    <ul>
+                        <li>1 casa depois da vírgula = <strong>décimos</strong> (usa o 10)</li>
+                        <li>2 casas depois da vírgula = <strong>centésimos</strong> (usa o 100)</li>
+                        <li>3 casas depois da vírgula = <strong>milésimos</strong> (usa o 1000)</li>
+                    </ul>
+                    <p>O número de zeros no denominador corresponde exatamente ao nome da última casa decimal!</p>
+                </div>
+
+                <h4><strong>Exemplo Prático: Medindo o Barbante</strong></h4>
+                <p>Você mediu um pedaço de barbante e a régua marcou <strong>1,25 metros</strong>. Para um trabalho escolar, você precisa escrever essa medida em forma de fração.</p>
+                <p><strong>Resolução Detalhada:</strong></p>
+                <ol>
+                    <li><strong>Achar o Numerador:</strong> Escrevemos o número 1,25 sem a vírgula. Numerador = <strong class="highlight">125</strong>.</li>
+                    <li><strong>Achar o Denominador:</strong> O número 1,25 tem <strong>duas</strong> casas depois da vírgula (o 2 e o 5). Então, o denominador será o número 1 seguido de <strong>dois</strong> zeros. Denominador = <strong class="highlight">100</strong>.</li>
+                    <li><strong>Montar a Fração:</strong> A fração é <strong>125/100</strong>.</li>
+                    <li><strong>Simplificar a Fração (MUITO IMPORTANTE!):</strong> A resposta quase nunca vem assim no ENEM. Vemos que os dois números terminam em 5 e 0, então são divisíveis por 5.
+                        <div class="calculation-box">
+125 ÷ 5 = 25
+100 ÷ 5 = 20
+--> Fração: 25/20
+
+Ainda dá para simplificar por 5!
+
+25 ÷ 5 = 5
+20 ÷ 5 = 4
+--> Fração final: 5/4
+                        </div>
+                    </li>
+                </ol>
+                <p><strong>Resposta:</strong> A medida de 1,25 metros é igual a <strong>5/4</strong> em forma de fração.</p>
+
+                <h3>2.2. Caso 2: Decimais que se Repetem (Dízimas Periódicas Simples)</h3>
+                <p>São aqueles números com "infinitos" algarismos que se repetem, como 0,777... ou 0,121212...</p>
+                
+                <h4><strong>A Regra dos Noves:</strong></h4>
+                <ol>
+                    <li><strong>Numerador (parte de cima):</strong> Pegue o número que se repete (chamado de "período").</li>
+                    <li><strong>Denominador (parte de baixo):</strong> Para cada algarismo no período, coloque um número <strong>9</strong>.</li>
+                </ol>
+
+                <h4><strong>Exemplo Prático 1 (Um algarismo repetindo): A Receita de Pão</strong></h4>
+                <p>Ao dividir uma receita, a calculadora mostra que você precisa de <strong>0,444...</strong> de um quilo de farinha. Como você representa isso em uma fração para anotar no seu caderno?</p>
+                <ol>
+                    <li><strong>Achar o Numerador:</strong> O algarismo que se repete é o <strong>4</strong>. Numerador = <strong class="highlight">4</strong>.</li>
+                    <li><strong>Achar o Denominador:</strong> O período (4) tem apenas <strong>um</strong> algarismo. Denominador = <strong class="highlight">9</strong>.</li>
+                    <li><strong>Montar a Fração:</strong> A fração é <strong>4/9</strong>.</li>
+                </ol>
+                
+                <h4><strong>Exemplo Prático 2 (Dois algarismos repetindo): A Divisão da Conta</strong></h4>
+                <p>Você e seus amigos dividiram uma conta e o resultado para cada um foi <strong>R$ 0,232323...</strong>. Qual a fração que representa esse valor?</p>
+                <ol>
+                    <li><strong>Achar o Numerador:</strong> Os algarismos que se repetem são <strong>23</strong>. Numerador = <strong class="highlight">23</strong>.</li>
+                    <li><strong>Achar o Denominador:</strong> O período (23) tem <strong>dois</strong> algarismos. Denominador = <strong class="highlight">99</strong>.</li>
+                    <li><strong>Montar a Fração:</strong> A fração é <strong>23/99</strong>.</li>
+                </ol>
+                
+                <div class="dica-visual">
+                    <p><strong>Para os Curiosos: Por que a "Regra dos Noves" funciona?</strong></p>
+                    <p>Essa regra é um atalho para um cálculo de álgebra. Veja como funciona para <strong>0,444...</strong>:</p>
+                    <ol>
+                        <li>Chamamos o número de <strong>x</strong>: `x = 0,444...`</li>
+                        <li>Multiplicamos por 10 para "puxar" um dos números que se repetem para antes da vírgula: `10x = 4,444...`</li>
+                        <li>Agora, subtraímos a primeira equação da segunda. A "mágica" acontece aqui: a parte decimal infinita se cancela!
+                            <div class="calculation-box" style="font-size: 1rem;">
+  10x = 4,444...
+-   x = 0,444...
+-----------------
+   9x = 4,000...
+                            </div>
+                        </li>
+                        <li>Ficamos com `9x = 4`. Agora é só isolar o x: `x = 4/9`</li>
+                    </ol>
+                    <p>É por isso que o <strong>9</strong> aparece no denominador! Se fossem dois algarismos repetindo (como 0,2323...), multiplicaríamos por 100 e o resultado seria `99x = 23`.</p>
+                </div>
+
+            </section>
+            
+            <section id="video-lesson">
+                <h2>Vídeo Aula Complementar</h2>
+                <div class="video-container">
+                    <!-- Substitua o 'dQw4w9WgXcQ' pelo ID do seu vídeo do YouTube -->
+                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </section>
+
+            <section id="quiz-section">
+                <h2>Exercícios Estilo ENEM</h2>
+                <div class="quiz-warning">
+                    Atenção: cada questão tem um timer individual de 3 minutos, simulando o tempo médio do ENEM. Antes de começar a ler a questão, ative o timer! Se o tempo acabar, a questão será bloqueada e considerada errada.
+                </div>
+
+                <form id="quiz-form">
+                    <!-- Questão 1 -->
+                    <div class="question-block" id="q1">
+                        <div class="question-header">
+                            <strong>Questão 1</strong>
+                            <div class="timer-control">
+                                <span id="timer-q1">03:00</span>
+                                <button type="button" onclick="startQuestionTimer(180, 'timer-q1', 1)">Ativar Timer</button>
+                            </div>
+                        </div>
+                        <p>Em um experimento de química, um estudante precisa medir <strong>5/8</strong> de um litro de uma solução. O copo de medição que ele possui tem marcações em litros, mas apenas em formato decimal. Para realizar o procedimento corretamente, ele precisa saber qual o valor decimal correspondente à fração indicada.</p>
+                        <div class="options">
+                            <label><input type="radio" name="q1" value="A"> A) 0,58 L</label>
+                            <label><input type="radio" name="q1" value="B"> B) 0,85 L</label>
+                            <label><input type="radio" name="q1" value="C"> C) 1,60 L</label>
+                            <label><input type="radio" name="q1" value="D"> D) 0,625 L</label>
+                            <label><input type="radio" name="q1" value="E"> E) 0,585 L</label>
+                        </div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="question-block" id="q2">
+                        <div class="question-header">
+                            <strong>Questão 2</strong>
+                            <div class="timer-control">
+                                <span id="timer-q2">03:00</span>
+                                <button type="button" onclick="startQuestionTimer(180, 'timer-q2', 2)">Ativar Timer</button>
+                            </div>
+                        </div>
+                        <p>Uma empresa de alimentos lançou uma nova barra de chocolate com peso de <strong>0,125 kg</strong>. A embalagem antiga do produto, que tinha um peso diferente, exibia essa informação em formato de fração. Para manter a consistência na comunicação com os consumidores, a empresa decide incluir a representação fracionária do novo peso na embalagem.</p>
+                        <div class="options">
+                            <label><input type="radio" name="q2" value="A"> A) 1/125 kg</label>
+                            <label><input type="radio" name="q2" value="B"> B) 125/100 kg</label>
+                            <label><input type="radio" name="q2" value="C"> C) 1/8 kg</label>
+                            <label><input type="radio" name="q2" value="D"> D) 1/4 kg</label>
+                            <label><input type="radio" name="q2" value="E"> E) 12/100 kg</label>
+                        </div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="question-block" id="q3">
+                        <div class="question-header">
+                            <strong>Questão 3</strong>
+                            <div class="timer-control">
+                                <span id="timer-q3">03:00</span>
+                                <button type="button" onclick="startQuestionTimer(180, 'timer-q3', 3)">Ativar Timer</button>
+                            </div>
+                        </div>
+                        <p>Dois amigos, Carlos e Daniel, compraram pizzas de mesmo tamanho para o jantar. Ao final da refeição, Carlos afirmou ter comido <strong>3/5</strong> de sua pizza, enquanto Daniel disse que comeu <strong>0,55</strong> da sua. Eles iniciaram uma discussão para saber quem havia comido a maior quantidade.</p>
+                        <div class="options">
+                            <label><input type="radio" name="q3" value="A"> A) Daniel comeu uma quantidade maior que Carlos.</label>
+                            <label><input type="radio" name="q3" value="B"> B) Carlos e Daniel comeram exatamente a mesma quantidade.</label>
+                            <label><input type="radio" name="q3" value="C"> C) Carlos comeu uma quantidade maior que Daniel.</label>
+                            <label><input type="radio" name="q3" value="D"> D) Daniel comeu o dobro do que Carlos comeu.</label>
+                            <label><input type="radio" name="q3" value="E"> E) Carlos comeu exatamente metade de sua pizza.</label>
+                        </div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="question-block" id="q4">
+                        <div class="question-header">
+                            <strong>Questão 4</strong>
+                            <div class="timer-control">
+                                <span id="timer-q4">03:00</span>
+                                <button type="button" onclick="startQuestionTimer(180, 'timer-q4', 4)">Ativar Timer</button>
+                            </div>
+                        </div>
+                        <p>Ao realizar a divisão do valor de uma conta de R$ 2,00 entre 9 amigos, uma calculadora exibe no visor o resultado <strong>0,222...</strong>. Para fins de registro contábil, é necessário expressar esse valor como uma fração exata, conhecida como fração geratriz.</p>
+                        <div class="options">
+                            <label><input type="radio" name="q4" value="A"> A) 2/10</label>
+                            <label><input type="radio" name="q4" value="B"> B) 1/5</label>
+                            <label><input type="radio" name="q4" value="C"> C) 22/100</label>
+                            <label><input type="radio" name="q4" value="D"> D) 2/9</label>
+                            <label><input type="radio" name="q4" value="E"> E) 1/4</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Questão 5 -->
+                    <div class="question-block" id="q5">
+                        <div class="question-header">
+                            <strong>Questão 5</strong>
+                            <div class="timer-control">
+                                <span id="timer-q5">03:00</span>
+                                <button type="button" onclick="startQuestionTimer(180, 'timer-q5', 5)">Ativar Timer</button>
+                            </div>
+                        </div>
+                        <p>Para fazer um suco, uma pessoa utiliza uma jarra com capacidade total de 2 litros. Ela despeja o conteúdo de uma garrafa que contém <strong>1/4</strong> de litro de suco concentrado e, em seguida, adiciona <strong>0,8</strong> litro de água. A quantidade de líquido, em litros, que ainda falta para encher completamente a jarra é de:</p>
+                        <div class="options">
+                            <label><input type="radio" name="q5" value="A"> A) 0,75 L</label>
+                            <label><input type="radio" name="q5" value="B"> B) 1,05 L</label>
+                            <label><input type="radio" name="q5" value="C"> C) 0,25 L</label>
+                            <label><input type="radio" name="q5" value="D"> D) 1,20 L</label>
+                            <label><input type="radio" name="q5" value="E"> E) 0,95 L</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submit-btn">Finalizar e Ver Resultado</button>
+                </form>
+            </section>
+            
+            <section id="results" class="hidden">
+                <!-- O resultado será inserido aqui pelo JavaScript -->
+            </section>
+
+            <section id="answer-key" class="hidden">
+                <h2>Gabarito Comentado</h2>
+                <!-- Questão 1 -->
+                <div>
+                    <h3>Questão 1</h3>
+                    <div class="resolution">
+                        <p><strong>Raciocínio:</strong> A questão pede a conversão da fração 5/8 para um número decimal. Basta dividir o numerador (5) pelo denominador (8).</p>
+                        <p><strong>Resolução Detalhada:</strong></p>
+                        <div class="calculation-box">
+  5 0 | 8
+- 4 8 '----
+-----   0,625  <-- Resposta Final
+    2 0
+  - 1 6
+  -----
+      4 0
+    - 4 0
+    -----
+        0
+                        </div>
+                        <p>A fração 5/8 é igual a <strong>0,625</strong>. Portanto, a alternativa correta é a <strong>D</strong>.</p>
+                    </div>
+                </div>
+                <!-- Questão 2 -->
+                <div>
+                    <h3>Questão 2</h3>
+                    <div class="resolution">
+                        <p><strong>Raciocínio:</strong> A questão pede a conversão do decimal exato 0,125 para uma fração irredutível. Usaremos a "Regra dos Zeros" e depois simplificaremos.</p>
+                        <p><strong>Resolução Detalhada:</strong></p>
+                        <ol>
+                            <li><strong>Converter para fração:</strong> O número sem a vírgula é 125 (numerador). Temos 3 casas decimais, então o denominador é 1000. A fração é <strong>125/1000</strong>.</li>
+                            <li><strong>Simplificar por 5:</strong> 125 ÷ 5 = 25 e 1000 ÷ 5 = 200. Fração: <strong>25/200</strong>.</li>
+                            <li><strong>Simplificar por 5 novamente:</strong> 25 ÷ 5 = 5 e 200 ÷ 5 = 40. Fração: <strong>5/40</strong>.</li>
+                            <li><strong>Simplificar por 5 mais uma vez:</strong> 5 ÷ 5 = 1 e 40 ÷ 5 = 8. Fração final: <strong>1/8</strong>.</li>
+                        </ol>
+                        <p>A representação fracionária de 0,125 kg é <strong>1/8 kg</strong>. Portanto, a alternativa correta é a <strong>C</strong>.</p>
+                    </div>
+                </div>
+                <!-- Questão 3 -->
+                <div>
+                    <h3>Questão 3</h3>
+                    <div class="resolution">
+                        <p><strong>Raciocínio:</strong> Para comparar os valores, vamos transformar a fração 3/5 em decimal e depois comparar com 0,55.</p>
+                        <p><strong>Resolução Detalhada:</strong></p>
+                        <ol>
+                            <li><strong>Converter 3/5:</strong> 3 ÷ 5 = 0,6.</li>
+                            <li><strong>Comparar:</strong> Carlos comeu 0,6 (que é o mesmo que 0,60) e Daniel comeu 0,55.</li>
+                        </ol>
+                        <p>Como <strong>0,60 > 0,55</strong>, Carlos comeu mais. Portanto, a alternativa correta é a <strong>C</strong>.</p>
+                    </div>
+                </div>
+                <!-- Questão 4 -->
+                <div>
+                    <h3>Questão 4</h3>
+                    <div class="resolution">
+                        <p><strong>Raciocínio:</strong> A questão pede a fração geratriz da dízima 0,222... Usaremos a "Regra dos Noves".</p>
+                        <p><strong>Resolução Detalhada:</strong></p>
+                        <ol>
+                            <li><strong>Período:</strong> O algarismo que se repete é o 2.</li>
+                            <li><strong>Numerador:</strong> 2.</li>
+                            <li><strong>Denominador:</strong> Como o período tem 1 algarismo, usamos um 9.</li>
+                        </ol>
+                        <p>A fração é <strong>2/9</strong>. Portanto, a alternativa correta é a <strong>D</strong>.</p>
+                    </div>
+                </div>
+                <!-- Questão 5 -->
+                <div>
+                    <h3>Questão 5</h3>
+                    <div class="resolution">
+                        <p><strong>Raciocínio:</strong> Primeiro, somamos os líquidos, convertendo tudo para decimal. Depois, subtraímos o resultado da capacidade total da jarra.</p>
+                        <p><strong>Resolução Detalhada:</strong></p>
+                        <ol>
+                            <li><strong>Converter 1/4 L para decimal:</strong> 1 ÷ 4 = 0,25 L.</li>
+                            <li><strong>Somar os líquidos na jarra:</strong>
+                                <div class="calculation-box" style="font-size: 1rem;">
+  0,25 L (suco)
++ 0,80 L (água)
+--------
+  1,05 L (total)
+                                </div>
+                            </li>
+                            <li><strong>Calcular quanto falta para encher:</strong>
+                                <div class="calculation-box" style="font-size: 1rem;">
+  2,00 L (capacidade da jarra)
+- 1,05 L (líquido presente)
+--------
+  0,95 L (falta)
+                                </div>
+                            </li>
+                        </ol>
+                        <p>Faltam <strong>0,95 L</strong> para encher a jarra. Portanto, a alternativa correta é a <strong>E</strong>.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <div class="final-buttons">
+                <a href="aulas.html" class="button">Voltar para o Menu de Aulas</a>
+                <button onclick="window.print()">Salvar como PDF ou Imprimir</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- LÓGICA DO TIMER POMODORO ---
+        const pomodoroDisplay = document.getElementById('pomodoro-display');
+        const startBtn = document.getElementById('start-pomodoro');
+        const pauseBtn = document.getElementById('pause-pomodoro');
+        const resetBtn = document.getElementById('reset-pomodoro');
+
+        let pomodoroInterval;
+        let pomodoroTime = 25 * 60; // 25 minutos em segundos
+
+        function updatePomodoroDisplay() {
+            const minutes = Math.floor(pomodoroTime / 60);
+            const seconds = pomodoroTime % 60;
+            pomodoroDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        startBtn.addEventListener('click', () => {
+            clearInterval(pomodoroInterval); // Evita múltiplos timers
+            pomodoroInterval = setInterval(() => {
+                pomodoroTime--;
+                updatePomodoroDisplay();
+                if (pomodoroTime <= 0) {
+                    clearInterval(pomodoroInterval);
+                    alert('Pomodoro finalizado! Hora de uma pausa.');
+                }
+            }, 1000);
+        });
+        
+        pauseBtn.addEventListener('click', () => {
+            clearInterval(pomodoroInterval);
+        });
+
+        resetBtn.addEventListener('click', () => {
+            clearInterval(pomodoroInterval);
+            pomodoroTime = 25 * 60;
+            updatePomodoroDisplay();
+        });
+        
+        // --- LÓGICA DOS TIMERS DAS QUESTÕES ---
+        const questionTimers = {};
+
+        function startQuestionTimer(duration, displayId, questionNumber) {
+            const display = document.getElementById(displayId);
+            const button = display.nextElementSibling;
+            button.disabled = true;
+
+            let timer = duration;
+            questionTimers[questionNumber] = setInterval(() => {
+                let minutes = Math.floor(timer / 60);
+                let seconds = timer % 60;
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(questionTimers[questionNumber]);
+                    display.textContent = "Tempo Esgotado!";
+                    display.style.color = 'red';
+                    // Bloquear as opções da questão
+                    const inputs = document.querySelectorAll(`input[name="q${questionNumber}"]`);
+                    inputs.forEach(input => input.disabled = true);
+                }
+            }, 1000);
+        }
+
+        // --- LÓGICA DO QUIZ ---
+        const quizForm = document.getElementById('quiz-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results');
+        const answerKeyContainer = document.getElementById('answer-key');
+        
+        const correctAnswers = {
+            q1: 'D',
+            q2: 'C',
+            q3: 'C',
+            q4: 'D',
+            q5: 'E'
+        };
+
+        quizForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Parar todos os timers das questões
+            for (const key in questionTimers) {
+                clearInterval(questionTimers[key]);
+            }
+
+            let score = 0;
+            const totalQuestions = Object.keys(correctAnswers).length;
+            const formData = new FormData(quizForm);
+
+            for (const [question, correctAnswer] of Object.entries(correctAnswers)) {
+                const userAnswer = formData.get(question);
+                const questionBlock = document.getElementById(question);
+                const labels = questionBlock.querySelectorAll('.options label');
+                
+                labels.forEach(label => {
+                    const input = label.querySelector('input');
+                    if (input.value === correctAnswer) {
+                        label.classList.add('correct'); // Marca a correta sempre
+                    }
+                    
+                    if (input.checked) { // Se o usuário marcou esta opção
+                        if (input.value === correctAnswer) {
+                            score++;
+                        } else {
+                            label.classList.add('incorrect');
+                        }
+                    }
+                });
+            }
+            
+            // Desabilitar todos os inputs e botões
+            const allInputs = quizForm.querySelectorAll('input[type="radio"]');
+            allInputs.forEach(input => input.disabled = true);
+            const allTimerButtons = document.querySelectorAll('.timer-control button');
+            allTimerButtons.forEach(btn => btn.disabled = true);
+            submitBtn.disabled = true;
+
+            // Exibir resultados
+            resultsContainer.textContent = `Você acertou ${score} de ${totalQuestions} questões.`;
+            resultsContainer.classList.remove('hidden');
+            answerKeyContainer.classList.remove('hidden');
+            
+            // Rolar para os resultados
+            resultsContainer.scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

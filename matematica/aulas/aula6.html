@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 6: Operações com Frações em Problemas Práticos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* --- Estilos Globais e Fundo --- */
+      :root {
+        --cor-primaria: #007bff;
+        --cor-secundaria: #6c757d;
+        --cor-sucesso: #28a745;
+        --cor-perigo: #dc3545;
+        --cor-fundo-claro: rgba(255, 255, 255, 0.97);
+        --cor-texto: #212529;
+        --cor-borda: #dee2e6;
+        --sombra-caixa: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      body {
+        font-family: 'Inter', sans-serif;
+        line-height: 1.7;
+        color: var(--cor-texto);
+        margin: 0;
+        background-image: url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2071&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+      }
+
+      /* --- Container Principal --- */
+      .container {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background-color: var(--cor-fundo-claro);
+        border-radius: 12px;
+        box-shadow: var(--sombra-caixa);
+      }
+
+      /* --- Títulos e Textos --- */
+      h1,
+      h2,
+      h3 {
+        color: var(--cor-primaria);
+        font-weight: 700;
+        border-bottom: 2px solid var(--cor-borda);
+        padding-bottom: 0.5rem;
+        margin-top: 2rem;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+      }
+
+      strong {
+        color: var(--cor-primaria);
+        font-weight: 600;
+      }
+
+      .destaque {
+        background-color: #e7f3ff;
+        border-left: 4px solid var(--cor-primaria);
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 4px;
+      }
+
+      /* --- Seção do Timer Pomodoro --- */
+      .pomodoro-timer {
+        text-align: center;
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        border: 1px solid var(--cor-borda);
+      }
+
+      .pomodoro-timer h2 {
+        margin-top: 0;
+        border: none;
+      }
+
+      #pomodoro-display {
+        font-size: 3rem;
+        font-weight: 700;
+        margin: 1rem 0;
+      }
+
+      /* --- Botões --- */
+      .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        border: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        margin: 0.25rem;
+      }
+
+      .btn-primario {
+        background-color: var(--cor-primaria);
+        color: white;
+      }
+
+      .btn-primario:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-secundario {
+        background-color: var(--cor-secundaria);
+        color: white;
+      }
+
+      .btn-secundario:hover {
+        background-color: #5a6268;
+      }
+
+      .btn-sucesso {
+        background-color: var(--cor-sucesso);
+        color: white;
+      }
+
+      .btn-sucesso:hover {
+        background-color: #218838;
+      }
+
+      .btn-perigo {
+        background-color: var(--cor-perigo);
+        color: white;
+      }
+
+      .btn-perigo:hover {
+        background-color: #c82333;
+      }
+
+      .btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      /* --- Esquemas Visuais (Resolução) --- */
+      pre {
+        background-color: #e9ecef;
+        padding: 1.5rem;
+        border-radius: 8px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1rem;
+        border: 1px solid #ced4da;
+        line-height: 1.5;
+      }
+
+      /* --- Player de Vídeo --- */
+      .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* Proporção 16:9 */
+        height: 0;
+        overflow: hidden;
+        max-width: 100%;
+        background: #000;
+        border-radius: 8px;
+        margin: 2rem 0;
+      }
+
+      .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* --- Seção de Exercícios --- */
+      .aviso-timer {
+        background-color: #fff3cd;
+        color: #856404;
+        padding: 1rem;
+        border: 1px solid #ffeeba;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 600;
+        margin: 2rem 0;
+      }
+
+      .exercicio {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        border: 1px solid var(--cor-borda);
+        border-radius: 8px;
+        transition: border-color 0.3s ease;
+      }
+
+      .exercicio p {
+        font-weight: 600;
+      }
+
+      .opcoes label {
+        display: block;
+        margin: 0.5rem 0;
+        padding: 0.75rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .opcoes label:hover {
+        background-color: #f0f0f0;
+      }
+
+      .opcoes input[type='radio'] {
+        margin-right: 10px;
+      }
+
+      .timer-questao {
+        font-weight: bold;
+        margin-left: 1rem;
+        color: var(--cor-primaria);
+      }
+
+      /* --- Estilos de Feedback (Correto/Incorreto) --- */
+      .correta {
+        border-color: var(--cor-sucesso) !important;
+        background-color: #d4edda;
+      }
+
+      .incorreta {
+        border-color: var(--cor-perigo) !important;
+        background-color: #f8d7da;
+      }
+
+      .label-correta {
+        background-color: #c3e6cb !important;
+        font-weight: bold;
+      }
+
+      /* --- Seções Ocultas --- */
+      .hidden {
+        display: none;
+      }
+
+      #resultado,
+      #gabarito-comentado {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+      }
+
+      #resultado h2,
+      #gabarito-comentado h2 {
+        margin-top: 0;
+        border: none;
+      }
+
+      /* --- Botões de Navegação Final --- */
+      .botoes-navegacao {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 2px solid var(--cor-borda);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Título da Aula -->
+      <h1>Aula 6: Operações com Frações em Problemas Práticos</h1>
+
+      <!-- Timer Pomodoro -->
+      <div class="pomodoro-timer">
+        <h2>Timer de Estudos (Pomodoro)</h2>
+        <div id="pomodoro-display">25:00</div>
+        <div>
+          <button id="start-pomodoro" class="btn btn-sucesso">
+            Iniciar Foco
+          </button>
+          <button id="pause-pomodoro" class="btn btn-secundario">Pausar</button>
+          <button id="reset-pomodoro" class="btn btn-perigo">Resetar</button>
+        </div>
+      </div>
+
+      <!-- Conteúdo da Aula -->
+      <section id="conteudo-aula">
+        <h2>1. Dominando a SOMA de Frações em Situações Reais</h2>
+        <h3>1.1. A Lógica por Trás da Soma: Juntando as Partes</h3>
+        <p>
+          Imagine uma pizza. O <strong>denominador</strong> (número de baixo)
+          diz em quantos pedaços a pizza foi cortada. O
+          <strong>numerador</strong> (número de cima) diz quantos pedaços você
+          tem.
+        </p>
+        <div class="destaque">
+          <p>
+            <strong>Regra de Ouro:</strong> Para somar (ou subtrair) frações, os
+            denominadores precisam ser <strong>iguais</strong>. Ou seja, os
+            pedaços de pizza precisam ter o mesmo tamanho!
+          </p>
+        </div>
+        <p>
+          Se você come <strong>1/8</strong> de uma pizza e depois mais
+          <strong>3/8</strong>, todos os pedaços são do mesmo tamanho (oitavos).
+          É só somar os numeradores: 1 + 3 = 4. Você comeu
+          <strong>4/8</strong> da pizza.
+        </p>
+        <p>
+          Mas e se você tem <strong>1/2</strong> de uma pizza e
+          <strong>1/3</strong> de outra? Os pedaços são de tamanhos diferentes.
+          Não dá para somar diretamente. Você precisa primeiro "refatiar" as
+          duas pizzas em pedaços menores, de um tamanho que seja comum para
+          ambas. Esse é o papel do <strong>Mínimo Múltiplo Comum (MMC)</strong>.
+          Ele encontra o menor tamanho de fatia possível que funciona para os
+          dois casos.
+        </p>
+
+        <h3>1.2. Exemplo Prático: O Mosaico Colorido</h3>
+        <p>
+          <strong>Problema:</strong> Ana está montando um mosaico. Ela já cobriu
+          <strong>2/5</strong> da superfície com azulejos azuis e
+          <strong>1/3</strong> com azulejos amarelos. Que fração total do
+          mosaico já foi coberta?
+        </p>
+
+        <h3>1.3. Resolução Visual Comentada</h3>
+        <pre>
+PASSO 1: Montar a operação.
+Queremos JUNTAR as partes cobertas, então a operação é SOMA.
+
+   2      1
+  --- + --- = ?
+   5      3
+
+----------------------------------------------------------------------
+
+PASSO 2: Encontrar o "tamanho comum" das peças (o MMC).
+Os denominadores (5 e 3) são diferentes. O MMC entre 5 e 3 é 15.
+Isso significa que vamos imaginar nosso mosaico dividido em 15 partes iguais.
+O novo denominador será 15.
+
+----------------------------------------------------------------------
+
+PASSO 3: Reescrever as frações com o novo denominador (15).
+A regra "Divide pelo de baixo, multiplica pelo de cima" serve para
+descobrir a quantos dos novos pedacinhos (de tamanho 1/15)
+correspondem os pedaços antigos.
+
+Para a primeira fração (2/5):
+(15 ÷ 5) * 2  =  3 * 2  =  6   --->   A nova fração é 6/15
+Isso significa que 2/5 do mosaico é o mesmo que 6/15 dele.
+
+Para a segunda fração (1/3):
+(15 ÷ 3) * 1  =  5 * 1  =  5   --->   A nova fração é 5/15
+Isso significa que 1/3 do mosaico é o mesmo que 5/15 dele.
+
+----------------------------------------------------------------------
+
+PASSO 4: Montar a soma final (agora com peças do mesmo tamanho!)
+Agora que todas as peças são do mesmo tamanho (1/15), podemos somar.
+
+      6      5      11
+     --- + --- =  ----
+     15     15      15   <-- Somamos quantos pedaços temos no total.
+                           O tamanho do pedaço (denominador) não muda.
+            </pre
+        >
+        <p>
+          <strong>Resposta:</strong> Ana já cobriu <strong>11/15</strong> do
+          mosaico.
+        </p>
+
+        <h2>2. A SUBTRAÇÃO de Frações: Descobrindo o que Falta</h2>
+        <h3>
+          2.1. A Lógica por Trás da Subtração: Retirando ou Comparando Partes
+        </h3>
+        <p>
+          A lógica é exatamente a mesma da soma. Se você tem
+          <strong>3/4</strong> de um tanque de gasolina e gasta uma parte, você
+          só pode calcular o que sobrou se os "tamanhos" das partes forem os
+          mesmos. A regra do MMC para igualar os denominadores antes de operar
+          continua valendo.
+        </p>
+
+        <h3>2.2. Exemplo Prático: O Tanque de Combustível</h3>
+        <p>
+          <strong>Problema:</strong> Carlos começou uma viagem com o tanque de
+          seu carro contendo <strong>3/4</strong> de sua capacidade total. Ao
+          final do dia, ele havia gasto <strong>1/5</strong> do tanque total.
+          Que fração do tanque total de combustível restou?
+        </p>
+
+        <h3>2.3. Resolução Visual Comentada</h3>
+        <pre>
+PASSO 1: Montar a operação.
+Queremos saber o que RESTOU, então a operação é SUBTRAÇÃO.
+
+   3      1
+  --- - --- = ?
+   4      5
+
+----------------------------------------------------------------------
+
+PASSO 2: Encontrar o denominador comum (o MMC).
+Os denominadores (4 e 5) são diferentes. MMC(4, 5) = 20.
+Vamos imaginar o tanque dividido em 20 partes iguais.
+
+----------------------------------------------------------------------
+
+PASSO 3: Reescrever as frações com o novo denominador (20).
+Para 3/4: (20 ÷ 4) * 3 = 5 * 3 = 15. A fração vira 15/20.
+(Ou seja, 3/4 do tanque é o mesmo que 15 das 20 partes).
+
+Para 1/5: (20 ÷ 5) * 1 = 4 * 1 = 4. A fração vira 4/20.
+(Ou seja, 1/5 do tanque é o mesmo que 4 das 20 partes).
+
+----------------------------------------------------------------------
+
+PASSO 4: Montar a subtração final.
+Agora que as partes são do mesmo tamanho, subtraímos.
+
+     15      4      11
+     --- - --- =  ----
+     20     20      20   <-- Das 15 partes que ele tinha, ele gastou 4.
+            </pre
+        >
+        <p>
+          <strong>Resposta:</strong> Restou <strong>11/20</strong> do tanque de
+          combustível.
+        </p>
+
+        <h2>3. A MULTIPLICAÇÃO: Calculando a "Fração de uma Fração"</h2>
+        <h3>
+          3.1. A Lógica por Trás da Multiplicação: Encontrando a Parte da Parte
+        </h3>
+        <div class="destaque">
+          <p>
+            <strong>Palavra-chave do ENEM: "de"</strong>. Quando um problema diz
+            "1/4 <strong>de</strong> 2/5", isso quase sempre significa
+            multiplicação: <strong>1/4 * 2/5</strong>.
+          </p>
+        </div>
+        <p>
+          Pense assim: você está pegando um pedaço de algo que já é um pedaço.
+          Imagine uma barra de chocolate. Primeiro, você pega
+          <strong>2/5</strong> dela. Agora você tem um pedaço menor que a barra
+          inteira. Depois, você pega <strong>1/4</strong>
+          <strong>desse pedaço</strong>. O resultado final será uma fatia ainda
+          menor.
+        </p>
+        <p>
+          A regra é a mais fácil:
+          <strong
+            >multiplique o de cima pelo de cima, e o de baixo pelo de
+            baixo</strong
+          >. Você está calculando o novo total de fatias (multiplicando os
+          numeradores) e o novo total de divisões da barra inteira
+          (multiplicando os denominadores).
+        </p>
+
+        <h3>3.2. Exemplo Prático: A Distribuição dos Lucros</h3>
+        <p>
+          <strong>Problema:</strong> Uma empresa decidiu distribuir
+          <strong>2/5</strong> de seu lucro anual para os funcionários. Joana,
+          uma das sócias, tem direito a <strong>1/4 dessa</strong> parte
+          distribuída. Que fração do lucro <strong>total</strong> da empresa
+          Joana recebeu?
+        </p>
+
+        <h3>3.3. Resolução Visual Comentada</h3>
+        <pre>
+PASSO 1: Interpretar e montar a operação.
+A pergunta é: Quanto é 1/4 DE 2/5 do lucro?
+"DE" significa MULTIPLICAR.
+
+   1      2
+  --- * --- = ?
+   4      5
+
+----------------------------------------------------------------------
+
+PASSO 2: Executar a multiplicação.
+O de cima multiplica o de cima, o de baixo multiplica o de baixo.
+
+      1 * 2        2
+   ----------- =  ----
+      4 * 5       20
+
+----------------------------------------------------------------------
+
+PASSO 3: Simplificar o resultado (SEMPRE!).
+No ENEM, a resposta quase sempre estará simplificada.
+Podemos dividir 2 e 20 por 2.
+
+   2  (÷2)      1
+  ----      =  ---
+  20  (÷2)     10
+            </pre
+        >
+        <p>
+          <strong>Resposta:</strong> Joana recebeu <strong>1/10</strong> do
+          lucro total da empresa.
+        </p>
+
+        <h2>4. A DIVISÃO de Frações: Quantas Partes Cabem no Todo?</h2>
+        <h3>4.1. A Lógica por Trás da Divisão: Distribuindo e Porcionando</h3>
+        <p>
+          A divisão responde à pergunta:
+          <strong
+            >"Quantas vezes um pedaço menor cabe dentro de um pedaço
+            maior?"</strong
+          >
+        </p>
+        <p>
+          Imagine que você tem uma jarra com <strong>9/2</strong> litros de suco
+          (ou 4,5 litros). Você quer servir esse suco em copos onde cabe
+          <strong>3/4</strong> de litro. A pergunta é: "Quantos copos eu consigo
+          encher?". A operação é <strong>9/2 ÷ 3/4</strong>.
+        </p>
+        <div class="destaque">
+          <p>
+            <strong>Regra da Divisão:</strong> É um atalho poderoso que
+            transforma a divisão em uma multiplicação fácil.
+            <strong
+              >"Conserva a primeira fração e multiplica pelo inverso da
+              segunda"</strong
+            >.
+          </p>
+        </div>
+
+        <h3>4.2. Exemplo Prático: A Receita de Bolo</h3>
+        <p>
+          <strong>Problema:</strong> Para fazer um bolo, um padeiro usa
+          <strong>3/4</strong> de um quilo de farinha. Se ele tem um saco com um
+          total de <strong>9/2</strong> quilos de farinha, quantos bolos ele
+          consegue fazer?
+        </p>
+
+        <h3>4.3. Resolução Visual Comentada</h3>
+        <pre>
+PASSO 1: Interpretar e montar a operação.
+A pergunta é: Quantas "porções" de 3/4 kg cabem no total de 9/2 kg?
+É um problema de DIVISÃO.
+
+   9      3
+  --- ÷ --- = ?
+   2      4
+
+----------------------------------------------------------------------
+
+PASSO 2: Aplicar a regra da divisão de frações.
+Conserva a primeira (9/2) e multiplica pelo INVERSO da segunda (4/3).
+
+   9      4
+  --- * --- = ?
+   2      3
+
+----------------------------------------------------------------------
+
+PASSO 3: Executar a multiplicação.
+Agora é uma multiplicação normal.
+
+      9 * 4       36
+   ----------- = ----
+      2 * 3        6
+
+----------------------------------------------------------------------
+
+PASSO 4: Simplificar ou dividir o resultado.
+A fração 36/6 é o mesmo que a divisão 36 ÷ 6.
+
+   36 ÷ 6 = 6
+            </pre
+        >
+        <p>
+          <strong>Resposta:</strong> O padeiro consegue fazer
+          <strong>6</strong> bolos.
+        </p>
+
+        <h2>5. Desafios do ENEM: Resolvendo Problemas com Operações Mistas</h2>
+        <h3>5.1. A Estratégia: Organizando o Raciocínio em Etapas</h3>
+        <p>
+          O segredo para os problemas complexos do ENEM é não se desesperar.
+          Eles são apenas uma sequência de passos simples. A palavra-chave aqui
+          é <strong>"do restante"</strong> ou <strong>"do que sobrou"</strong>.
+        </p>
+        <div class="destaque">
+          <p>
+            <strong
+              >Estratégia Vencedora: Leia, Pause, Calcule, Atualize.</strong
+            >
+            <br />Quando o problema diz "do restante", significa que o seu
+            "total" (o seu 100%) mudou. O resultado do cálculo anterior vira a
+            sua nova referência.
+          </p>
+        </div>
+
+        <h3>5.2. Exemplo Prático Integrado: O Planejamento da Mesada</h3>
+        <p>
+          <strong>Problema:</strong> Júlia gasta <strong>1/3</strong> de sua
+          mesada com transporte. Do valor que sobrou, ela gasta
+          <strong>1/4</strong> com lanches. Depois disso, ela ainda doa
+          <strong>1/2</strong> do novo restante. Com que fração da mesada
+          <strong>original</strong> Júlia ficou?
+        </p>
+
+        <h3>5.3. Resolução Visual Comentada</h3>
+        <pre>
+**ETAPA 1: Gasto com Transporte**
+- Gasto: 1/3.
+- O total da mesada é 1 (ou 3/3).
+- Sobrou: 3/3 - 1/3 = 2/3.
+--> ATUALIZAÇÃO: O "novo todo" de Júlia é 2/3 da mesada.
+
+----------------------------------------------------------------------
+
+**ETAPA 2: Gasto com Lanches**
+- Ela gasta 1/4 DO QUE SOBROU. Ou seja, 1/4 DE 2/3.
+- Gasto com lanche: 1/4 * 2/3 = 2/12 (que simplificando é 1/6 da mesada ORIGINAL).
+- Quanto sobrou AGORA? Ela tinha 2/3 e gastou 1/6.
+  Subtração: 2/3 - 1/6. (MMC de 3 e 6 é 6)
+  Transformando 2/3: (6÷3)*2 = 4 -> 4/6.
+  4/6 - 1/6 = 3/6 (que simplificando é 1/2).
+--> ATUALIZAÇÃO: Após o lanche, sobrou 1/2 da mesada original.
+
+----------------------------------------------------------------------
+
+**ETAPA 3: Doação**
+- Ela doa 1/2 DO NOVO RESTANTE. Ou seja, 1/2 DE 1/2.
+- Doação: 1/2 * 1/2 = 1/4 da mesada original.
+- Com quanto ela ficou no final? Ela tinha 1/2 e doou 1/4.
+  Subtração: 1/2 - 1/4. (MMC de 2 e 4 é 4)
+  Transformando 1/2: (4÷2)*1 = 2 -> 2/4.
+  2/4 - 1/4 = 1/4.
+            </pre
+        >
+        <p>
+          <strong>Resposta Final:</strong> Júlia ficou com
+          <strong>1/4</strong> de sua mesada original.
+        </p>
+      </section>
+
+      <!-- Seção de Vídeo -->
+      <section id="video-aula">
+        <h2>Vídeo Aula Complementar</h2>
+        <div class="video-container">
+          <!-- Substitua o 'dQw4w9WgXcQ' pelo ID do seu vídeo do YouTube -->
+          <iframe
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </section>
+
+      <!-- Seção de Exercícios -->
+      <section id="exercicios">
+        <h2>Questões Estilo ENEM</h2>
+        <div class="aviso-timer">
+          <strong>Atenção:</strong> Você terá 3 minutos para cada questão,
+          simulando o tempo do ENEM. Antes de começar a ler, ative o timer! Se o
+          tempo acabar, a questão será bloqueada e considerada errada.
+        </div>
+
+        <form id="quiz-form">
+          <!-- Questão 1 -->
+          <div class="exercicio" id="q1">
+            <p>
+              1. Um agricultor colheu uma safra de soja e vendeu 2/5 da produção
+              para uma cooperativa. Do restante, ele utilizou 1/3 para alimentar
+              seus animais. A fração da safra original que ainda sobrou para o
+              agricultor é:
+            </p>
+            <div class="opcoes">
+              <label><input type="radio" name="q1" value="a" /> a) 1/5</label>
+              <label><input type="radio" name="q1" value="b" /> b) 2/5</label>
+              <label><input type="radio" name="q1" value="c" /> c) 3/5</label>
+              <label><input type="radio" name="q1" value="d" /> d) 4/15</label>
+              <label><input type="radio" name="q1" value="e" /> e) 7/15</label>
+            </div>
+            <button
+              type="button"
+              class="btn btn-secundario btn-timer"
+              data-questao="1"
+            >
+              Iniciar Timer
+            </button>
+            <span class="timer-questao" id="timer-q1">03:00</span>
+          </div>
+
+          <!-- Questão 2 -->
+          <div class="exercicio" id="q2">
+            <p>
+              2. Uma costureira tem uma peça de tecido com 15/2 metros de
+              comprimento. Ela precisa cortar essa peça em retalhos menores,
+              cada um com 3/4 de metro, para fazer máscaras. Quantas máscaras
+              completas ela conseguirá fazer com a peça de tecido?
+            </p>
+            <div class="opcoes">
+              <label><input type="radio" name="q2" value="a" /> a) 8</label>
+              <label><input type="radio" name="q2" value="b" /> b) 9</label>
+              <label><input type="radio" name="q2" value="c" /> c) 10</label>
+              <label><input type="radio" name="q2" value="d" /> d) 11</label>
+              <label><input type="radio" name="q2" value="e" /> e) 12</label>
+            </div>
+            <button
+              type="button"
+              class="btn btn-secundario btn-timer"
+              data-questao="2"
+            >
+              Iniciar Timer
+            </button>
+            <span class="timer-questao" id="timer-q2">03:00</span>
+          </div>
+
+          <!-- Questão 3 -->
+          <div class="exercicio" id="q3">
+            <p>
+              3. Em uma eleição para representante de turma, três candidatos
+              concorreram. O candidato A recebeu 1/4 dos votos, o candidato B
+              recebeu 2/5 dos votos, e o candidato C recebeu o restante. Que
+              fração do total de votos o candidato C recebeu?
+            </p>
+            <div class="opcoes">
+              <label><input type="radio" name="q3" value="a" /> a) 3/20</label>
+              <label><input type="radio" name="q3" value="b" /> b) 7/20</label>
+              <label><input type="radio" name="q3" value="c" /> c) 9/20</label>
+              <label><input type="radio" name="q3" value="d" /> d) 11/20</label>
+              <label><input type="radio" name="q3" value="e" /> e) 13/20</label>
+            </div>
+            <button
+              type="button"
+              class="btn btn-secundario btn-timer"
+              data-questao="3"
+            >
+              Iniciar Timer
+            </button>
+            <span class="timer-questao" id="timer-q3">03:00</span>
+          </div>
+
+          <!-- Questão 4 -->
+          <div class="exercicio" id="q4">
+            <p>
+              4. Para um evento escolar, foi estipulado que 3/5 dos alunos
+              participantes seriam do Ensino Médio. Desses alunos do Ensino
+              Médio, 1/6 faria parte da equipe de organização. A fração de
+              alunos, em relação ao total de participantes, que representa a
+              equipe de organização do Ensino Médio é:
+            </p>
+            <div class="opcoes">
+              <label><input type="radio" name="q4" value="a" /> a) 1/10</label>
+              <label><input type="radio" name="q4" value="b" /> b) 1/5</label>
+              <label><input type="radio" name="q4" value="c" /> c) 3/11</label>
+              <label><input type="radio" name="q4" value="d" /> d) 4/11</label>
+              <label><input type="radio" name="q4" value="e" /> e) 18/5</label>
+            </div>
+            <button
+              type="button"
+              class="btn btn-secundario btn-timer"
+              data-questao="4"
+            >
+              Iniciar Timer
+            </button>
+            <span class="timer-questao" id="timer-q4">03:00</span>
+          </div>
+
+          <!-- Questão 5 -->
+          <div class="exercicio" id="q5">
+            <p>
+              5. João recebeu seu salário e organizou seus gastos. Ele usou 1/4
+              para pagar o aluguel e 1/5 para as contas de casa (água, luz,
+              internet). Do valor que sobrou após esses pagamentos, ele gastou
+              2/3 no supermercado. A fração do salário original que restou para
+              João após todos esses gastos é:
+            </p>
+            <div class="opcoes">
+              <label><input type="radio" name="q5" value="a" /> a) 1/6</label>
+              <label><input type="radio" name="q5" value="b" /> b) 11/60</label>
+              <label><input type="radio" name="q5" value="c" /> c) 11/20</label>
+              <label><input type="radio" name="q5" value="d" /> d) 22/60</label>
+              <label><input type="radio" name="q5" value="e" /> e) 7/12</label>
+            </div>
+            <button
+              type="button"
+              class="btn btn-secundario btn-timer"
+              data-questao="5"
+            >
+              Iniciar Timer
+            </button>
+            <span class="timer-questao" id="timer-q5">03:00</span>
+          </div>
+
+          <div style="text-align: center; margin-top: 2rem">
+            <button type="button" id="btn-finalizar" class="btn btn-primario">
+              Finalizar e Ver Resultado
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Seção de Resultado (Oculta) -->
+      <section id="resultado" class="hidden">
+        <h2>Seu Resultado</h2>
+        <p id="pontuacao"></p>
+      </section>
+
+      <!-- Seção de Gabarito Comentado (Oculta) -->
+      <section id="gabarito-comentado" class="hidden">
+        <h2>Gabarito Comentado</h2>
+
+        <div>
+          <h3>Questão 1: Resposta Correta (b)</h3>
+          <p>
+            <strong>Raciocínio:</strong> Este é um problema de "fração do
+            restante".
+          </p>
+          <pre>
+**ETAPA 1: Venda para a cooperativa**
+- Vendeu: 2/5 da safra.
+- O total da safra é 1 inteiro (5/5).
+- Sobrou: 5/5 - 2/5 = 3/5 da safra.
+
+**ETAPA 2: Uso para os animais**
+- Ele usou 1/3 DO RESTANTE, ou seja, 1/3 DE 3/5.
+- Gasto com animais: 1/3 * 3/5 = 3/15 = 1/5 da safra original.
+
+**ETAPA 3: O que sobrou no final**
+- Ele tinha 3/5 (o que sobrou da Etapa 1) e gastou 1/5.
+- Restante final: 3/5 - 1/5 = 2/5.
+                </pre
+          >
+        </div>
+
+        <div>
+          <h3>Questão 2: Resposta Correta (c)</h3>
+          <p>
+            <strong>Raciocínio:</strong> A pergunta é "quantos pedaços de 3/4
+            cabem em um total de 15/2?". Isso é uma divisão de frações.
+          </p>
+          <pre>
+**Operação:** (Total de tecido) ÷ (Tamanho de cada retalho)
+   15/2 ÷ 3/4
+
+**Regra da divisão:** Conserva a primeira, multiplica pelo inverso da segunda.
+   15/2 * 4/3
+
+**Cálculo:**
+   (15 * 4) / (2 * 3) = 60 / 6 = 10.
+                </pre
+          >
+        </div>
+
+        <div>
+          <h3>Questão 3: Resposta Correta (b)</h3>
+          <p>
+            <strong>Raciocínio:</strong> Somar as frações dos candidatos A e B e
+            subtrair do total (1 inteiro).
+          </p>
+          <pre>
+**ETAPA 1: Somar os votos de A e B**
+   1/4 + 2/5
+   MMC(4, 5) = 20.
+   (5/20) + (8/20) = 13/20.
+
+**ETAPA 2: Encontrar a fração de C (o restante)**
+   O total de votos é 1 (ou 20/20).
+   20/20 - 13/20 = 7/20.
+                </pre
+          >
+        </div>
+
+        <div>
+          <h3>Questão 4: Resposta Correta (a)</h3>
+          <p>
+            <strong>Raciocínio:</strong> O problema pede a fração de uma fração:
+            1/6 DE 3/5. A palavra "DE" indica multiplicação.
+          </p>
+          <pre>
+**Operação:** 1/6 * 3/5
+
+**Cálculo:**
+   (1 * 3) / (6 * 5) = 3/30
+
+**Simplificação:**
+   Dividindo o numerador e o denominador por 3:
+   3/30 = 1/10.
+                </pre
+          >
+        </div>
+
+        <div>
+          <h3>Questão 5: Resposta Correta (b)</h3>
+          <p>
+            <strong>Raciocínio:</strong> Problema em etapas: somar gastos,
+            calcular o que sobrou, e depois calcular o gasto sobre o restante.
+          </p>
+          <pre>
+**ETAPA 1: Somar gastos fixos (aluguel e contas)**
+   1/4 + 1/5
+   MMC(4, 5) = 20.
+   (5/20) + (4/20) = 9/20.
+
+**ETAPA 2: Calcular o que sobrou**
+   O salário total é 1 (ou 20/20).
+   20/20 - 9/20 = 11/20.
+   --> Sobrou 11/20 do salário.
+
+**ETAPA 3: Calcular gasto do supermercado**
+   Foi 2/3 DO QUE SOBROU, ou seja, 2/3 DE 11/20.
+   2/3 * 11/20 = 22/60.
+
+**ETAPA 4: Calcular o que restou no final**
+   Ele tinha 11/20 e gastou 22/60.
+   Subtração: 11/20 - 22/60
+   MMC(20, 60) = 60.
+   11/20 é igual a 33/60.
+   33/60 - 22/60 = 11/60.
+                </pre
+          >
+        </div>
+      </section>
+
+      <!-- Botões de Navegação Final -->
+      <div class="botoes-navegacao">
+        <a href="aulas.html" class="btn btn-secundario"
+          >Voltar para o Menu de Aulas</a
+        >
+        <button onclick="window.print()" class="btn btn-primario">
+          Salvar como PDF ou Imprimir
+        </button>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // --- Lógica do Timer Pomodoro ---
+        const pomodoroDisplay = document.getElementById('pomodoro-display')
+        const startPomodoroBtn = document.getElementById('start-pomodoro')
+        const pausePomodoroBtn = document.getElementById('pause-pomodoro')
+        const resetPomodoroBtn = document.getElementById('reset-pomodoro')
+
+        let pomodoroInterval
+        let pomodoroSeconds = 25 * 60 // 25 minutos
+        let isPomodoroPaused = true
+        let isBreak = false
+
+        function updatePomodoroDisplay() {
+          const minutes = Math.floor(pomodoroSeconds / 60)
+          const seconds = pomodoroSeconds % 60
+          pomodoroDisplay.textContent = `${minutes
+            .toString()
+            .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+        }
+
+        function startPomodoro() {
+          if (isPomodoroPaused) {
+            isPomodoroPaused = false
+            startPomodoroBtn.textContent = isBreak
+              ? 'Iniciar Pausa'
+              : 'Iniciar Foco'
+            pomodoroInterval = setInterval(() => {
+              pomodoroSeconds--
+              updatePomodoroDisplay()
+              if (pomodoroSeconds <= 0) {
+                clearInterval(pomodoroInterval)
+                isBreak = !isBreak
+                pomodoroSeconds = isBreak ? 5 * 60 : 25 * 60
+                updatePomodoroDisplay()
+                alert(
+                  isBreak
+                    ? 'Hora da pausa! (5 minutos)'
+                    : 'Fim da pausa, hora de focar! (25 minutos)'
+                )
+                isPomodoroPaused = true
+                startPomodoroBtn.textContent = isBreak
+                  ? 'Iniciar Pausa'
+                  : 'Iniciar Foco'
+              }
+            }, 1000)
+          }
+        }
+
+        function pausePomodoro() {
+          isPomodoroPaused = true
+          clearInterval(pomodoroInterval)
+        }
+
+        function resetPomodoro() {
+          pausePomodoro()
+          isBreak = false
+          pomodoroSeconds = 25 * 60
+          updatePomodoroDisplay()
+          startPomodoroBtn.textContent = 'Iniciar Foco'
+        }
+
+        startPomodoroBtn.addEventListener('click', startPomodoro)
+        pausePomodoroBtn.addEventListener('click', pausePomodoro)
+        resetPomodoroBtn.addEventListener('click', resetPomodoro)
+
+        // --- Lógica dos Timers das Questões ---
+        const timers = {} // Objeto para armazenar os intervalos de cada questão
+        const timerButtons = document.querySelectorAll('.btn-timer')
+
+        timerButtons.forEach((button) => {
+          button.addEventListener('click', () => {
+            const questaoId = button.dataset.questao
+            button.disabled = true // Desativa o botão de iniciar após o clique
+
+            let time = 180 // 3 minutos
+            const timerDisplay = document.getElementById(`timer-q${questaoId}`)
+
+            timers[questaoId] = setInterval(() => {
+              time--
+              const minutes = Math.floor(time / 60)
+              const seconds = time % 60
+              timerDisplay.textContent = `${minutes
+                .toString()
+                .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+
+              if (time <= 0) {
+                clearInterval(timers[questaoId])
+                timerDisplay.textContent = 'Tempo Esgotado!'
+                timerDisplay.style.color = 'var(--cor-perigo)'
+                // Bloqueia as opções da questão
+                const inputs = document.querySelectorAll(
+                  `input[name="q${questaoId}"]`
+                )
+                inputs.forEach((input) => (input.disabled = true))
+              }
+            }, 1000)
+          })
+        })
+
+        // --- Lógica do Quiz ---
+        const btnFinalizar = document.getElementById('btn-finalizar')
+        const gabarito = {
+          q1: 'b',
+          q2: 'c',
+          q3: 'b', // CORRIGIDO
+          q4: 'a',
+          q5: 'b',
+        }
+
+        btnFinalizar.addEventListener('click', () => {
+          // Para todos os timers de questões que ainda estiverem rodando
+          Object.values(timers).forEach(clearInterval)
+
+          let pontuacao = 0
+          const form = document.getElementById('quiz-form')
+
+          for (const [questao, respostaCorreta] of Object.entries(gabarito)) {
+            const containerExercicio = document.getElementById(questao)
+            const inputSelecionado = form.querySelector(
+              `input[name="${questao}"]:checked`
+            )
+
+            // Desabilita todos os inputs para não poderem ser alterados
+            const allInputs = document.querySelectorAll(
+              `input[name="${questao}"]`
+            )
+            allInputs.forEach((input) => (input.disabled = true))
+
+            const labelCorreta = document.querySelector(
+              `label:has(input[name="${questao}"][value="${respostaCorreta}"])`
+            )
+            if (labelCorreta) {
+              labelCorreta.classList.add('label-correta')
+            }
+
+            if (inputSelecionado) {
+              if (inputSelecionado.value === respostaCorreta) {
+                pontuacao++
+                containerExercicio.classList.add('correta')
+              } else {
+                containerExercicio.classList.add('incorreta')
+              }
+            } else {
+              // Se nenhuma resposta foi selecionada, considera incorreta
+              containerExercicio.classList.add('incorreta')
+            }
+          }
+
+          // Exibir resultado e gabarito
+          const resultadoSection = document.getElementById('resultado')
+          const gabaritoSection = document.getElementById('gabarito-comentado')
+          const pontuacaoDisplay = document.getElementById('pontuacao')
+
+          pontuacaoDisplay.textContent = `Você acertou ${pontuacao} de ${
+            Object.keys(gabarito).length
+          } questões.`
+          resultadoSection.classList.remove('hidden')
+          gabaritoSection.classList.remove('hidden')
+
+          // Desabilitar botão de finalizar
+          btnFinalizar.disabled = true
+
+          // Rolar a tela para a seção de resultados
+          resultadoSection.scrollIntoView({ behavior: 'smooth' })
+        })
+      })
+    </script>
+  </body>
+</html>
