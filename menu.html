@@ -9,7 +9,7 @@
       href="assets/imagens/logo-branca-20Png.png"
       type="image/png"
     />
-    <link rel="manifest" href="20Educacional/pwa/manifest.json" />
+    <link rel="manifest" href="pwa/manifest.json" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -559,7 +559,7 @@
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register("/pwa/sw.js") // Caminho atualizado
+            .register("/20Educacional/pwa/sw.js") // Caminho atualizado
             .then((registration) => {
               console.log(
                 "Service Worker registrado com sucesso:",

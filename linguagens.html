@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Linguagens e Códigos | Evolução Educacional</title>
-    <link rel="manifest" href="20Educacional/pwa/manifest.json" />
+    <link rel="manifest" href="pwa/manifest.json" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -519,7 +519,7 @@
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register("/pwa/sw.js") // Caminho atualizado
+            .register("/20Educacional/pwa/sw.js") // Caminho atualizado
             .then((registration) => {
               console.log(
                 "Service Worker registrado com sucesso:",
