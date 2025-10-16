@@ -2,7 +2,7 @@
   "name": "20Educacional",
   "short_name": "20Educacional",
   "description": "Sua jornada para a aprovação no ENEM começa aqui. Organize seus estudos e domine o conteúdo.",
-  "start_url": "/index.html",
+  "start_url": "20Educacional/",
   "display": "standalone",
   "background_color": "#0f0f1a",
   "theme_color": "#00a8ff",
