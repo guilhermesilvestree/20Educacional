@@ -1,1079 +1,554 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aula 1: Operações Fundamentais com Inteiros e Decimais</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
-      @font-face {
-        font-family: 'Helvetica';
-        src: url('Helvetica.ttf') format('truetype');
+        /* --- GERAL & ESTILO BASE --- */
+        :root {
+            --color-background: #f8fafc;
+            --color-surface: #ffffff;
+            --color-text: #1e293b;
+            --color-primary: #4f46e5;
+            --color-highlight: #fef9c3;
+            --color-correct-bg: #dcfce7;
+            --color-correct-border: #22c55e;
+            --color-incorrect-bg: #fee2e2;
+            --color-incorrect-border: #ef4444;
+            --font-family: 'Inter', sans-serif;
+        }
 
-      }
-
-      body {
-        font-family: "Helvetica", sans-serif;
-        background-image: url("https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2071&auto=format&fit=crop");
-        background-size: cover;
-        background-attachment: fixed;
-        background-position: center;
-      }
-
-      /* Estilos para a impressão */
-      @media print {
         body {
-          background-image: none;
+            font-family: var(--font-family);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
         }
-        .no-print {
-          display: none !important;
+
+      .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--color-surface);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
-        .main-container {
-          box-shadow: none;
-          border: 1px solid #ccc;
-          margin: 0;
-          max-width: 100%;
+
+        h1, h2, h3 {
+            color: #0f172a;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
         }
-        .quiz-form label {
-          border: 1px solid #eee;
+        
+        h1 { font-size: 2rem; }
+        h2 { font-size: 1.5rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3em; }
+        h3 { font-size: 1.2rem; }
+
+        p, li {
+            font-size: 1rem;
+            color: #334155;
         }
-      }
+
+        strong {
+            color: #0f172a;
+        }
 
       .highlight {
-        color: #2dd4bf; /* Teal-400 */
-        font-weight: 700;
-      }
+            background-color: var(--color-highlight);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
 
-      .highlight-yellow {
-        background-color: #fef08a; /* Yellow-200 */
-        padding: 0.1rem 0.3rem;
-        border-radius: 4px;
-        font-weight: 500;
-      }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5em 0;
+        }
 
-      pre {
-        background-color: #f3f4f6; /* Gray-100 */
-        border: 1px solid #d1d5db; /* Gray-300 */
-        border-radius: 8px;
-        padding: 16px;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        font-family: "Courier New", Courier, monospace;
-        font-size: 1rem;
-        line-height: 1.6;
-        color: #1f2937; /* Gray-800 */
-      }
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 12px;
+            text-align: left;
+        }
 
-      .quiz-form label {
-        display: block;
-        padding: 12px 16px;
-        border: 2px solid #e5e7eb; /* Gray-200 */
-        border-radius: 8px;
-        margin-bottom: 8px;
-        cursor: pointer;
-        transition: all 0.2s ease-in-out;
-      }
+        th {
+            background-color: #f1f5f9;
+        }
 
-      .quiz-form label:hover {
-        border-color: #38bdf8; /* Sky-400 */
-        background-color: #f0f9ff; /* Sky-50 */
-      }
+        /* --- CRONÔMETRO POMODORO --- */
+      .pomodoro-timer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
 
-      .quiz-form input[type="radio"] {
-        display: none;
-      }
+        #pomodoro-display {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
 
-      .quiz-form input[type="radio"]:checked + label {
-        border-color: #38bdf8; /* Sky-400 */
-        background-color: #e0f2fe; /* Sky-100 */
-        font-weight: 700;
-      }
+      .pomodoro-controls button {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+            transition: background-color 0.2s;
+        }
 
-      .correct {
-        border-color: #22c55e !important; /* Green-500 */
-        background-color: #dcfce7 !important; /* Green-100 */
-        color: #15803d; /* Green-700 */
-      }
+      .pomodoro-controls button:hover {
+            background-color: #4338ca;
+        }
 
-      .incorrect {
-        border-color: #ef4444 !important; /* Red-500 */
-        background-color: #fee2e2 !important; /* Red-100 */
-        color: #b91c1c; /* Red-700 */
-      }
+        /* --- QUIZ INTERATIVO COM UX APRIMORADA --- */
+        #quiz-container {
+            margin-top: 2rem;
+        }
 
-      .hidden {
-        display: none;
-      }
+      .quiz-question {
+            background-color: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #e2e8f0;
+        }
+
+      .quiz-question p {
+            font-weight: 600;
+            margin-top: 0;
+        }
+
+      .quiz-options input[type="radio"] {
+            /* Esconde o radio button, mas o mantém acessível para leitores de tela */
+            opacity: 0;
+            position: absolute;
+            width: 1px;
+            height: 1px;
+        }
+
+      .quiz-options label {
+            display: block;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+      .quiz-options label:hover {
+            background-color: #f1f5f9;
+            border-color: #94a3b8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.07);
+        }
+
+        /* Estilo para a label quando o radio button correspondente está selecionado */
+      .quiz-options input[type="radio"]:checked + label {
+            background-color: #e0e7ff;
+            border-color: var(--color-primary);
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* Estilos para feedback de correção */
+      .quiz-options label.correct {
+            background-color: var(--color-correct-bg);
+            border-color: var(--color-correct-border);
+            font-weight: 600;
+        }
+
+      .quiz-options label.incorrect {
+            background-color: var(--color-incorrect-bg);
+            border-color: var(--color-incorrect-border);
+        }
+
+      .resolution-text {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f1f5f9;
+            border-left: 4px solid var(--color-primary);
+            border-radius: 4px;
+        }
+
+        #submit-quiz-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            background-color: #16a34a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 2rem;
+            transition: background-color 0.2s;
+        }
+
+        #submit-quiz-btn:hover {
+            background-color: #15803d;
+        }
+        
+        #submit-quiz-btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        #quiz-results {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            display: none; /* Começa oculto */
+        }
+
+        /* --- RESPONSIVIDADE --- */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+          .container {
+                padding: 1rem;
+            }
+            h1 { font-size: 1.8rem; }
+            #pomodoro-display { font-size: 2.5rem; }
+        }
     </style>
-  </head>
-  <body class="bg-gray-900 text-gray-800 p-4 sm:p-6 md:p-8">
-    <div
-      class="main-container max-w-4xl mx-auto bg-white bg-opacity-95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 sm:p-8 md:p-12"
-    >
-      <header class="text-center mb-10">
-        <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">
-          Aula 1: Operações Fundamentais com Inteiros e Decimais
-        </h1>
-        <p class="text-gray-600 mt-2">
-          Uma base sólida para o seu sucesso no ENEM.
-        </p>
-      </header>
+</head>
+<body>
 
-      <section
-        class="no-print bg-sky-50 border-2 border-sky-200 rounded-xl p-6 mb-12 text-center"
-      >
-        <h2 class="text-2xl font-bold text-sky-800 mb-2">
-          Timer de Estudos (Pomodoro)
-        </h2>
-        <p class="text-sky-600 mb-4">
-          Use esta técnica para manter o foco durante seus estudos.
-        </p>
-        <div id="pomodoro-timer" class="text-6xl font-bold text-sky-900 my-4">
-          25:00
-        </div>
-        <div class="flex justify-center space-x-4">
-          <button
-            id="pomodoro-start"
-            class="px-6 py-2 bg-sky-500 text-white font-semibold rounded-lg shadow-md hover:bg-sky-600 transition"
-          >
-            Iniciar
-          </button>
-          <button
-            id="pomodoro-pause"
-            class="px-6 py-2 bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600 transition"
-          >
-            Pausar
-          </button>
-          <button
-            id="pomodoro-reset"
-            class="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 transition"
-          >
-            Resetar
-          </button>
-        </div>
-      </section>
-
-      <article class="space-y-10">
-        <section>
-          <h2
-            class="text-2xl font-bold text-gray-700 border-b-4 border-teal-400 pb-2 mb-6"
-          >
-            Parte 1: O Mundo dos Números Inteiros (Z)
-          </h2>
-          <p class="mb-6 text-lg">
-            Nesta primeira parte, vamos construir uma base sólida para trabalhar
-            com números positivos e negativos. Esqueça as regras decoradas por
-            um instante e vamos pensar de forma lógica, usando situações do dia
-            a dia.
-          </p>
-
-          <div>
-            <h3 class="text-xl font-bold text-gray-700 mb-4">
-              1.1. Adição com Números Inteiros
-            </h3>
-            <h4 class="text-lg font-semibold text-gray-600 mb-2">
-              1.1.1. Teoria: Somando Sinais Iguais e Sinais Diferentes (A Lógica
-              do "Ter" e "Dever")
-            </h4>
-            <p class="mb-4">
-              Para nunca mais errar a adição de números inteiros, vamos usar uma
-              analogia simples com dinheiro.
-            </p>
-            <ul class="list-disc list-inside space-y-2 mb-4 pl-4">
-              <li>
-                <strong class="text-green-600">Números Positivos (+):</strong>
-                Representam o que você
-                <span class="highlight-yellow">TEM</span>. É o seu crédito, seu
-                saldo positivo, o dinheiro no seu bolso.
-              </li>
-              <li>
-                <strong class="text-red-600">Números Negativos (-):</strong>
-                Representam o que você
-                <span class="highlight-yellow">DEVE</span>. É a sua dívida, seu
-                saldo negativo, uma conta a pagar.
-              </li>
-            </ul>
-            <p class="mb-2">
-              <strong class="highlight">Regra 1: Sinais Iguais</strong> → Some
-              os valores e mantenha o mesmo sinal. (Juntar dívidas aumenta a
-              dívida, juntar créditos aumenta o crédito).
-            </p>
-            <p class="mb-4">
-              <strong class="highlight">Regra 2: Sinais Diferentes</strong> →
-              Subtraia o menor valor do maior. O resultado terá o sinal do
-              número que era maior (o que você tinha mais: crédito ou dívida).
-            </p>
-
-            <h4 class="text-lg font-semibold text-gray-600 mt-6 mb-2">
-              1.1.2. Exemplo Prático: Analisando o Saldo de uma Conta Bancária
-            </h4>
-            <p class="mb-4">
-              <strong>Situação:</strong> Você tem R$ 50 na sua conta corrente
-              (+50) e precisa pagar uma conta de luz de R$ 80 por débito
-              automático (-80). Qual será o seu novo saldo?
-            </p>
-            <pre>
-Passo 1: Traduzir a situação para a matemática.
-Temos: (+50) + (-80)
-
-Passo 2: Aplicar a lógica do "Ter" e "Dever".
-- Eu TENHO R$ 50 (o valor positivo).
-- Eu DEVO R$ 80 (o valor negativo).
-A dívida (80) é maior que o crédito (50). O resultado será negativo.
-
-Passo 3: Calcular a diferença.
-  80   (O valor absoluto da dívida)
-- 50   (O valor absoluto do que eu tenho)
-----
-  30
-
-Passo 4: Dar o sinal correto ao resultado.
-Como a dívida era maior, o resultado é -30.
-
-Resposta: O novo saldo é de -R$ 30. Você ficou no vermelho.
-                    </pre
-            >
-          </div>
-
-          <div class="mt-8">
-            <h3 class="text-xl font-bold text-gray-700 mb-4">
-              1.2. Subtração com Números Inteiros
-            </h3>
-            <h4 class="text-lg font-semibold text-gray-600 mb-2">
-              1.2.1. Teoria: A Regra do Oposto
-            </h4>
-            <p class="mb-4">
-              A regra fundamental é:
-              <strong class="highlight"
-                >Subtrair um número é o mesmo que SOMAR o seu OPOSTO.</strong
-              >
-              O oposto é o mesmo número com o sinal trocado (oposto de +7 é -7;
-              oposto de -12 é +12).
-            </p>
-            <p>
-              Então, `8 - (-3)` vira `8 + (+3)`. Depois, é só usar a lógica do
-              "Ter e Dever".
-            </p>
-
-            <h4 class="text-lg font-semibold text-gray-600 mt-6 mb-2">
-              1.2.2. Exemplo Prático: Variação de Temperatura
-            </h4>
-            <p class="mb-4">
-              <strong>Situação:</strong> A temperatura em uma cidade na serra
-              foi de -3°C para +9°C. Qual foi a variação?
-            </p>
-            <pre>
-Passo 1: Traduzir para a matemática.
-Variação = (Valor Final) - (Valor Inicial)
-Conta: (+9) - (-3)
-
-Passo 2: Aplicar a regra do oposto.
-Subtrair -3 é o mesmo que somar +3.
-Vamos visualizar a transformação:
-
-  (+9)   -   (-3)
-   |
-   | <-- O sinal de menos e o número seguinte se transformam
-   V
-  (+9)   +   (+3)
-
-Passo 3: Resolver a nova adição.
-A conta virou (+9) + (+3).
-Tenho 9 e ganho 3, fico com 12.
-9 + 3 = 12
-
-Resposta: A variação de temperatura foi de +12°C.
-                    </pre
-            >
-          </div>
-
-          <div class="mt-8">
-            <h3 class="text-xl font-bold text-gray-700 mb-4">
-              1.3. Multiplicação e 1.4. Divisão com Inteiros
-            </h3>
-            <h4 class="text-lg font-semibold text-gray-600 mb-2">
-              1.3.1. Teoria: A Regra de Sinais (Amigo/Inimigo)
-            </h4>
-            <p class="mb-4">
-              <strong>Atenção!</strong> As regras aqui são diferentes. Não use
-              "Ter e Dever". A regra é a mesma para multiplicação e divisão:
-            </p>
-            <ul class="list-disc list-inside space-y-2 mb-4 pl-4">
-              <li>
-                Sinais <strong class="text-green-600">IGUAIS</strong> resultam
-                em <strong class="highlight">POSITIVO (+)</strong>. <br /><span
-                  class="text-sm text-gray-500"
-                  >(+) * (+) = + | (-) * (-) = +</span
-                >
-              </li>
-              <li>
-                Sinais <strong class="text-red-600">DIFERENTES</strong> resultam
-                em <strong class="highlight">NEGATIVO (-)</strong>. <br /><span
-                  class="text-sm text-gray-500"
-                  >(+) * (-) = - | (-) * (+) = -</span
-                >
-              </li>
-            </ul>
-            <p>
-              Uma analogia: `(+)` é "amigo", `(-)` é "inimigo". O inimigo do meu
-              inimigo é meu amigo `(- * - = +)`.
-            </p>
-
-            <h4 class="text-lg font-semibold text-gray-600 mt-6 mb-2">
-              1.3.2. Exemplo Prático (Multiplicação): Dívida Parcelada
-            </h4>
-            <p class="mb-4">
-              <strong>Situação:</strong> Você tem uma dívida de 5 parcelas
-              mensais de R$ 90. Qual o impacto total?
-            </p>
-            <pre>
-Passo 1: Traduzir para a matemática.
-Conta: (+5) * (-90)
-
-Passo 2: Resolver o sinal do resultado.
-Sinais diferentes (+) e (-) resultam em NEGATIVO.
-
-Passo 3: Multiplicar os valores.
-  90
-x  5
-----
- 450
-
-Passo 4: Juntar o sinal com o valor.
-Resultado: -450.
-
-Resposta: O impacto total é de -R$ 450.
-                    </pre
-            >
-          </div>
-        </section>
-
-        <section>
-          <h2
-            class="text-2xl font-bold text-gray-700 border-b-4 border-teal-400 pb-2 mb-6"
-          >
-            Parte 2: Desvendando os Números Decimais
-          </h2>
-          <p class="mb-6 text-lg">
-            Números com vírgula aparecem o tempo todo. O segredo está em
-            entender o papel da vírgula e alinhar tudo corretamente.
-          </p>
-
-          <div>
-            <h3 class="text-xl font-bold text-gray-700 mb-4">
-              2.1. Entendendo a Posição: O que a Vírgula nos Diz
-            </h3>
-            <h4 class="text-lg font-semibold text-gray-600 mb-2">
-              Teoria: Casas Decimais
-            </h4>
-            <p class="mb-4">
-              A vírgula separa a parte
-              <strong class="highlight">inteira</strong> (à esquerda) da parte
-              <strong class="highlight">fracionada</strong> (à direita). Em R$
-              8,50, o "8" é a parte inteira e "50" é a parte decimal.
-            </p>
-            <p class="mb-4">
-              <strong>Importante:</strong> Zeros no final da parte decimal não
-              alteram o valor. Assim,
-              <span class="highlight-yellow"
-                >R$ 8,5 é exatamente igual a R$ 8,50</span
-              >. Porém,
-              <span class="highlight-yellow"
-                >R$ 8,05 (oito reais e cinco centavos) é diferente</span
-              >, pois o 5 está em outra posição.
-            </p>
-          </div>
-
-          <div class="mt-8">
-            <h3 class="text-xl font-bold text-gray-700 mb-4">
-              2.2. Adição e Subtração com Decimais
-            </h3>
-            <h4 class="text-lg font-semibold text-gray-600 mb-2">
-              Teoria: A Regra de Ouro - "Vírgula Embaixo de Vírgula"
-            </h4>
-            <p class="mb-4">
-              Para somar ou subtrair, a única regra é alinhar os números de
-              forma que as
-              <strong class="highlight"
-                >vírgulas fiquem uma embaixo da outra</strong
-              >. Se um número tiver menos casas decimais, complete com zeros.
-            </p>
-
-            <h4 class="text-lg font-semibold text-gray-600 mt-6 mb-2">
-              Exemplo Prático (Subtração): Recebendo o Troco
-            </h4>
-            <p class="mb-4">
-              <strong>Situação:</strong> Sua compra deu R$ 13,45. Você pagou com
-              uma nota de R$ 20. Quanto é o troco?
-            </p>
-            <pre>
-Passo 1: Traduzir e preparar os números.
-Conta: 20 - 13,45. O número 20 vira 20,00.
-
-Passo 2: Montar a conta com "vírgula embaixo de vírgula".
-  20,00
-- 13,45
--------
-
-Passo 3: Subtrair, "pegando emprestado".
-  1  9  9  10  <- Visualização do empréstimo
-  2  0, 0  0
-- 1  3, 4  5
------------
-  0  6, 5  5
-
-Resposta: O troco é de R$ 6,55.
-                    </pre
-            >
-          </div>
-
-          <div class="mt-8">
-            <h3 class="text-xl font-bold text-gray-700 mb-4">
-              2.3. Multiplicação com Decimais
-            </h3>
-            <h4 class="text-lg font-semibold text-gray-600 mb-2">
-              Teoria: Multiplicar e Contar as Casas
-            </h4>
-            <p class="mb-4">
-              Aqui <strong class="text-red-600">NÃO</strong> se alinha a
-              vírgula. O processo tem dois passos:
-            </p>
-            <ol class="list-decimal list-inside space-y-2 mb-4 pl-4">
-              <li>
-                <strong class="highlight">Ignore as vírgulas:</strong>
-                Multiplique os números como se fossem inteiros.
-              </li>
-              <li>
-                <strong class="highlight">Conte as casas decimais:</strong> Some
-                a quantidade de casas decimais dos números originais. O
-                resultado final deve ter essa quantidade total de casas.
-              </li>
-            </ol>
-
-            <h4 class="text-lg font-semibold text-gray-600 mt-6 mb-2">
-              Exemplo Prático: Custo da Carne
-            </h4>
-            <p class="mb-4">
-              <strong>Situação:</strong> 1,5 kg de carne a R$ 45,50 por quilo.
-            </p>
-            <pre>
-Passo 1: Multiplicar ignorando as vírgulas (455 * 15).
-    455
-  x  15
-  -----
-   2275  <- (5 * 455)
-+ 455   <- (1 * 455, deslocado)
-------
-  6825
-
-Passo 2: Contar as casas decimais.
-- 45,5  -> 1 casa decimal
--  1,5  -> 1 casa decimal
-Total: 1 + 1 = 2 casas decimais.
-
-Passo 3: Colocar a vírgula no resultado.
-O resultado 6825 precisa de 2 casas. Contamos da direita para a esquerda.
-Resultado: 68,25
-
-Resposta: O valor a pagar é R$ 68,25.
-                    </pre
-            >
-          </div>
-
-          <div class="mt-8">
-            <h3 class="text-xl font-bold text-gray-700 mb-4">
-              2.4. Divisão com Decimais
-            </h3>
-            <h4 class="text-lg font-semibold text-gray-600 mb-2">
-              Teoria: A Missão - Eliminar a Vírgula
-            </h4>
-            <p class="mb-4">
-              O objetivo é transformar a conta em uma divisão de números
-              inteiros.
-            </p>
-            <ol class="list-decimal list-inside space-y-2 mb-4 pl-4">
-              <li>
-                <strong class="highlight">Igualar as casas decimais:</strong>
-                Adicione zeros até que os dois números tenham a mesma quantidade
-                de casas depois da vírgula.
-              </li>
-              <li>
-                <strong class="highlight">Eliminar as vírgulas:</strong>
-                Simplesmente remova as vírgulas dos dois números.
-              </li>
-              <li>
-                <strong class="highlight">Dividir:</strong> Faça a divisão com
-                os novos números inteiros.
-              </li>
-            </ol>
-
-            <h4 class="text-lg font-semibold text-gray-600 mt-6 mb-2">
-              Exemplo Prático: Dividindo a Pizza
-            </h4>
-            <p class="mb-4">
-              <strong>Situação:</strong> Uma conta de R$ 55,50 para 3 amigos.
-            </p>
-            <pre>
-Passo 1: Igualar as casas decimais.
-Conta: 55,50 / 3
-- 55,50 -> 2 casas decimais
-- 3     -> Vira 3,00 para também ter 2 casas.
-Nova conta: 55,50 / 3,00
-
-Passo 2: Eliminar as vírgulas.
-A conta se torna: 5550 / 300
-
-Passo 3: Dividir (podemos simplificar cortando um zero: 555 / 30).
-  555 |__30__
- -30  | 18,5
- ---
-  255
- -240
- ----
-   150  <- Adiciona vírgula no quociente e um zero aqui
-  -150
-  ----
-     0
-
-Resposta: Cada amigo deve pagar R$ 18,50.
-                    </pre
-            >
-          </div>
-        </section>
-      </article>
-
-      <section class="my-12">
-        <h2
-          class="text-2xl font-bold text-gray-700 border-b-4 border-teal-400 pb-2 mb-6"
-        >
-          Vídeo Aula de Apoio
-        </h2>
-        <div
-          class="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg overflow-hidden shadow-lg"
-        >
-          <iframe
-            class="w-full h-full"
-            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          ></iframe>
-        </div>
-      </section>
-
-      <section class="no-print mt-12">
-        <h2
-          class="text-2xl font-bold text-gray-700 border-b-4 border-teal-400 pb-2 mb-6"
-        >
-          Questões de Fixação (Estilo ENEM)
-        </h2>
-
-        <div
-          class="bg-amber-50 border-2 border-amber-200 rounded-xl p-6 mb-8 text-center"
-        >
-          <h3 class="text-xl font-bold text-amber-800 mb-2">
-            Atenção ao Tempo!
-          </h3>
-          <p class="text-amber-700">
-            No ENEM, você terá em média 3 minutos por questão. Antes de começar
-            a ler cada questão, ative o timer individual para simular essa
-            condição.
-          </p>
+    <div class="container">
+        <div class="pomodoro-timer">
+            <h2>Foco Total</h2>
+            <div id="pomodoro-display">25:00</div>
+            <div class="pomodoro-controls">
+                <button id="start-pause-btn">Iniciar</button>
+                <button id="reset-btn">Resetar</button>
+            </div>
         </div>
 
-        <form id="quiz" class="quiz-form space-y-8">
-          <div class="question-container bg-gray-50 p-6 rounded-lg shadow-sm">
-            <div class="flex justify-between items-start mb-4">
-              <p class="font-semibold text-lg flex-1">
-                <strong>Questão 1:</strong> Mariana foi até a padaria e comprou
-                um pedaço de torta de frango por R$ 6,50, um copo de suco por R$
-                5,25 e, de sobremesa, dois brigadeiros por R$ 0,75 cada. O valor
-                total pago por ela foi de:
-              </p>
-              <div class="text-center ml-4 flex-shrink-0">
-                <div class="question-timer text-2xl font-bold text-amber-900">
-                  03:00
+        <h1>Aula 1: Operações Fundamentais com Inteiros e Decimais</h1>
+        
+        <h2>Conteúdo Principal da Aula</h2>
+        
+        <h3>1.1. Operações com Números Inteiros (Conjunto Z)</h3>
+        <p>O conjunto dos números inteiros, representado por <strong class="highlight">Z</strong>, inclui os números positivos, os negativos e o zero. Dominar as operações com eles é o primeiro passo para garantir a precisão nos cálculos do ENEM.</p>
+        
+        <h4>1.1.1. Adição e Subtração</h4>
+        <p>Imagine uma reta numérica. Adicionar um número <strong>positivo</strong> é como dar passos para a <strong>direita</strong>. Adicionar um número <strong>negativo</strong> é como dar passos para a <strong>esquerda</strong>.</p>
+        <ul>
+            <li><strong>Adicionar um positivo:</strong> $$5 + 3 = 8$$</li>
+            <li><strong>Adicionar um negativo:</strong> $$5 + (-3) = 5 - 3 = 2$$</li>
+            <li><strong>Subtrair um positivo:</strong> $$1 - 4 = -3$$</li>
+            <li><strong>Subtrair um negativo:</strong> $$5 - (-2) = 5 + 2 = 7$$. <span class="highlight">Subtrair uma dívida é o mesmo que ganhar dinheiro.</span></li>
+        </ul>
+        
+        <h4>1.1.2. Regras de Sinais para Adição e Subtração</h4>
+        <table>
+            <thead><tr><th>Caso</th><th>Regra</th><th>Exemplo</th></tr></thead>
+            <tbody>
+                <tr><td>Sinais Iguais (ambos +)</td><td>Some os valores e mantenha o sinal positivo.</td><td>$$+7 + 2 = +9$$</td></tr>
+                <tr><td>Sinais Iguais (ambos -)</td><td>Some os valores e mantenha o sinal negativo.</td><td>$$-7 - 2 = -9$$</td></tr>
+                <tr><td>Sinais Diferentes</td><td>Subtraia e use o sinal do número de maior módulo.</td><td>$$+7 - 2 = +5$$</td></tr>
+            </tbody>
+        </table>
+
+        <h4>1.1.3. Multiplicação e Divisão</h4>
+        <p>Para <strong>multiplicação e divisão</strong>, a regra é unificada: <span class="highlight">sinais iguais resultam em POSITIVO, sinais diferentes resultam em NEGATIVO.</span></p>
+        
+        <h3>1.2. Operações com Números Decimais</h3>
+        <p>No ENEM, a maioria dos problemas práticos envolve dinheiro, medidas e dados estatísticos, que são quase sempre representados por números decimais.</p>
+
+        <h4>1.2.1. Adição e Subtração</h4>
+        <p>A regra de ouro é: <strong class="highlight">vírgula embaixo de vírgula</strong>.</p>
+
+        <h4>1.2.2. Multiplicação</h4>
+        <p>O método é simples: 1. Multiplique os números ignorando as vírgulas. 2. <span class="highlight">Conte o total de casas decimais</span> nos fatores. O resultado final deverá ter essa mesma quantidade de casas.</p>
+
+        <h4>1.2.3. Divisão</h4>
+        <p>Para dividir: 1. <strong class="highlight">Iguale o número de casas decimais</strong>. 2. <strong>Elimine as vírgulas</strong>. 3. Realize a divisão com os inteiros resultantes.</p>
+
+        <h2>Revisão Geral</h2>
+        <ul>
+            <li><strong>Adição/Subtração de Inteiros:</strong> Sinais iguais, some e mantenha o sinal. Sinais diferentes, subtraia e use o sinal do maior.</li>
+            <li><strong>Multiplicação/Divisão de Inteiros:</strong> Sinais iguais → POSITIVO. Sinais diferentes → NEGATIVO.</li>
+            <li><strong>Operações com Decimais:</strong> Adição/Subtração (alinhe a vírgula), Multiplicação (some as casas decimais), Divisão (iguale as casas e corte a vírgula).</li>
+            <li><strong>Estratégia ENEM:</strong> Sempre <strong class="highlight">estime o resultado antes</strong> de calcular e verifique se a resposta é coerente com o problema.</li>
+        </ul>
+
+        <h2>Questões Propostas (Estilo ENEM)</h2>
+        <div id="quiz-container">
+            
+            <div class="quiz-question">
+                <p>1. Em uma cidade no sul do Brasil, a temperatura às 6h da manhã era de -2,5 °C. Ao meio-dia, o termômetro registrou 10,2 °C. Às 22h, a temperatura havia caído 15 °C em relação à temperatura do meio-dia. A temperatura registrada às 22h foi de:</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q1" value="A"> A) -7,3 °C</label>
+                    <label><input type="radio" name="q1" value="B" data-correct="true"> B) -4,8 °C</label>
+                    <label><input type="radio" name="q1" value="C"> C) -2,5 °C</label>
+                    <label><input type="radio" name="q1" value="D"> D) 2,7 °C</label>
+                    <label><input type="radio" name="q1" value="E"> E) 5,2 °C</label>
                 </div>
-                <button
-                  type="button"
-                  class="start-timer-btn mt-1 px-3 py-1 text-sm bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600 transition"
-                >
-                  Ativar Timer
-                </button>
-              </div>
-            </div>
-            <div>
-              <input type="radio" name="q1" id="q1a" value="A" /><label
-                for="q1a"
-                >A) R$ 13,25</label
-              >
-              <input type="radio" name="q1" id="q1b" value="B" /><label
-                for="q1b"
-                >B) R$ 12,50</label
-              >
-              <input type="radio" name="q1" id="q1c" value="C" /><label
-                for="q1c"
-                >C) R$ 11,75</label
-              >
-              <input type="radio" name="q1" id="q1d" value="D" /><label
-                for="q1d"
-                >D) R$ 10,00</label
-              >
-              <input type="radio" name="q1" id="q1e" value="E" /><label
-                for="q1e"
-                >E) R$ 7,50</label
-              >
-            </div>
-          </div>
-
-          <div class="question-container bg-gray-50 p-6 rounded-lg shadow-sm">
-            <div class="flex justify-between items-start mb-4">
-              <p class="font-semibold text-lg flex-1">
-                <strong>Questão 2:</strong> Para fazer a decoração de Natal, seu
-                Jerivaldo decidiu alugar um forro para a sua mesa. O comprimento
-                e a largura do forro são de 2,20 metros e 1,10 metros,
-                respectivamente. Podemos afirmar que a área da peça é de:
-              </p>
-              <div class="text-center ml-4 flex-shrink-0">
-                <div class="question-timer text-2xl font-bold text-amber-900">
-                  03:00
+                <div class="resolution-text" style="display: none;">
+                    <strong>Resolução:</strong> A temperatura de referência é a do meio-dia (10,2 °C). A temperatura caiu 15 °C, então a operação é $$10,2 - 15$$. Como 15 é maior que 10,2, o resultado será negativo. A diferença é $$15,0 - 10,2 = 4,8$$. Portanto, a temperatura final é -4,8 °C.
                 </div>
-                <button
-                  type="button"
-                  class="start-timer-btn mt-1 px-3 py-1 text-sm bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600 transition"
-                >
-                  Ativar Timer
-                </button>
-              </div>
             </div>
-            <div>
-              <input type="radio" name="q2" id="q2a" value="A" /><label
-                for="q2a"
-                >A) 2,30 m²</label
-              >
-              <input type="radio" name="q2" id="q2b" value="B" /><label
-                for="q2b"
-                >B) 2,42 m²</label
-              >
-              <input type="radio" name="q2" id="q2c" value="C" /><label
-                for="q2c"
-                >C) 2,50 m²</label
-              >
-              <input type="radio" name="q2" id="q2d" value="D" /><label
-                for="q2d"
-                >D) 2,69 m²</label
-              >
-              <input type="radio" name="q2" id="q2e" value="E" /><label
-                for="q2e"
-                >E) 2,85 m²</label
-              >
-            </div>
-          </div>
 
-          <div class="question-container bg-gray-50 p-6 rounded-lg shadow-sm">
-            <div class="flex justify-between items-start mb-4">
-              <p class="font-semibold text-lg flex-1">
-                <strong>Questão 3:</strong> Em um supermercado, no início de
-                janeiro, pagava-se R$ 22,50 pelo quilo de determinada carne.
-                Após sucessivos aumentos, essa carne passou a custar R$ 39,90 em
-                dezembro. A diferença paga por um cliente que comprou 2,5 kg
-                desse produto em dezembro e em janeiro é igual a:
-              </p>
-              <div class="text-center ml-4 flex-shrink-0">
-                <div class="question-timer text-2xl font-bold text-amber-900">
-                  03:00
+            <div class="quiz-question">
+                <p>2. Uma família comprou 3,5 kg de carne por R$ 40,20/kg, 1,8 kg de batatas por R$ 5,50/kg e arroz por R$ 27,80. Pagando com R$ 200,00, o troco foi de:</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q2" value="A"> A) R$ 18,40</label>
+                    <label><input type="radio" name="q2" value="B" data-correct="true"> B) R$ 21,60</label>
+                    <label><input type="radio" name="q2" value="C"> C) R$ 27,80</label>
+                    <label><input type="radio" name="q2" value="D"> D) R$ 178,40</label>
+                    <label><input type="radio" name="q2" value="E"> E) R$ 181,60</label>
                 </div>
-                <button
-                  type="button"
-                  class="start-timer-btn mt-1 px-3 py-1 text-sm bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600 transition"
-                >
-                  Ativar Timer
-                </button>
-              </div>
-            </div>
-            <div>
-              <input type="radio" name="q3" id="q3a" value="A" /><label
-                for="q3a"
-                >A) R$ 99,75</label
-              >
-              <input type="radio" name="q3" id="q3b" value="B" /><label
-                for="q3b"
-                >B) R$ 56,25</label
-              >
-              <input type="radio" name="q3" id="q3c" value="C" /><label
-                for="q3c"
-                >C) R$ 43,50</label
-              >
-              <input type="radio" name="q3" id="q3d" value="D" /><label
-                for="q3d"
-                >D) R$ 39,90</label
-              >
-              <input type="radio" name="q3" id="q3e" value="E" /><label
-                for="q3e"
-                >E) R$ 30,75</label
-              >
-            </div>
-          </div>
-
-          <div class="question-container bg-gray-50 p-6 rounded-lg shadow-sm">
-            <div class="flex justify-between items-start mb-4">
-              <p class="font-semibold text-lg flex-1">
-                <strong>Questão 4:</strong> Ao abastecer seu veículo, um cliente
-                pagou R$ 145,20. Sabendo que o litro de combustível naquele dia
-                custava R$ 6,60, a quantidade de combustível colocada no veículo
-                foi igual a:
-              </p>
-              <div class="text-center ml-4 flex-shrink-0">
-                <div class="question-timer text-2xl font-bold text-amber-900">
-                  03:00
+                <div class="resolution-text" style="display: none;">
+                    <strong>Resolução:</strong> Custo da carne: $$3,5 \times 40,20 = 140,70$$. Custo das batatas: $$1,8 \times 5,50 = 9,90$$. Custo total: $$140,70 + 9,90 + 27,80 = 178,40$$. Troco: $$200,00 - 178,40 = 21,60$$.
                 </div>
-                <button
-                  type="button"
-                  class="start-timer-btn mt-1 px-3 py-1 text-sm bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600 transition"
-                >
-                  Ativar Timer
-                </button>
-              </div>
             </div>
-            <div>
-              <input type="radio" name="q4" id="q4a" value="A" /><label
-                for="q4a"
-                >A) 20 litros</label
-              >
-              <input type="radio" name="q4" id="q4b" value="B" /><label
-                for="q4b"
-                >B) 21 litros</label
-              >
-              <input type="radio" name="q4" id="q4c" value="C" /><label
-                for="q4c"
-                >C) 22 litros</label
-              >
-              <input type="radio" name="q4" id="q4d" value="D" /><label
-                for="q4d"
-                >D) 23 litros</label
-              >
-              <input type="radio" name="q4" id="q4e" value="E" /><label
-                for="q4e"
-                >E) 24 litros</label
-              >
-            </div>
-          </div>
 
-          <div class="question-container bg-gray-50 p-6 rounded-lg shadow-sm">
-            <div class="flex justify-between items-start mb-4">
-              <p class="font-semibold text-lg flex-1">
-                <strong>Questão 5:</strong> Suponha uma situação em que um
-                pagante entrega uma nota de R$50,00 para o recebedor, por um
-                produto de R$23,20. Calcule o troco necessário.
-              </p>
-              <div class="text-center ml-4 flex-shrink-0">
-                <div class="question-timer text-2xl font-bold text-amber-900">
-                  03:00
+            <div class="quiz-question">
+                <p>3. Um agricultor possui um terreno retangular com 85,5 m de comprimento e 40,2 m de largura. A área do terreno, em m², é de:</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q3" value="A"> A) 343,71 m²</label>
+                    <label><input type="radio" name="q3" value="B"> B) 3.420,00 m²</label>
+                    <label><input type="radio" name="q3" value="C" data-correct="true"> C) 3.437,10 m²</label>
+                    <label><input type="radio" name="q3" value="D"> D) 3.454,20 m²</label>
+                    <label><input type="radio" name="q3" value="E"> E) 34.371,0 m²</label>
                 </div>
-                <button
-                  type="button"
-                  class="start-timer-btn mt-1 px-3 py-1 text-sm bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600 transition"
-                >
-                  Ativar Timer
-                </button>
-              </div>
+                <div class="resolution-text" style="display: none;">
+                    <strong>Resolução:</strong> A área é o produto do comprimento pela largura: $$85,5 \times 40,2$$. Multiplicando 855 por 402, temos 343710. Como temos uma casa decimal em cada fator (total de 2), o resultado é 3437,10 m².
+                </div>
             </div>
-            <div>
-              <input type="radio" name="q5" id="q5a" value="A" /><label
-                for="q5a"
-                >A) R$ 25,80</label
-              >
-              <input type="radio" name="q5" id="q5b" value="B" /><label
-                for="q5b"
-                >B) R$ 26,20</label
-              >
-              <input type="radio" name="q5" id="q5c" value="C" /><label
-                for="q5c"
-                >C) R$ 26,80</label
-              >
-              <input type="radio" name="q5" id="q5d" value="D" /><label
-                for="q5d"
-                >D) R$ 27,20</label
-              >
-              <input type="radio" name="q5" id="q5e" value="E" /><label
-                for="q5e"
-                >E) R$ 37,80</label
-              >
+
+            <div class="quiz-question">
+                <p>4. Quatro amigos dividiram igualmente uma conta de R$ 145,80. O valor pago por cada um foi de:</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q4" value="A"> A) R$ 34,45</label>
+                    <label><input type="radio" name="q4" value="B"> B) R$ 35,90</label>
+                    <label><input type="radio" name="q4" value="C"> C) R$ 36,00</label>
+                    <label><input type="radio" name="q4" value="D" data-correct="true"> D) R$ 36,45</label>
+                    <label><input type="radio" name="q4" value="E"> E) R$ 38,20</label>
+                </div>
+                <div class="resolution-text" style="display: none;">
+                    <strong>Resolução:</strong> A operação é uma divisão simples: $$145,80 \div 4$$. O resultado do cálculo é R$ 36,45.
+                </div>
             </div>
-          </div>
 
-          <button
-            type="button"
-            id="submit-quiz"
-            class="w-full py-4 text-xl font-bold text-white bg-teal-500 rounded-lg shadow-lg hover:bg-teal-600 transition-transform transform hover:scale-105"
-          >
-            Finalizar e Ver Resultado
-          </button>
-        </form>
-      </section>
+            <div class="quiz-question">
+                <p>5. O saldo de Joana era -R$ 155,40. Ela recebeu R$ 2.350,00 e pagou contas de R$ 188,70 e R$ 540,50. O saldo final era de:</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q5" value="A" data-correct="true"> A) R$ 1.465,40</label>
+                    <label><input type="radio" name="q5" value="B"> B) R$ 1.620,80</label>
+                    <label><input type="radio" name="q5" value="C"> C) R$ 1.794,60</label>
+                    <label><input type="radio" name="q5" value="D"> D) R$ 2.066,80</label>
+                    <label><input type="radio" name="q5" value="E"> E) R$ 3.234,60</label>
+                </div>
+                <div class="resolution-text" style="display: none;">
+                    <strong>Resolução:</strong> A sequência de operações é: $$-155,40 + 2350,00 - 188,70 - 540,50$$. Resolvendo passo a passo: $$2194,60 - 188,70 - 540,50 = 2005,90 - 540,50 = 1465,40$$.
+                </div>
+            </div>
 
-      <section
-        id="resultados"
-        class="hidden mt-12 text-center bg-blue-50 border-2 border-blue-200 rounded-xl p-8"
-      >
-        <h2 class="text-3xl font-bold text-blue-800">Seu Desempenho</h2>
-        <p id="score-text" class="text-2xl mt-4 text-blue-700"></p>
-      </section>
+            <div class="quiz-question">
+                <p>6. Uma receita pede 0,450 kg de farinha. Para 12 bolos, a quantidade total de farinha necessária é de:</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q6" value="A"> A) 4,5 kg</label>
+                    <label><input type="radio" name="q6" value="B"> B) 5,0 kg</label>
+                    <label><input type="radio" name="q6" value="C" data-correct="true"> C) 5,4 kg</label>
+                    <label><input type="radio" name="q6" value="D"> D) 5,9 kg</label>
+                    <label><input type="radio" name="q6" value="E"> E) 12,45 kg</label>
+                </div>
+                <div class="resolution-text" style="display: none;">
+                    <strong>Resolução:</strong> Multiplicamos a quantidade por bolo pelo número de bolos: $$0,450 \times 12$$. O resultado é 5,400, ou seja, 5,4 kg.
+                </div>
+            </div>
 
-      <section id="gabarito" class="hidden mt-12">
-        <h2
-          class="text-2xl font-bold text-gray-700 border-b-4 border-teal-400 pb-2 mb-6"
-        >
-          Gabarito Comentado
-        </h2>
-        <div class="space-y-8">
-          <div>
-            <h3 class="font-bold text-lg mb-2">Questão 1: Alternativa A</h3>
-            <p>
-              Precisamos somar o valor de todos os itens. Primeiro, calculamos o
-              custo dos brigadeiros: 2 * 0,75 = 1,50. Depois, somamos tudo,
-              alinhando as vírgulas:
-            </p>
-            <pre>
-  6,50  (Torta)
-  5,25  (Suco)
-+ 1,50  (Brigadeiros)
--------
- 13,25
-</pre
-            >
-          </div>
-          <div>
-            <h3 class="font-bold text-lg mb-2">Questão 2: Alternativa B</h3>
-            <p>
-              A área é comprimento x largura. Multiplicamos 2,20 * 1,10.
-              Ignorando as vírgulas, fazemos 22 * 11 = 242. Nos números
-              originais, temos 2 + 2 = 4 casas decimais no total. Colocando a
-              vírgula no resultado: 2,4200, que é 2,42 m².
-            </p>
-          </div>
-          <div>
-            <h3 class="font-bold text-lg mb-2">Questão 3: Alternativa C</h3>
-            <p>
-              Primeiro, calculamos a diferença de preço por quilo: 39,90 - 22,50
-              = 17,40. Depois, multiplicamos essa diferença pela quantidade de
-              carne comprada: 17,40 * 2,5 = 43,50.
-            </p>
-          </div>
-          <div>
-            <h3 class="font-bold text-lg mb-2">Questão 4: Alternativa C</h3>
-            <p>
-              Dividimos o valor total pago pelo preço do litro: 145,20 / 6,60.
-              Como ambos têm 2 casas decimais, podemos dividir 14520 por 660.
-              Simplificando (cortando um zero), dividimos 1452 por 66, o que
-              resulta em 22 litros.
-            </p>
-          </div>
-          <div>
-            <h3 class="font-bold text-lg mb-2">Questão 5: Alternativa C</h3>
-            <p>
-              Calculamos o troco subtraindo o valor do produto do valor pago,
-              lembrando de alinhar as vírgulas:
-            </p>
-            <pre>
-  50,00
-- 23,20
--------
-  26,80
-</pre
-            >
-          </div>
+            <div class="quiz-question">
+                <p>7. Um carro percorreu 546 km com 40 litros de gasolina. O consumo, em km/l, foi de:</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q7" value="A"> A) 11,85 km/l</label>
+                    <label><input type="radio" name="q7" value="B"> B) 12,65 km/l</label>
+                    <label><input type="radio" name="q7" value="C"> C) 13,00 km/l</label>
+                    <label><input type="radio" name="q7" value="D" data-correct="true"> D) 13,65 km/l</label>
+                    <label><input type="radio" name="q7" value="E"> E) 14,15 km/l</label>
+                </div>
+                <div class="resolution-text" style="display: none;">
+                    <strong>Resolução:</strong> Para achar o consumo em km/l, dividimos a distância pela quantidade de litros: $$546 \div 40 = 13,65$$ km/l.
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <p>8. Um investidor comprou ações por R$ 3.500,00. Elas valorizaram R$ 210,50, desvalorizaram R$ 340,25 e valorizaram R$ 180,00. O valor final era de:</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q8" value="A"> A) R$ 3.129,75</label>
+                    <label><input type="radio" name="q8" value="B" data-correct="true"> B) R$ 3.550,25</label>
+                    <label><input type="radio" name="q8" value="C"> C) R$ 3.690,50</label>
+                    <label><input type="radio" name="q8" value="D"> D) R$ 3.840,25</label>
+                    <label><input type="radio" name="q8" value="E"> E) R$ 4.230,75</label>
+                </div>
+                <div class="resolution-text" style="display: none;">
+                    <strong>Resolução:</strong> Partimos do valor inicial e aplicamos as variações: $$3500,00 + 210,50 - 340,25 + 180,00 = 3710,50 - 340,25 + 180,00 = 3370,25 + 180,00 = 3550,25$$.
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <p>9. Uma costureira tem 15 metros de tecido para cortar em retalhos de 0,75 metro. O número máximo de retalhos é:</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q9" value="A"> A) 15</label>
+                    <label><input type="radio" name="q9" value="B"> B) 18</label>
+                    <label><input type="radio" name="q9" value="C" data-correct="true"> C) 20</label>
+                    <label><input type="radio" name="q9" value="D"> D) 22</label>
+                    <label><input type="radio" name="q9" value="E"> E) 25</label>
+                </div>
+                <div class="resolution-text" style="display: none;">
+                    <strong>Resolução:</strong> Dividimos o total de tecido pelo tamanho de cada retalho: $$15 \div 0,75$$. Para facilitar, igualamos as casas decimais: $$15,00 \div 0,75$$. Removendo as vírgulas, temos $$1500 \div 75 = 20$$.
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <p>10. O custo de uma reforma é uma entrada de R$ 1.200,00 mais 18 parcelas de R$ 345,50. O custo total será de:</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q10" value="A"> A) R$ 5.019,00</label>
+                    <label><input type="radio" name="q10" value="B"> B) R$ 6.219,00</label>
+                    <label><input type="radio" name="q10" value="C" data-correct="true"> C) R$ 7.419,00</label>
+                    <label><input type="radio" name="q10" value="D"> D) R$ 7.619,00</label>
+                    <label><input type="radio" name="q10" value="E"> E) R$ 8.419,00</label>
+                </div>
+                <div class="resolution-text" style="display: none;">
+                    <strong>Resolução:</strong> Primeiro, calculamos o total das parcelas: $$18 \times 345,50 = 6219,00$$. Depois, somamos a entrada: $$6219,00 + 1200,00 = 7419,00$$.
+                </div>
+            </div>
+
+            <button id="submit-quiz-btn">Corrigir Respostas</button>
+            <div id="quiz-results"></div>
         </div>
-      </section>
-
-      <footer
-        class="no-print mt-12 pt-8 border-t-2 border-gray-200 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6"
-      >
-        <a
-          href="../index.html"
-          class="w-full sm:w-auto px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 transition text-center"
-          >Voltar para o Menu de Aulas</a
-        >
-        <button
-          onclick="window.print()"
-          class="w-full sm:w-auto px-6 py-3 bg-sky-600 text-white font-semibold rounded-lg shadow-md hover:bg-sky-700 transition"
-        >
-          Salvar como PDF ou Imprimir
-        </button>
-      </footer>
     </div>
 
-    <script type="module">
-      document.addEventListener("DOMContentLoaded", () => {
-        // --- LÓGICA DO TIMER POMODORO ---
-        const pomodoroDisplay = document.getElementById("pomodoro-timer");
-        const pomodoroStartBtn = document.getElementById("pomodoro-start");
-        const pomodoroPauseBtn = document.getElementById("pomodoro-pause");
-        const pomodoroResetBtn = document.getElementById("pomodoro-reset");
+    <script>
+        // --- LÓGICA DO CRONÔMETRO POMODORO ---
+        const display = document.getElementById('pomodoro-display');
+        const startPauseBtn = document.getElementById('start-pause-btn');
+        const resetBtn = document.getElementById('reset-btn');
 
-        let pomodoroInterval;
-        let pomodoroTime = 25 * 60;
-        let isPomodoroPaused = true;
+        let timer;
+        let timeLeft = 25 * 60;
+        let isRunning = false;
 
-        function updatePomodoroDisplay() {
-          const minutes = Math.floor(pomodoroTime / 60);
-          const seconds = pomodoroTime % 60;
-          pomodoroDisplay.textContent = `${String(minutes).padStart(
-            2,
-            "0"
-          )}:${String(seconds).padStart(2, "0")}`;
+        function updateDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            display.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
 
-        pomodoroStartBtn.addEventListener("click", () => {
-          if (isPomodoroPaused) {
-            isPomodoroPaused = false;
-            pomodoroInterval = setInterval(() => {
-              pomodoroTime--;
-              updatePomodoroDisplay();
-              if (pomodoroTime <= 0) {
-                clearInterval(pomodoroInterval);
-                alert("Pomodoro finalizado! Hora de uma pausa.");
-              }
-            }, 1000);
-          }
-        });
-
-        pomodoroPauseBtn.addEventListener("click", () => {
-          isPomodoroPaused = true;
-          clearInterval(pomodoroInterval);
-        });
-
-        pomodoroResetBtn.addEventListener("click", () => {
-          isPomodoroPaused = true;
-          clearInterval(pomodoroInterval);
-          pomodoroTime = 25 * 60;
-          updatePomodoroDisplay();
-        });
-
-        // --- LÓGICA DO QUIZ E TIMERS INDIVIDUAIS ---
-        const quizForm = document.getElementById("quiz");
-        const submitButton = document.getElementById("submit-quiz");
-        const resultadosSection = document.getElementById("resultados");
-        const gabaritoSection = document.getElementById("gabarito");
-        const scoreText = document.getElementById("score-text");
-
-        const questionContainers = document.querySelectorAll(
-          ".question-container"
-        );
-        let activeTimers = [];
-
-        const correctAnswers = { q1: "A", q2: "B", q3: "C", q4: "C", q5: "C" };
-
-        questionContainers.forEach((container, index) => {
-          const startBtn = container.querySelector(".start-timer-btn");
-          const timerDisplay = container.querySelector(".question-timer");
-          const radios = container.querySelectorAll('input[type="radio"]');
-          let time = 3 * 60;
-          let intervalId;
-
-          startBtn.addEventListener("click", () => {
-            startBtn.disabled = true;
-            startBtn.textContent = "Ativado";
-            startBtn.classList.add("opacity-50", "cursor-not-allowed");
-
-            intervalId = setInterval(() => {
-              time--;
-              const minutes = Math.floor(time / 60);
-              const seconds = time % 60;
-              timerDisplay.textContent = `${String(minutes).padStart(
-                2,
-                "0"
-              )}:${String(seconds).padStart(2, "0")}`;
-
-              if (time <= 0) {
-                clearInterval(intervalId);
-                timerDisplay.textContent = "Esgotado!";
-                radios.forEach((radio) => (radio.disabled = true));
-                container.classList.add(
-                  "bg-red-100",
-                  "border",
-                  "border-red-300"
-                );
-              }
-            }, 1000);
-            activeTimers.push(intervalId);
-          });
-        });
-
-        function checkAnswers() {
-          activeTimers.forEach((id) => clearInterval(id));
-          let score = 0;
-          const totalQuestions = Object.keys(correctAnswers).length;
-
-          for (const question in correctAnswers) {
-            const selector = `input[name="${question}"]:checked`;
-            const userAnswerNode = quizForm.querySelector(selector);
-            const userAnswer = userAnswerNode ? userAnswerNode.value : null;
-
-            const correctAnswer = correctAnswers[question];
-            const correctLabel = document.querySelector(
-              `label[for="${question}${correctAnswer.toLowerCase()}"]`
-            );
-
-            if (correctLabel) {
-              correctLabel.classList.add("correct");
+        function startPauseTimer() {
+            if (isRunning) {
+                clearInterval(timer);
+                startPauseBtn.textContent = 'Continuar';
+            } else {
+                timer = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateDisplay();
+                    } else {
+                        clearInterval(timer);
+                        alert('Pomodoro finalizado! Hora de uma pausa.');
+                        resetTimer();
+                    }
+                }, 1000);
+                startPauseBtn.textContent = 'Pausar';
             }
+            isRunning =!isRunning;
+        }
 
-            if (userAnswer === correctAnswer) {
-              score++;
-            } else if (userAnswerNode && !userAnswerNode.disabled) {
-              // Apenas marca como incorreto se o usuário respondeu e o tempo não esgotou
-              const incorrectLabel = document.querySelector(
-                `label[for="${userAnswerNode.id}"]`
-              );
-              if (incorrectLabel) {
-                incorrectLabel.classList.add("incorrect");
-              }
+        function resetTimer() {
+            clearInterval(timer);
+            isRunning = false;
+            timeLeft = 25 * 60;
+            startPauseBtn.textContent = 'Iniciar';
+            updateDisplay();
+        }
+
+        startPauseBtn.addEventListener('click', startPauseTimer);
+        resetBtn.addEventListener('click', resetTimer);
+        updateDisplay();
+
+        // --- LÓGICA DO QUIZ INTERATIVO AUTÔNOMO ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const submitButton = document.getElementById('submit-quiz-btn');
+            if (submitButton) {
+                submitButton.addEventListener('click', corrigirQuiz);
             }
-          }
+        });
 
-          scoreText.textContent = `Você acertou ${score} de ${totalQuestions} questões.`;
-          resultadosSection.classList.remove("hidden");
-          gabaritoSection.classList.remove("hidden");
+        function corrigirQuiz() {
+            const submitButton = document.getElementById('submit-quiz-btn');
+            const questions = document.querySelectorAll('.quiz-question');
+            const resultsContainer = document.getElementById('quiz-results');
+            const totalQuestoes = questions.length;
+            let acertos = 0;
 
-          submitButton.disabled = true;
-          submitButton.textContent = "Resultados Exibidos";
-          submitButton.classList.add("opacity-50", "cursor-not-allowed");
+            // Desabilita o botão para prevenir múltiplos envios
+            submitButton.disabled = true;
+            submitButton.textContent = 'Corrigido!';
 
-          quizForm
-            .querySelectorAll('input[type="radio"]')
-            .forEach((radio) => (radio.disabled = true));
-          quizForm
-            .querySelectorAll(".start-timer-btn")
-            .forEach((btn) => (btn.disabled = true));
+            questions.forEach(question => {
+                const inputs = question.querySelectorAll('input[type="radio"]');
+                const resolutionText = question.querySelector('.resolution-text');
+                const selectedAnswerInput = question.querySelector('input[type="radio"]:checked');
+                const correctAnswerInput = question.querySelector('input[data-correct="true"]');
+                
+                // Desabilita todos os inputs da questão para que a resposta não possa ser alterada
+                inputs.forEach(input => {
+                    input.disabled = true;
+                });
 
-          resultadosSection.scrollIntoView({ behavior: "smooth" });
+                // Sempre destaca a resposta correta
+                if (correctAnswerInput) {
+                    correctAnswerInput.parentElement.classList.add('correct');
+                }
+
+                // Verifica a resposta do usuário
+                if (selectedAnswerInput) {
+                    const selectedLabel = selectedAnswerInput.parentElement;
+                    if (selectedAnswerInput.dataset.correct === 'true') {
+                        acertos++;
+                        // A classe 'correct' já foi adicionada, então não precisa fazer nada
+                    } else {
+                        // Se errou, adiciona a classe 'incorrect' à resposta selecionada
+                        selectedLabel.classList.add('incorrect');
+                    }
+                }
+
+                // Revela o texto da resolução
+                if (resolutionText) {
+                    resolutionText.style.display = 'block';
+                }
+            });
+
+            // Exibe o placar final
+            resultsContainer.innerHTML = `<h3>Seu resultado: ${acertos} de ${totalQuestoes} acertos!</h3>`;
+            resultsContainer.style.display = 'block';
         }
-
-        submitButton.addEventListener("click", checkAnswers);
-      });
-
-      import { verificarAulaAtual } from "../../firebase/firebase-conta.js";
-      document.addEventListener("DOMContentLoaded", () => {
-        const path = window.location.pathname;
-        const match = path.match(/aula(\d+)\.html/);
-        if (match && match[1]) {
-          const numeroDaAula = parseInt(match[1]);
-          console.log(`Verificando permissão para a aula ${numeroDaAula}...`);
-          verificarAulaAtual("matematica", numeroDaAula);
-        } else {
-          console.error(
-            "Não foi possível determinar o número da aula a partir da URL."
-          );
-        }
-      });
     </script>
-  </body>
+
+</body>
 </html>
