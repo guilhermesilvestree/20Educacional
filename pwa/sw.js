@@ -1,4 +1,4 @@
-const CACHE_NAME = '20educacional-v1';
+const CACHE_NAME = '20educacional-v2'; // Versão atualizada do cache
 // Caminhos absolutos a partir da raiz do site, incluindo o nome do repositório.
 const appShellFiles = [
   '/20Educacional/',
@@ -12,7 +12,9 @@ const appShellFiles = [
   '/20Educacional/assets/imagens/logo-branca-20Png.png',
   '/20Educacional/assets/imagens/saudar.png',
   '/20Educacional/redacao/assets/icon.ico',
-  '/20Educacional/redacao/assets/default-avatar.png'
+  '/20Educacional/redacao/assets/default-avatar.png',
+  // Novo arquivo adicionado ao cache
+  '/20Educacional/pwa/notifications.js' 
 ];
 
 self.addEventListener('install', (event) => {
@@ -55,5 +57,12 @@ self.addEventListener('fetch', (event) => {
         return networkResponse;
       });
     })
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.openWindow('/20Educacional/menu.html')
   );
 });

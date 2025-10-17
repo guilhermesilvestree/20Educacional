@@ -37,7 +37,6 @@
 
         .wrapper { display: flex; width: 100%; height: 100%; }
         
-        /* --- Sidebar (Estilo Inalterado) --- */
         .sidebar { width: 260px; background-color: var(--cor-fundo-secundario); border-right: 1px solid var(--cor-borda); display: flex; flex-direction: column; padding: 25px; z-index: 100; flex-shrink: 0; transition: transform 0.3s ease-in-out; }
         .sidebar-header { display: flex; justify-content: center; align-items: center; margin-bottom: 40px; height: 64px; }
         .sidebar-header img { width: 64px; }
@@ -70,21 +69,17 @@
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid var(--cor-borda);
             border-radius: 16px;
-            padding: 25px;
+            padding: 20px;
         }
         
-        /* --- ESTRUTURA PRINCIPAL DO GRID --- */
         .dashboard-layout {
             display: grid;
-            /* CORREÇÃO: Grid com proporções ajustadas para 3 colunas */
             grid-template-columns: 2fr 1fr 2fr; 
-            grid-template-rows: auto 1fr;
+            grid-template-rows: auto auto; 
             gap: 20px;
-            height: calc(100% - 100px); 
         }
 
         .main-panel {
-            /* CORREÇÃO: Ocupa a 1ª coluna */
             grid-column: 1 / 2;
             display: grid;
             grid-template-columns: 1fr auto;
@@ -112,7 +107,6 @@
         }
 
         .streak-card {
-            /* CORREÇÃO: Ocupa a 2ª coluna */
             grid-column: 2 / 3;
             display: flex;
             flex-direction: column;
@@ -122,22 +116,19 @@
         }
         
         .streak-icon {
-            font-size: 2.5rem;
+            width: 2.5rem;
+            height: 2.5rem;
             margin-bottom: 5px;
             color: var(--cor-texto-secundario);
+            stroke: url(#fire-gradient);
+            filter: drop-shadow(0 0 8px var(--cor-fogo-1));
         }
         
-        .streak-icon.on-fire {
-            background: -webkit-linear-gradient(45deg, var(--cor-fogo-1), var(--cor-fogo-2));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
 
         .streak-card .value { font-size: 2.2rem; font-weight: 700; line-height: 1.2; }
         .streak-card .label { font-size: 0.9rem; color: var(--cor-texto-secundario); }
 
         .side-panel {
-            /* CORREÇÃO: Ocupa a 3ª coluna */
             grid-column: 3 / 4;
             display: flex;
             flex-direction: column;
@@ -164,20 +155,30 @@
             gap: 15px;
         }
 
-        .subject-card { display: flex; align-items: center; gap: 15px; padding: 15px 20px; }
-        .subject-card .chart-wrapper { width: 60px; height: 60px; position: relative; }
-        .subject-card .chart-wrapper span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: 600; font-size: 0.9rem; }
-        .subject-card .info h4 { font-size: 0.9rem; margin: 0; }
-        .subject-card .info p { font-size: 0.8rem; color: var(--cor-texto-secundario); margin: 0; }
+        .subject-card { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            padding: 15px; 
+        }
+        .subject-card .chart-wrapper {
+            width: 50px; 
+            height: 50px; 
+            position: relative;
+        }
+        .subject-card .chart-wrapper span { 
+            position: absolute; 
+            top: 50%; left: 50%; 
+            transform: translate(-50%, -50%); 
+            font-weight: 600; 
+            font-size: 0.8rem; 
+        }
+        .subject-card .info h4 { font-size: 0.85rem; margin: 0; }
+        .subject-card .info p { font-size: 0.75rem; color: var(--cor-texto-secundario); margin: 0; }
 
         @media (max-width: 1200px) {
-            .dashboard-layout {
-                grid-template-columns: 1fr;
-                height: auto;
-            }
-            .main-panel, .side-panel, .streak-card {
-                grid-column: auto;
-            }
+            .dashboard-layout { grid-template-columns: 1fr; height: auto; }
+            .main-panel, .side-panel, .streak-card { grid-column: auto; }
         }
         @media (max-width: 992px) {
             html, body { overflow: auto; }
@@ -194,10 +195,18 @@
         @media (max-width: 500px) {
             .subject-progress-grid { grid-template-columns: 1fr; }
         }
-
     </style>
 </head>
 <body>
+    <svg width="0" height="0" style="position:absolute">
+        <defs>
+            <linearGradient id="fire-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:var(--cor-fogo-1);stop-opacity:1" />
+                <stop offset="100%" style="stop-color:var(--cor-fogo-2);stop-opacity:1" />
+            </linearGradient>
+        </defs>
+    </svg>
+
     <div class="wrapper">
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
@@ -308,8 +317,10 @@
         import { verificarLogin, logout, carregarProgresso, getUserId } from "./firebase/firebase-conta.js";
         import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
         import { db } from "./firebase/firebase-config.js";
+        import { inicializarAnimacaoDeFundo } from "./assets/js/art-background.js";
 
         lucide.createIcons();
+        inicializarAnimacaoDeFundo('art-background-dashboard');
         let chartInstances = {};
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -337,13 +348,6 @@
                     const userData = docSnap.data();
                     const streakCount = userData.streak?.count || 0;
                     document.getElementById('streak-value').textContent = streakCount;
-
-                    const streakIcon = document.querySelector('.streak-icon');
-                    if (streakCount > 1) {
-                        streakIcon.classList.add('on-fire');
-                    } else {
-                        streakIcon.classList.remove('on-fire');
-                    }
                 }
             } catch (error) {
                 console.error("Erro ao buscar dados do usuário:", error);
