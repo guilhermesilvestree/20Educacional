@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Você está offline | Evolução Educacional</title>
+    <link rel="icon" href="assets/imagens/logo-branca-20Png.png" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --cor-fundo: #161622;
+            --cor-texto: #eaeaea;
+            --cor-texto-secundario: #a0a0b0;
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .offline-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .logo {
+            width: 120px;
+            margin-bottom: 20px;
+        }
+        .message-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--cor-texto);
+        }
+        .icon {
+            width: 32px;
+            height: 32px;
+            color: var(--cor-texto-secundario);
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <img src="assets/imagens/logo-192.png" alt="Logo Evolução Educacional" class="logo" />
+        <div class="message-group">
+            <i class="icon" data-lucide="wifi-off"></i>
+            <h1>Você está off-line</h1>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

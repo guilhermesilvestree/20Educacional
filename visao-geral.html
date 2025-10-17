@@ -21,8 +21,8 @@
             --cor-destaque-2: #9c27b0;
             --cor-sucesso: #4caf50;
             --cor-alerta: #ffc107;
-            --cor-fogo-1: #ff8c00; /* Laranja escuro */
-            --cor-fogo-2: #ff4500; /* Vermelho alaranjado */
+            --cor-fogo-1: #ff8c00; 
+            --cor-fogo-2: #ff4500;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -119,11 +119,10 @@
             width: 2.5rem;
             height: 2.5rem;
             margin-bottom: 5px;
-            color: var(--cor-texto-secundario);
             stroke: url(#fire-gradient);
             filter: drop-shadow(0 0 8px var(--cor-fogo-1));
+            color: var(--cor-texto-secundario);
         }
-        
 
         .streak-card .value { font-size: 2.2rem; font-weight: 700; line-height: 1.2; }
         .streak-card .label { font-size: 0.9rem; color: var(--cor-texto-secundario); }
@@ -176,6 +175,21 @@
         .subject-card .info h4 { font-size: 0.85rem; margin: 0; }
         .subject-card .info p { font-size: 0.75rem; color: var(--cor-texto-secundario); margin: 0; }
 
+        #offline-alert {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--cor-alerta);
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
         @media (max-width: 1200px) {
             .dashboard-layout { grid-template-columns: 1fr; height: auto; }
             .main-panel, .side-panel, .streak-card { grid-column: auto; }
@@ -254,7 +268,7 @@
                     </div>
                     
                     <div class="streak-card card">
-                        <i class="streak-icon" data-lucide="flame"></i>
+                        <i class="streak-icon on-fire" data-lucide="flame"></i>
                         <p class="value" id="streak-value">--</p>
                         <p class="label">Dias de Atividade</p>
                     </div>
@@ -311,6 +325,7 @@
                 </main>
             </div>
         </div>
+        <div id="offline-alert">Você está offline. Os dados podem estar desatualizados.</div>
     </div>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script type="module">
@@ -328,30 +343,42 @@
                 document.getElementById("user-name").textContent = userData.name;
                 if (userData.avatar) document.getElementById("user-avatar").src = userData.avatar;
                 
-                await Promise.all([
-                    carregarDadosGerais(),
-                    carregarDadosUsuario()
-                ]);
+                try {
+                    await Promise.all([
+                        carregarDadosGerais(),
+                        carregarDadosUsuario()
+                    ]);
+                } catch (error) {
+                    console.error("Falha ao buscar dados do Firebase:", error);
+                    // Exibe o alerta se houver falha na busca de dados
+                    showOfflineAlert();
+                }
             });
 
             document.getElementById("logout-btn").addEventListener("click", logout);
         });
+
+        function showOfflineAlert() {
+            const alertBox = document.getElementById('offline-alert');
+            alertBox.style.display = 'block';
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 5000); // O alerta some após 5 segundos
+        }
 
         async function carregarDadosUsuario() {
             const userId = getUserId();
             if (!userId) return;
 
             const userDocRef = doc(db, "users", userId);
-            try {
-                const docSnap = await getDoc(userDocRef);
-                if (docSnap.exists()) {
-                    const userData = docSnap.data();
-                    const streakCount = userData.streak?.count || 0;
-                    document.getElementById('streak-value').textContent = streakCount;
-                }
-            } catch (error) {
-                console.error("Erro ao buscar dados do usuário:", error);
-                document.getElementById('streak-value').textContent = '0';
+            const docSnap = await getDoc(userDocRef);
+
+            if (docSnap.exists()) {
+                const userData = docSnap.data();
+                const streakCount = userData.streak?.count || 0;
+                document.getElementById('streak-value').textContent = streakCount;
+            } else {
+                 throw new Error("Documento do usuário não encontrado.");
             }
         }
 
@@ -367,8 +394,13 @@
             let totalAulasGeral = 0;
             const activityByDay = [0, 0, 0, 0, 0, 0, 0];
 
-            for (const materia of materias) {
-                const progresso = await carregarProgresso(materia.id) || {};
+            // Usa Promise.all para carregar o progresso de todas as matérias em paralelo
+            const progressPromises = materias.map(materia => carregarProgresso(materia.id));
+            const todosProgressos = await Promise.all(progressPromises);
+
+            todosProgressos.forEach((progresso, index) => {
+                const materia = materias[index];
+                progresso = progresso || {};
                 const aulasConcluidas = Object.keys(progresso).length;
                 const aulasFaltantes = materia.totalAulas - aulasConcluidas;
                 const porcentagem = materia.totalAulas > 0 ? ((aulasConcluidas / materia.totalAulas) * 100) : 0;
@@ -387,7 +419,7 @@
                         activityByDay[dayOfWeek]++;
                     }
                 }
-            }
+            });
 
             const porcentagemGeral = totalAulasGeral > 0 ? ((totalConcluidasGeral / totalAulasGeral) * 100) : 0;
             document.getElementById('chart-percentage').textContent = `${Math.round(porcentagemGeral)}%`;
