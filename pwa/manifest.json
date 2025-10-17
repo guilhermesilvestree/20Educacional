@@ -20,14 +20,14 @@
   ],
   "screenshots": [
     {
-      "src": "/20Educacional/assets/screenshots/captura-tela-mobile.png",
+      "src": "/20Educacional/assets/imagens/screenshots/captura-tela-mobile.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Tela Principal no Celular"
     },
     {
-      "src": "/20Educacional/assets/screenshots/captura-tela-desktop.png",
+      "src": "/20Educacional/assets/imagens/screenshots/captura-tela-desktop.png",
       "sizes": "1920x1080",
       "type": "image/png",
       "form_factor": "wide",
