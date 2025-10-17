@@ -17,6 +17,7 @@ const HORARIOS_NOTIFICACAO = [
     { hora: 14, minuto: 0 },
     { hora: 15, minuto: 43 },
     { hora: 15, minuto: 46 },
+    { hora: 16, minuto: 38 },
     { hora: 20, minuto: 15 }
 ];
 
@@ -26,6 +27,7 @@ const HORARIOS_NOTIFICACAO = [
 export function solicitarPermissaoNotificacao() {
     if (!("Notification" in window)) {
         console.log("Este navegador não suporta notificações no desktop.");
+        sendDiscordNotification('❌ Erro de Notificação', 'O navegador do usuário não suporta notificações no desktop.', 'error');
         return;
     }
 
@@ -36,35 +38,43 @@ export function solicitarPermissaoNotificacao() {
         Notification.requestPermission().then((permission) => {
             if (permission === "granted") {
                 console.log("Permissão para notificações concedida!");
+                sendDiscordNotification('✅ Permissão Concedida', 'O usuário autorizou o envio de notificações de estudo.', 'success');
                 agendarNotificacoesRecorrentes();
+            } else {
+                sendDiscordNotification('⚠️ Permissão Negada', 'O usuário não autorizou o envio de notificações.', 'warning');
             }
         });
     }
 }
 
 /**
- * [NOVA FUNÇÃO] Envia uma mensagem formatada para o Discord via webhook.
- * @param {string} notificationMessage A mensagem que foi enviada ao usuário.
+ * Envia uma mensagem formatada para o Discord via webhook para diferentes tipos de eventos.
+ * @param {string} title O título da notificação (ex: "🔔 Notificação de Estudo", "❌ Erro no Login").
+ * @param {string} description A descrição detalhada do evento.
+ * @param {'info'|'success'|'warning'|'error'} type O tipo de notificação, que define a cor.
+ * @param {Array<{name: string, value: string}>} fields Campos adicionais para o embed.
  */
-async function sendDiscordWebhook(notificationMessage) {
+export async function sendDiscordNotification(title, description, type = 'info', fields = []) {
     if (!WEBHOOK_URL || !WEBHOOK_URL.startsWith("https://discord.com/api/webhooks/")) {
-        console.warn("Webhook do Discord não configurado. O envio da notificação para o Discord foi ignorado.");
+        console.warn("Webhook do Discord não configurado. O envio foi ignorado.");
         return;
     }
 
+    const colors = {
+        info: 3447003,    // Azul
+        success: 3066993,  // Verde
+        warning: 15105570, // Amarelo
+        error: 15158332    // Vermelho
+    };
+
     const payload = {
-        username: "Monitor de Estudos",
+        username: "Monitor Evolução Educacional",
         avatar_url: "https://raw.githubusercontent.com/guilhermesilvestree/20educacional/main/assets/imagens/logo-192.png",
         embeds: [{
-            title: "🔔 Notificação de Estudo Enviada",
-            description: "Um lembrete foi enviado para incentivar um aluno a manter o foco em sua jornada de aprovação.",
-            fields: [
-                {
-                    name: "Conteúdo da Mensagem",
-                    value: `> ${notificationMessage}`
-                }
-            ],
-            color: 3447003, // Cor azulada
+            title: title,
+            description: description,
+            fields: fields,
+            color: colors[type] || colors['info'],
             timestamp: new Date().toISOString(),
             footer: {
                 text: "Evolução Educacional"
@@ -81,9 +91,7 @@ async function sendDiscordWebhook(notificationMessage) {
             body: JSON.stringify(payload),
         });
 
-        if (response.ok) {
-            console.log("Webhook enviado para o Discord com sucesso!");
-        } else {
+        if (!response.ok) {
             console.error("Falha ao enviar webhook para o Discord:", response.status, response.statusText);
         }
     } catch (error) {
@@ -105,8 +113,13 @@ function mostrarNotificacao() {
             badge: '/20Educacional/assets/imagens/logo-192.png'
         };
 
-        // Envia a notificação para o Discord
-        sendDiscordWebhook(mensagem);
+        // Envia a notificação para o Discord usando a nova função
+        sendDiscordNotification(
+            "🔔 Notificação de Estudo Enviada",
+            "Um lembrete foi enviado para incentivar um aluno a manter o foco.",
+            'info',
+            [{ name: "Conteúdo da Mensagem", value: `> ${mensagem}` }]
+        );
 
         navigator.serviceWorker.ready.then(registration => {
             registration.showNotification('Hora de Evoluir!', options);
@@ -128,8 +141,8 @@ function agendarNotificacoesRecorrentes() {
             if (horaAtual === horario.hora && minutoAtual === horario.minuto) {
                 console.log(`Disparando notificação agendada para as ${horario.hora}h${horario.minuto.toString().padStart(2, '0')}.`);
                 mostrarNotificacao();
-                break; 
+                break;
             }
         }
-    }, 60000); 
+    }, 60000);
 }
