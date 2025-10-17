@@ -9,6 +9,7 @@ import {
   doc,
   getDoc,
   setDoc,
+  updateDoc,
   serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -22,7 +23,8 @@ function saveAppData(data) {
   }
 }
 
-function getUserId() {
+// CORREÇÃO: Adicionada a palavra-chave "export" para tornar a função acessível
+export function getUserId() {
     const appData = JSON.parse(localStorage.getItem(APP_STORAGE_KEY));
     return appData?.userData?.uid;
 }
@@ -36,14 +38,22 @@ export async function loginComGoogle() {
     const docSnap = await getDoc(userDocRef);
 
     let userRole = "student";
+    let userData = {};
+
     if (docSnap.exists()) {
-      userRole = docSnap.data().role || "student";
+      userData = docSnap.data();
+      userRole = userData.role || "student";
     } else {
-      await setDoc(userDocRef, {
+      userData = {
         name: user.displayName, email: user.email, uid: user.uid,
         avatar: user.photoURL, role: "student", createdAt: serverTimestamp(),
-      });
+        streak: { count: 0, lastActivityDate: null }
+      };
+      await setDoc(userDocRef, userData);
     }
+    
+    await updateUserStreak(user.uid, userData.streak);
+
     const newAppData = {
       userData: { name: user.displayName, avatar: user.photoURL, uid: user.uid, role: userRole },
       essaySession: null,
@@ -113,11 +123,6 @@ export async function verificarAulaAtual(materia, numeroAulaAtual) {
     }
 }
 
-/**
- * [NOVA FUNÇÃO] Registra a visita a uma aula, salvando o estado e um timestamp.
- * @param {string} materia - O nome da matéria (ex: 'matematica').
- * @param {string} lessonId - O ID da aula (ex: 'mat-1').
- */
 export async function registrarVisitaAula(materia, lessonId) {
     const userId = getUserId();
     if (!userId) {
@@ -125,21 +130,73 @@ export async function registrarVisitaAula(materia, lessonId) {
         return;
     }
     try {
+        await updateUserStreak();
+
         const progressDocRef = doc(db, `users/${userId}/progress`, materia);
-        
-        // Cria um objeto que atualiza apenas o campo da aula específica usando dot notation
         const updateData = {
             [lessonId]: {
                 state: 'visited',
-                lastVisited: serverTimestamp() // Usa o timestamp do servidor do Firebase
+                lastVisited: serverTimestamp()
             }
         };
-
-        // Usa setDoc com { merge: true } para atualizar ou criar o campo sem sobrescrever o resto
         await setDoc(progressDocRef, updateData, { merge: true });
         console.log(`Visita à aula ${lessonId} registrada com sucesso.`);
 
     } catch (error) {
         console.error(`Erro ao registrar visita à aula ${lessonId}:`, error);
+    }
+}
+
+export async function updateUserStreak() {
+    const userId = getUserId();
+    if (!userId) return;
+
+    const userDocRef = doc(db, "users", userId);
+    
+    try {
+        const docSnap = await getDoc(userDocRef);
+        if (!docSnap.exists()) return;
+
+        const userData = docSnap.data();
+        const streakData = userData.streak || { count: 0, lastActivityDate: null };
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (!streakData.lastActivityDate) {
+            await updateDoc(userDocRef, {
+                'streak.count': 1,
+                'streak.lastActivityDate': serverTimestamp()
+            });
+            console.log("Streak iniciado!");
+            return;
+        }
+
+        const lastActivity = streakData.lastActivityDate.toDate();
+        lastActivity.setHours(0, 0, 0, 0);
+
+        if (today.getTime() === lastActivity.getTime()) {
+            console.log("Streak já contado para hoje.");
+            return;
+        }
+
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+
+        if (lastActivity.getTime() === yesterday.getTime()) {
+            await updateDoc(userDocRef, {
+                'streak.count': (streakData.count || 0) + 1,
+                'streak.lastActivityDate': serverTimestamp()
+            });
+            console.log("Streak incrementado!");
+        } else {
+            await updateDoc(userDocRef, {
+                'streak.count': 1,
+                'streak.lastActivityDate': serverTimestamp()
+            });
+            console.log("Streak quebrado e reiniciado.");
+        }
+    } catch (error) {
+        console.error("Erro ao atualizar o streak do usuário:", error);
     }
 }

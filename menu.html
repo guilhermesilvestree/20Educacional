@@ -6,7 +6,7 @@
     <title>Dashboard | Evolução Educacional</title>
     <link
       rel="icon"
-      href="assets/imagens/logo-192.png"
+      href="assets/imagens/logo-branca-20Png.png"
       type="image/png"
     />
     <link rel="manifest" href="pwa/manifest.json" />
@@ -341,13 +341,14 @@
                 ><i data-lucide="home"></i> Início</a
               >
             </li>
-            <li>
-              <a href="#" class="disabled nav-link"
-                ><i data-lucide="bar-chart-3"></i> Desempenho</a
+            </li>
+             <li>
+              <a href="visao-geral.html" class="nav-link"
+                ><i data-lucide="layout-dashboard"></i> Visão Geral</a
               >
             </li>
             <li>
-              <a href="redacao" class="nav-link"
+              <a href="redacao/" class="nav-link"
                 ><i data-lucide="file-pen-line"></i> Redações</a
               >
             </li>
@@ -367,7 +368,7 @@
           <div class="user-profile">
             <img
               id="user-avatar"
-              src="https://via.placeholder.com/40"
+              src="assets/imagens/saudar.png"
               alt="Avatar do usuário"
             />
             <div class="user-info">
@@ -403,7 +404,7 @@
             <div class="missions-container">
               <h3>Escolha sua Missão</h3>
               <div class="missions-grid">
-                <a href="#" class="mission-card"
+                <a href="linguagens.html" class="mission-card"
                   ><i
                     data-lucide="message-circle"
                     class="icon"
@@ -448,12 +449,10 @@
       lucide.createIcons();
 
       document.addEventListener("DOMContentLoaded", () => {
-        // Verifica o login e, se for válido, executa a função para popular a página
         verificarLogin((userData) => {
           const { name, avatar } = userData;
           const firstName = name.split(" ")[0];
 
-          // Popula os dados do usuário na interface
           document.getElementById(
             "welcome-text"
           ).textContent = `Olá, ${firstName}!`;
@@ -462,10 +461,8 @@
           if (avatar) userAvatar.src = avatar;
         });
 
-        // Lógica de Logout
         document.getElementById("logout-btn").addEventListener("click", logout);
 
-        // Lógica da Sidebar Responsiva (sem alterações)
         const sidebar = document.getElementById("sidebar");
         const hamburgerMenu = document.getElementById("hamburger-menu");
         const overlay = document.getElementById("overlay");
@@ -484,7 +481,6 @@
           });
         });
 
-        // Animação do Canvas (sem alterações)
         const canvas = document.getElementById("art-background-dashboard");
         const ctx = canvas.getContext("2d");
         let particlesArray;
@@ -559,7 +555,7 @@
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register("/20Educacional/pwa/sw.js", { scope: "/20Educacional/" }) // Adicionando o escopo
+            .register("/20Educacional/pwa/sw.js", { scope: "/20Educacional/" })
             .then((registration) => {
               console.log(
                 "Service Worker registrado com sucesso com escopo:",
