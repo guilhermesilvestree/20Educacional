@@ -1,18 +1,18 @@
 const CACHE_NAME = '20educacional-v1';
-// Caminhos absolutos a partir da raiz do site.
+// Caminhos absolutos a partir da raiz do site, incluindo o nome do repositório.
 const appShellFiles = [
-  '/',
-  '/index.html',
-  '/menu.html',
-  '/matematica/index.html',
-  '/linguagens.html',
-  '/redacao/index.html',
-  '/firebase/firebase-config.js',
-  '/firebase/firebase-conta.js',
-  '/assets/imagens/logo-branca-20Png.png',
-  '/assets/imagens/saudar.png',
-  '/redacao/assets/icon.ico',
-  '/redacao/assets/default-avatar.png'
+  '/20Educacional/',
+  '/20Educacional/index.html',
+  '/20Educacional/menu.html',
+  '/20Educacional/matematica/index.html',
+  '/20Educacional/linguagens.html',
+  '/20Educacional/redacao/index.html',
+  '/20Educacional/firebase/firebase-config.js',
+  '/20Educacional/firebase/firebase-conta.js',
+  '/20Educacional/assets/imagens/logo-branca-20Png.png',
+  '/20Educacional/assets/imagens/saudar.png',
+  '/20Educacional/redacao/assets/icon.ico',
+  '/20Educacional/redacao/assets/default-avatar.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -30,6 +30,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((cache) => {
           if (cache !== CACHE_NAME) {
+            console.log('Service Worker: Deletando cache antigo:', cache);
             return caches.delete(cache);
           }
         })
@@ -45,7 +46,7 @@ self.addEventListener('fetch', (event) => {
         return response;
       }
       return fetch(event.request).then((networkResponse) => {
-        // Cacheia as aulas sob demanda
+        // Cacheia as aulas sob demanda (verifique se o caminho está correto)
         if (event.request.url.includes('/aulas/')) {
           return caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, networkResponse.clone());
