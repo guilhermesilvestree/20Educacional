@@ -260,15 +260,40 @@
       <a href="#">Termos de Uso</a>
       <a href="#">Política de Privacidade</a>
     </footer>
+
     <script type="module">
+      // Importa a função de login do nosso arquivo centralizado
       import { loginComGoogle } from "./firebase/firebase-conta.js";
       import { inicializarAnimacaoDeFundo } from "./assets/js/art-background.js";
 
+      // --- VERIFICAÇÃO DE LOGIN E REDIRECIONAMENTO ---
+      // Esta função verifica se o usuário já está logado e o redireciona para o menu.
+      (function verificarSessao() {
+        const APP_STORAGE_KEY = "perfilUser";
+        try {
+          const rawData = localStorage.getItem(APP_STORAGE_KEY);
+          if (rawData) {
+            const appData = JSON.parse(rawData);
+            // Se existirem dados de usuário, redireciona para o menu
+            if (appData && appData.userData && appData.userData.uid) {
+              console.log("Usuário já logado. Redirecionando para o menu...");
+              window.location.href = "menu.html";
+            }
+          }
+        } catch (e) {
+          console.error("Falha ao verificar sessão no localStorage", e);
+        }
+      })();
+
+      // Adiciona o evento de clique ao botão, que agora só chama a função importada
       document.getElementById("google-login-btn").addEventListener("click", loginComGoogle);
 
+      // --- ANIMAÇÃO DE FUNDO ---
       inicializarAnimacaoDeFundo('art-background');
     </script>
+
     <script>
+      // --- SERVICE WORKER ---
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
           navigator.serviceWorker

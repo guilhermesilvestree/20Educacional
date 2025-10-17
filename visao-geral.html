@@ -1,496 +1,816 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Visão Geral | Evolução Educacional</title>
-    <link rel="icon" href="assets/imagens/logo-branca-20Png.png" type="image/png" />
+    <link
+      rel="icon"
+      href="assets/imagens/logo-branca-20Png.png"
+      type="image/png"
+    />
     <link rel="manifest" href="pwa/manifest.json" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root {
-            --cor-fundo: #0f0f1a;
-            --cor-fundo-secundario: #161622;
-            --cor-borda: rgba(255, 255, 255, 0.08);
-            --cor-texto: #eaeaea;
-            --cor-texto-secundario: #a0a0b0;
-            --cor-destaque-1: #00a8ff;
-            --cor-destaque-2: #9c27b0;
-            --cor-sucesso: #4caf50;
-            --cor-alerta: #ffc107;
-            --cor-fogo-1: #ff8c00; 
-            --cor-fogo-2: #ff4500;
-        }
+      :root {
+        --cor-fundo: #0f0f1a;
+        --cor-fundo-secundario: #161622;
+        --cor-borda: rgba(255, 255, 255, 0.08);
+        --cor-texto: #eaeaea;
+        --cor-texto-secundario: #a0a0b0;
+        --cor-destaque-1: #00a8ff;
+        --cor-destaque-2: #9c27b0;
+        --cor-sucesso: #4caf50;
+        --cor-alerta: #ffc107;
+        --cor-fogo-1: #ff8c00;
+        --cor-fogo-2: #ff4500;
+      }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        html, body {
-            height: 100%;
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--cor-fundo);
-            color: var(--cor-texto);
-            overflow: hidden;
-        }
+      html,
+      body {
+        height: 100%;
+        font-family: "Poppins", sans-serif;
+        background-color: var(--cor-fundo);
+        color: var(--cor-texto);
+        overflow: hidden;
+      }
 
-        .wrapper { display: flex; width: 100%; height: 100%; }
-        
-        .sidebar { width: 260px; background-color: var(--cor-fundo-secundario); border-right: 1px solid var(--cor-borda); display: flex; flex-direction: column; padding: 25px; z-index: 100; flex-shrink: 0; transition: transform 0.3s ease-in-out; }
-        .sidebar-header { display: flex; justify-content: center; align-items: center; margin-bottom: 40px; height: 64px; }
-        .sidebar-header img { width: 64px; }
-        .sidebar nav { flex: 1; }
-        .sidebar-nav { list-style: none; }
-        .sidebar-nav li a { display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 8px; color: var(--cor-texto-secundario); text-decoration: none; font-weight: 500; transition: all 0.2s ease; }
-        .sidebar-nav li a:not(.disabled):hover { background-color: rgba(255, 255, 255, 0.05); color: var(--cor-destaque-1); }
-        .sidebar-nav li a.active { background-color: var(--cor-destaque-1); color: #fff; box-shadow: 0 4px 15px rgba(0, 168, 255, 0.2); }
-        .sidebar-nav li a.disabled { opacity: 0.5; cursor: not-allowed; }
-        .sidebar-footer { border-top: 1px solid var(--cor-borda); padding-top: 20px; }
-        .user-profile { display: flex; align-items: center; gap: 12px; }
-        .user-profile img { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; }
-        .user-info { min-width: 0; }
-        .user-info span { display: block; }
-        .user-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .user-info .logout { font-size: 0.8rem; color: var(--cor-texto-secundario); cursor: pointer; }
-        .user-info .logout:hover { color: var(--cor-destaque-1); }
+      .wrapper {
+        display: flex;
+        width: 100%;
+        height: 100vh;
+      } /* ALTERAÇÃO APLICADA AQUI */
 
-        .main-content { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; overflow-y: auto; }
-        #art-background-dashboard { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; filter: blur(3px); transform: scale(1.05); }
-        .main-content-inner { padding: 25px 30px; flex: 1; display: flex; flex-direction: column; position: relative; z-index: 1; }
-        
-        header { margin-bottom: 25px; }
-        header h2 { font-size: 1.8rem; }
-        header p { color: var(--cor-texto-secundario); }
+      .sidebar {
+        width: 260px;
+        background-color: var(--cor-fundo-secundario);
+        border-right: 1px solid var(--cor-borda);
+        display: flex;
+        flex-direction: column;
+        padding: 25px;
+        height: 100vh;
+        z-index: 100;
+        flex-shrink: 0;
+        transition: transform 0.3s ease-in-out;
+      }
+      .sidebar-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 40px;
+        height: 64px;
+      }
+      .sidebar-header img {
+        width: 64px;
+      }
+      .sidebar nav {
+        flex: 1;
+      }
+      .sidebar-nav {
+        list-style: none;
+      }
+      .sidebar-nav li a {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        border-radius: 8px;
+        color: var(--cor-texto-secundario);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s ease;
+      }
+      .sidebar-nav li a:not(.disabled):hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: var(--cor-destaque-1);
+      }
+      .sidebar-nav li a.active {
+        background-color: var(--cor-destaque-1);
+        color: #fff;
+        box-shadow: 0 4px 15px rgba(0, 168, 255, 0.2);
+      }
+      .sidebar-nav li a.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .sidebar-footer {
+        border-top: 1px solid var(--cor-borda);
+        padding-top: 20px;
+      }
+      .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .user-profile img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .user-info {
+        min-width: 0;
+      }
+      .user-info span {
+        display: block;
+      }
+      .user-name {
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .user-info .logout {
+        font-size: 0.8rem;
+        color: var(--cor-texto-secundario);
+        cursor: pointer;
+      }
+      .user-info .logout:hover {
+        color: var(--cor-destaque-1);
+      }
 
-        .card {
-            background: rgba(22, 22, 34, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--cor-borda);
-            border-radius: 16px;
-            padding: 20px;
-        }
-        
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        position: relative;
+        overflow-y: auto;
+      }
+      #art-background-dashboard {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        filter: blur(3px);
+        transform: scale(1.05);
+      }
+      .main-content-inner {
+        padding: 25px 30px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        z-index: 1;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+      header h2 {
+        font-size: 1.8rem;
+      }
+      header p {
+        color: var(--cor-texto-secundario);
+      }
+      .hamburger-menu {
+        display: none;
+        cursor: pointer;
+        z-index: 101;
+      }
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 99;
+      }
+      .overlay.visible {
+        display: block;
+      }
+
+      .card {
+        background: rgba(22, 22, 34, 0.7);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid var(--cor-borda);
+        border-radius: 16px;
+        padding: 20px;
+      }
+
+      .dashboard-layout {
+        display: grid;
+        grid-template-columns: 2fr 1fr 2fr;
+        grid-template-rows: auto auto;
+        gap: 20px;
+      }
+
+      .main-panel {
+        grid-column: 1 / 2;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .main-panel-text h3 {
+        font-size: 1.5rem;
+        color: var(--cor-texto);
+      }
+      .main-panel-text p {
+        color: var(--cor-texto-secundario);
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+      }
+
+      #progress-chart-container {
+        position: relative;
+        max-width: 160px;
+        margin: auto;
+      }
+
+      #chart-percentage {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--cor-destaque-1);
+      }
+
+      .streak-card {
+        grid-column: 2 / 3;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+
+      .streak-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        margin-bottom: 5px;
+        stroke: url(#fire-gradient);
+        filter: drop-shadow(0 0 8px var(--cor-fogo-1));
+        color: var(--cor-texto-secundario);
+      }
+
+      .streak-card .value {
+        font-size: 2.2rem;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      .streak-card .label {
+        font-size: 0.9rem;
+        color: var(--cor-texto-secundario);
+      }
+
+      .side-panel {
+        grid-column: 3 / 4;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .side-panel h3 {
+        font-size: 1.1rem;
+        margin-top: 0;
+        margin-bottom: 15px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+
+      .activity-chart-wrapper {
+        position: relative;
+        flex-grow: 1;
+        min-height: 150px;
+      }
+
+      .subject-progress-grid {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+      }
+
+      .subject-card {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+      }
+      .subject-card .chart-wrapper {
+        width: 50px;
+        height: 50px;
+        position: relative;
+      }
+      .subject-card .chart-wrapper span {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-weight: 600;
+        font-size: 0.8rem;
+      }
+      .subject-card .info h4 {
+        font-size: 0.85rem;
+        margin: 0;
+      }
+      .subject-card .info p {
+        font-size: 0.75rem;
+        color: var(--cor-texto-secundario);
+        margin: 0;
+      }
+
+      #offline-alert {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--cor-alerta);
+        color: #333;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      @media (max-width: 1200px) {
         .dashboard-layout {
-            display: grid;
-            grid-template-columns: 2fr 1fr 2fr; 
-            grid-template-rows: auto auto; 
-            gap: 20px;
+          grid-template-columns: 1fr;
+          height: auto;
         }
-
-        .main-panel {
-            grid-column: 1 / 2;
-            display: grid;
-            grid-template-columns: 1fr auto;
-            align-items: center;
-            gap: 20px;
-        }
-        
-        .main-panel-text h3 { font-size: 1.5rem; color: var(--cor-texto); }
-        .main-panel-text p { color: var(--cor-texto-secundario); margin-bottom: 20px; font-size: 0.9rem; }
-
-        #progress-chart-container {
-            position: relative;
-            max-width: 160px;
-            margin: auto;
-        }
-        
-        #chart-percentage {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--cor-destaque-1);
-        }
-
+        .main-panel,
+        .side-panel,
         .streak-card {
-            grid-column: 2 / 3;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+          grid-column: auto;
         }
-        
-        .streak-icon {
-            width: 2.5rem;
-            height: 2.5rem;
-            margin-bottom: 5px;
-            stroke: url(#fire-gradient);
-            filter: drop-shadow(0 0 8px var(--cor-fogo-1));
-            color: var(--cor-texto-secundario);
+      }
+      @media (max-width: 992px) {
+        html,
+        body {
+          overflow: auto;
         }
-
-        .streak-card .value { font-size: 2.2rem; font-weight: 700; line-height: 1.2; }
-        .streak-card .label { font-size: 0.9rem; color: var(--cor-texto-secundario); }
-
-        .side-panel {
-            grid-column: 3 / 4;
-            display: flex;
-            flex-direction: column;
+        .wrapper {
+          height: auto;
+          flex-direction: column;
         }
-
-        .side-panel h3 {
-            font-size: 1.1rem;
-            margin-top: 0;
-            margin-bottom: 15px;
-            text-align: center;
-            flex-shrink: 0;
+        .main-content {
+          padding: 0;
+          height: auto;
         }
-        
-        .activity-chart-wrapper {
-            position: relative;
-            flex-grow: 1;
-            min-height: 150px;
+        .main-content-inner {
+          padding: 20px;
         }
-
+        .sidebar {
+          position: fixed;
+          transform: translateX(-100%);
+        }
+        .sidebar.open {
+          transform: translateX(0);
+        }
+        .hamburger-menu {
+          display: block;
+        }
+      }
+      @media (max-width: 768px) {
         .subject-progress-grid {
-            grid-column: 1 / -1;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
+          grid-template-columns: repeat(2, 1fr);
         }
-
-        .subject-card { 
-            display: flex; 
-            align-items: center; 
-            gap: 15px; 
-            padding: 15px; 
+        .main-panel {
+          grid-template-columns: 1fr;
+          text-align: center;
         }
-        .subject-card .chart-wrapper {
-            width: 50px; 
-            height: 50px; 
-            position: relative;
+      }
+      @media (max-width: 500px) {
+        .subject-progress-grid {
+          grid-template-columns: 1fr;
         }
-        .subject-card .chart-wrapper span { 
-            position: absolute; 
-            top: 50%; left: 50%; 
-            transform: translate(-50%, -50%); 
-            font-weight: 600; 
-            font-size: 0.8rem; 
-        }
-        .subject-card .info h4 { font-size: 0.85rem; margin: 0; }
-        .subject-card .info p { font-size: 0.75rem; color: var(--cor-texto-secundario); margin: 0; }
-
-        #offline-alert {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--cor-alerta);
-            color: #333;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 500;
-            z-index: 1000;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        
-        @media (max-width: 1200px) {
-            .dashboard-layout { grid-template-columns: 1fr; height: auto; }
-            .main-panel, .side-panel, .streak-card { grid-column: auto; }
-        }
-        @media (max-width: 992px) {
-            html, body { overflow: auto; }
-            .wrapper { height: auto; flex-direction: column; }
-            .main-content { padding: 0; height: auto; }
-            .main-content-inner { padding: 20px; }
-            .sidebar { position: fixed; transform: translateX(-100%); }
-            .sidebar.open { transform: translateX(0); }
-        }
-        @media (max-width: 768px) {
-            .subject-progress-grid { grid-template-columns: repeat(2, 1fr); }
-            .main-panel { grid-template-columns: 1fr; text-align: center; }
-        }
-        @media (max-width: 500px) {
-            .subject-progress-grid { grid-template-columns: 1fr; }
-        }
+      }
     </style>
-</head>
-<body>
-    <svg width="0" height="0" style="position:absolute">
-        <defs>
-            <linearGradient id="fire-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:var(--cor-fogo-1);stop-opacity:1" />
-                <stop offset="100%" style="stop-color:var(--cor-fogo-2);stop-opacity:1" />
-            </linearGradient>
-        </defs>
+  </head>
+  <body>
+    <svg width="0" height="0" style="position: absolute">
+      <defs>
+        <linearGradient id="fire-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop
+            offset="0%"
+            style="stop-color: var(--cor-fogo-1); stop-opacity: 1"
+          />
+          <stop
+            offset="100%"
+            style="stop-color: var(--cor-fogo-2); stop-opacity: 1"
+          />
+        </linearGradient>
+      </defs>
     </svg>
 
     <div class="wrapper">
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <img src="assets/imagens/logo-branca-20Png.png" alt="Logo" />
-            </div>
-            <nav>
-                <ul class="sidebar-nav">
-                    <li><a href="menu.html" class="nav-link"><i data-lucide="home"></i> Início</a></li>
-                    <li><a href="visao-geral.html" class="active nav-link"><i data-lucide="layout-dashboard"></i> Visão Geral</a></li>
-                    <li><a href="redacao/" class="nav-link"><i data-lucide="file-pen-line"></i> Redações</a></li>
-                    <li><a href="#" class="disabled nav-link"><i data-lucide="file-check-2"></i> Simulados</a></li>
-                    <li><a href="#" class="disabled nav-link"><i data-lucide="settings"></i> Configurações</a></li>
-                </ul>
-            </nav>
-            <div class="sidebar-footer">
-                <div class="user-profile">
-                    <img id="user-avatar" src="assets/imagens/saudar.png" alt="Avatar do usuário"/>
-                    <div class="user-info">
-                        <span id="user-name" class="user-name">Carregando...</span>
-                        <span class="logout" id="logout-btn">Sair</span>
-                    </div>
-                </div>
-            </div>
-        </aside>
-        <div class="main-content">
-            <canvas id="art-background-dashboard"></canvas>
-            <div class="main-content-inner">
-                <header>
-                    <div class="header-title">
-                        <h2>Visão Geral do Desempenho</h2>
-                        <p>Seu progresso consolidado em todas as disciplinas.</p>
-                    </div>
-                </header>
-                
-                <main class="dashboard-layout">
-                    <div class="main-panel card">
-                        <div class="main-panel-text">
-                            <h3>Progresso Geral</h3>
-                            <p>Esta é a sua média de conclusão em todas as áreas. Continue avançando para alcançar seus objetivos!</p>
-                        </div>
-                        <div id="progress-chart-container">
-                            <canvas id="progress-chart"></canvas>
-                            <div id="chart-percentage">--%</div>
-                        </div>
-                    </div>
-                    
-                    <div class="streak-card card">
-                        <i class="streak-icon on-fire" data-lucide="flame"></i>
-                        <p class="value" id="streak-value">--</p>
-                        <p class="label">Dias de Atividade</p>
-                    </div>
-
-                    <div class="side-panel card">
-                        <h3>Atividades por Dia da Semana</h3>
-                        <div class="activity-chart-wrapper">
-                            <canvas id="activity-chart"></canvas>
-                        </div>
-                    </div>
-
-                    <div class="subject-progress-grid">
-                        <div class="subject-card card">
-                            <div class="chart-wrapper">
-                                <canvas id="linguagens-chart"></canvas>
-                                <span id="linguagens-percent">--%</span>
-                            </div>
-                            <div class="info">
-                                <h4>Linguagens</h4>
-                                <p id="linguagens-details">--/-- Aulas</p>
-                            </div>
-                        </div>
-                        <div class="subject-card card">
-                            <div class="chart-wrapper">
-                                <canvas id="humanas-chart"></canvas>
-                                <span id="humanas-percent">--%</span>
-                            </div>
-                            <div class="info">
-                                <h4>Ciências Humanas</h4>
-                                <p id="humanas-details">--/-- Aulas</p>
-                            </div>
-                        </div>
-                        <div class="subject-card card">
-                            <div class="chart-wrapper">
-                                <canvas id="natureza-chart"></canvas>
-                                <span id="natureza-percent">--%</span>
-                            </div>
-                            <div class="info">
-                                <h4>Ciências da Natureza</h4>
-                                <p id="natureza-details">--/-- Aulas</p>
-                            </div>
-                        </div>
-                        <div class="subject-card card">
-                             <div class="chart-wrapper">
-                                <canvas id="matematica-chart"></canvas>
-                                <span id="matematica-percent">--%</span>
-                            </div>
-                            <div class="info">
-                                <h4>Matemática</h4>
-                                <p id="matematica-details">--/-- Aulas</p>
-                            </div>
-                        </div>
-                    </div>
-                </main>
-            </div>
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <img src="assets/imagens/logo-branca-20Png.png" alt="Logo" />
         </div>
-        <div id="offline-alert">Você está offline. Os dados podem estar desatualizados.</div>
+        <nav>
+          <ul class="sidebar-nav">
+            <li>
+              <a href="menu.html" class="nav-link"
+                ><i data-lucide="home"></i> Início</a
+              >
+            </li>
+            <li>
+              <a href="visao-geral.html" class="active nav-link"
+                ><i data-lucide="layout-dashboard"></i> Visão Geral</a
+              >
+            </li>
+            <li>
+              <a href="redacao/" class="nav-link"
+                ><i data-lucide="file-pen-line"></i> Redações</a
+              >
+            </li>
+            <li>
+              <a href="#" class="disabled nav-link"
+                ><i data-lucide="file-check-2"></i> Simulados</a
+              >
+            </li>
+            <li>
+              <a href="dev.html" class="nav-link"
+                ><i data-lucide="settings"></i> Configurações</a
+              >
+            </li>
+          </ul>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user-profile">
+            <img
+              id="user-avatar"
+              src="assets/imagens/saudar.png"
+              alt="Avatar do usuário"
+            />
+            <div class="user-info">
+              <span id="user-name" class="user-name">Carregando...</span>
+              <span class="logout" id="logout-btn">Sair</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+      <div class="main-content">
+        <div class="overlay" id="overlay"></div>
+        <canvas id="art-background-dashboard"></canvas>
+        <div class="main-content-inner">
+          <header>
+            <div class="header-title">
+              <h2>Visão Geral do Desempenho</h2>
+              <p>Seu progresso consolidado em todas as disciplinas.</p>
+            </div>
+            <div class="hamburger-menu" id="hamburger-menu">
+              <i data-lucide="menu"></i>
+            </div>
+          </header>
+
+          <main class="dashboard-layout">
+            <div class="main-panel card">
+              <div class="main-panel-text">
+                <h3>Progresso Geral</h3>
+                <p>
+                  Esta é a sua média de conclusão em todas as áreas. Continue
+                  avançando para alcançar seus objetivos!
+                </p>
+              </div>
+              <div id="progress-chart-container">
+                <canvas id="progress-chart"></canvas>
+                <div id="chart-percentage">--%</div>
+              </div>
+            </div>
+
+            <div class="streak-card card">
+              <i class="streak-icon on-fire" data-lucide="flame"></i>
+              <p class="value" id="streak-value">--</p>
+              <p class="label">Dias de Atividade</p>
+            </div>
+
+            <div class="side-panel card">
+              <h3>Atividades por Dia da Semana</h3>
+              <div class="activity-chart-wrapper">
+                <canvas id="activity-chart"></canvas>
+              </div>
+            </div>
+
+            <div class="subject-progress-grid">
+              <div class="subject-card card">
+                <div class="chart-wrapper">
+                  <canvas id="linguagens-chart"></canvas>
+                  <span id="linguagens-percent">--%</span>
+                </div>
+                <div class="info">
+                  <h4>Linguagens</h4>
+                  <p id="linguagens-details">--/-- Aulas</p>
+                </div>
+              </div>
+              <div class="subject-card card">
+                <div class="chart-wrapper">
+                  <canvas id="humanas-chart"></canvas>
+                  <span id="humanas-percent">--%</span>
+                </div>
+                <div class="info">
+                  <h4>Ciências Humanas</h4>
+                  <p id="humanas-details">--/-- Aulas</p>
+                </div>
+              </div>
+              <div class="subject-card card">
+                <div class="chart-wrapper">
+                  <canvas id="natureza-chart"></canvas>
+                  <span id="natureza-percent">--%</span>
+                </div>
+                <div class="info">
+                  <h4>Ciências da Natureza</h4>
+                  <p id="natureza-details">--/-- Aulas</p>
+                </div>
+              </div>
+              <div class="subject-card card">
+                <div class="chart-wrapper">
+                  <canvas id="matematica-chart"></canvas>
+                  <span id="matematica-percent">--%</span>
+                </div>
+                <div class="info">
+                  <h4>Matemática</h4>
+                  <p id="matematica-details">--/-- Aulas</p>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+      <div id="offline-alert">
+        Você está offline. Os dados podem estar desatualizados.
+      </div>
     </div>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script type="module">
-        import { verificarLogin, logout, carregarProgresso, getUserId } from "./firebase/firebase-conta.js";
-        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-        import { db } from "./firebase/firebase-config.js";
-        import { inicializarAnimacaoDeFundo } from "./assets/js/art-background.js";
+      import {
+        verificarLogin,
+        logout,
+        carregarProgresso,
+        getUserId,
+      } from "./firebase/firebase-conta.js";
+      import {
+        doc,
+        getDoc,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+      import { db } from "./firebase/firebase-config.js";
+      import { inicializarAnimacaoDeFundo } from "./assets/js/art-background.js";
 
-        lucide.createIcons();
-        inicializarAnimacaoDeFundo('art-background-dashboard');
-        let chartInstances = {};
+      lucide.createIcons();
+      inicializarAnimacaoDeFundo("art-background-dashboard");
+      let chartInstances = {};
 
-        document.addEventListener("DOMContentLoaded", () => {
-            verificarLogin(async (userData) => {
-                document.getElementById("user-name").textContent = userData.name;
-                if (userData.avatar) document.getElementById("user-avatar").src = userData.avatar;
-                
-                try {
-                    await Promise.all([
-                        carregarDadosGerais(),
-                        carregarDadosUsuario()
-                    ]);
-                } catch (error) {
-                    console.error("Falha ao buscar dados do Firebase:", error);
-                    // Exibe o alerta se houver falha na busca de dados
-                    showOfflineAlert();
-                }
-            });
+      document.addEventListener("DOMContentLoaded", () => {
+        verificarLogin(async (userData) => {
+          document.getElementById("user-name").textContent = userData.name;
+          if (userData.avatar)
+            document.getElementById("user-avatar").src = userData.avatar;
 
-            document.getElementById("logout-btn").addEventListener("click", logout);
+          try {
+            await Promise.all([carregarDadosGerais(), carregarDadosUsuario()]);
+          } catch (error) {
+            console.error("Falha ao buscar dados do Firebase:", error);
+            showOfflineAlert();
+          }
         });
 
-        function showOfflineAlert() {
-            const alertBox = document.getElementById('offline-alert');
-            alertBox.style.display = 'block';
-            setTimeout(() => {
-                alertBox.style.display = 'none';
-            }, 5000); // O alerta some após 5 segundos
+        document.getElementById("logout-btn").addEventListener("click", logout);
+
+        const sidebar = document.getElementById("sidebar");
+        const hamburgerMenu = document.getElementById("hamburger-menu");
+        const overlay = document.getElementById("overlay");
+        const toggleSidebar = () => {
+          sidebar.classList.toggle("open");
+          overlay.classList.toggle("visible");
+        };
+        hamburgerMenu.addEventListener("click", toggleSidebar);
+        overlay.addEventListener("click", toggleSidebar);
+      });
+
+      function showOfflineAlert() {
+        const alertBox = document.getElementById("offline-alert");
+        alertBox.style.display = "block";
+        setTimeout(() => {
+          alertBox.style.display = "none";
+        }, 5000);
+      }
+
+      async function carregarDadosUsuario() {
+        const userId = getUserId();
+        if (!userId) return;
+
+        const userDocRef = doc(db, "users", userId);
+        const docSnap = await getDoc(userDocRef);
+
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
+          const streakCount = userData.streak?.count || 0;
+          document.getElementById("streak-value").textContent = streakCount;
+        } else {
+          throw new Error("Documento do usuário não encontrado.");
         }
+      }
 
-        async function carregarDadosUsuario() {
-            const userId = getUserId();
-            if (!userId) return;
+      async function carregarDadosGerais() {
+        const materias = [
+          {
+            id: "matematica",
+            nome: "Matemática",
+            totalAulas: 100,
+            cor: "#4caf50",
+          },
+          {
+            id: "linguagens",
+            nome: "Linguagens",
+            totalAulas: 80,
+            cor: "#00a8ff",
+          },
+          {
+            id: "humanas",
+            nome: "Ciências Humanas",
+            totalAulas: 90,
+            cor: "#9c27b0",
+          },
+          {
+            id: "natureza",
+            nome: "Ciências da Natureza",
+            totalAulas: 120,
+            cor: "#00bcd4",
+          },
+        ];
 
-            const userDocRef = doc(db, "users", userId);
-            const docSnap = await getDoc(userDocRef);
+        let totalConcluidasGeral = 0;
+        let totalAulasGeral = 0;
+        const activityByDay = [0, 0, 0, 0, 0, 0, 0];
 
-            if (docSnap.exists()) {
-                const userData = docSnap.data();
-                const streakCount = userData.streak?.count || 0;
-                document.getElementById('streak-value').textContent = streakCount;
-            } else {
-                 throw new Error("Documento do usuário não encontrado.");
+        const progressPromises = materias.map((materia) =>
+          carregarProgresso(materia.id)
+        );
+        const todosProgressos = await Promise.all(progressPromises);
+
+        todosProgressos.forEach((progresso, index) => {
+          const materia = materias[index];
+          progresso = progresso || {};
+          const aulasConcluidas = Object.keys(progresso).length;
+          const aulasFaltantes = materia.totalAulas - aulasConcluidas;
+          const porcentagem =
+            materia.totalAulas > 0
+              ? (aulasConcluidas / materia.totalAulas) * 100
+              : 0;
+
+          totalConcluidasGeral += aulasConcluidas;
+          totalAulasGeral += materia.totalAulas;
+
+          document.getElementById(
+            `${materia.id}-details`
+          ).textContent = `${aulasConcluidas}/${materia.totalAulas} Aulas`;
+          document.getElementById(
+            `${materia.id}-percent`
+          ).textContent = `${Math.round(porcentagem)}%`;
+          criarGraficoMateria(
+            materia.id,
+            aulasConcluidas,
+            aulasFaltantes,
+            materia.cor
+          );
+
+          for (const lessonId in progresso) {
+            const lessonData = progresso[lessonId];
+            if (
+              lessonData.lastVisited &&
+              typeof lessonData.lastVisited.toDate === "function"
+            ) {
+              const dayOfWeek = lessonData.lastVisited.toDate().getDay();
+              activityByDay[dayOfWeek]++;
             }
-        }
+          }
+        });
 
-        async function carregarDadosGerais() {
-            const materias = [
-                { id: 'matematica', nome: 'Matemática', totalAulas: 100, cor: '#4caf50' },
-                { id: 'linguagens', nome: 'Linguagens', totalAulas: 80, cor: '#00a8ff' },
-                { id: 'humanas', nome: 'Ciências Humanas', totalAulas: 90, cor: '#9c27b0' },
-                { id: 'natureza', nome: 'Ciências da Natureza', totalAulas: 120, cor: '#00bcd4' },
-            ];
+        const porcentagemGeral =
+          totalAulasGeral > 0
+            ? (totalConcluidasGeral / totalAulasGeral) * 100
+            : 0;
+        document.getElementById("chart-percentage").textContent = `${Math.round(
+          porcentagemGeral
+        )}%`;
+        criarGraficoProgresso(
+          "progress-chart",
+          totalConcluidasGeral,
+          totalAulasGeral - totalConcluidasGeral,
+          "#00a8ff"
+        );
 
-            let totalConcluidasGeral = 0;
-            let totalAulasGeral = 0;
-            const activityByDay = [0, 0, 0, 0, 0, 0, 0];
+        criarGraficoAtividadeDiaria(activityByDay);
+      }
 
-            // Usa Promise.all para carregar o progresso de todas as matérias em paralelo
-            const progressPromises = materias.map(materia => carregarProgresso(materia.id));
-            const todosProgressos = await Promise.all(progressPromises);
+      function criarGraficoMateria(chartId, concluidas, faltantes, cor) {
+        const ctx = document
+          .getElementById(`${chartId}-chart`)
+          .getContext("2d");
+        if (chartInstances[chartId]) chartInstances[chartId].destroy();
+        chartInstances[chartId] = new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            datasets: [
+              {
+                data: [concluidas, faltantes],
+                backgroundColor: [cor, "rgba(255, 255, 255, 0.1)"],
+                borderColor: [cor, "rgba(255, 255, 255, 0.2)"],
+                borderWidth: 1,
+                hoverOffset: 4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            cutout: "80%",
+            plugins: {
+              legend: { display: false },
+              tooltip: { enabled: false },
+            },
+          },
+        });
+      }
 
-            todosProgressos.forEach((progresso, index) => {
-                const materia = materias[index];
-                progresso = progresso || {};
-                const aulasConcluidas = Object.keys(progresso).length;
-                const aulasFaltantes = materia.totalAulas - aulasConcluidas;
-                const porcentagem = materia.totalAulas > 0 ? ((aulasConcluidas / materia.totalAulas) * 100) : 0;
-                
-                totalConcluidasGeral += aulasConcluidas;
-                totalAulasGeral += materia.totalAulas;
+      function criarGraficoProgresso(chartId, concluidas, faltantes, cor) {
+        const ctx = document.getElementById(chartId).getContext("2d");
+        if (chartInstances[chartId]) chartInstances[chartId].destroy();
+        chartInstances[chartId] = new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            datasets: [
+              {
+                data: [concluidas, faltantes],
+                backgroundColor: [cor, "rgba(255, 255, 255, 0.1)"],
+                borderColor: [cor, "rgba(255, 255, 255, 0.2)"],
+                borderWidth: 1,
+                hoverOffset: 4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            cutout: "80%",
+            plugins: {
+              legend: { display: false },
+              tooltip: { enabled: false },
+            },
+          },
+        });
+      }
 
-                document.getElementById(`${materia.id}-details`).textContent = `${aulasConcluidas}/${materia.totalAulas} Aulas`;
-                document.getElementById(`${materia.id}-percent`).textContent = `${Math.round(porcentagem)}%`;
-                criarGraficoMateria(materia.id, aulasConcluidas, aulasFaltantes, materia.cor);
-
-                for (const lessonId in progresso) {
-                    const lessonData = progresso[lessonId];
-                    if (lessonData.lastVisited && typeof lessonData.lastVisited.toDate === 'function') {
-                        const dayOfWeek = lessonData.lastVisited.toDate().getDay();
-                        activityByDay[dayOfWeek]++;
-                    }
-                }
-            });
-
-            const porcentagemGeral = totalAulasGeral > 0 ? ((totalConcluidasGeral / totalAulasGeral) * 100) : 0;
-            document.getElementById('chart-percentage').textContent = `${Math.round(porcentagemGeral)}%`;
-            criarGraficoProgresso('progress-chart', totalConcluidasGeral, totalAulasGeral - totalConcluidasGeral, '#00a8ff');
-            
-            criarGraficoAtividadeDiaria(activityByDay);
-        }
-        
-        function criarGraficoMateria(chartId, concluidas, faltantes, cor) {
-            const ctx = document.getElementById(`${chartId}-chart`).getContext('2d');
-            if (chartInstances[chartId]) chartInstances[chartId].destroy();
-            chartInstances[chartId] = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    datasets: [{
-                        data: [concluidas, faltantes],
-                        backgroundColor: [cor, 'rgba(255, 255, 255, 0.1)'],
-                        borderColor: [cor, 'rgba(255, 255, 255, 0.2)'],
-                        borderWidth: 1,
-                        hoverOffset: 4
-                    }]
-                },
-                options: { responsive: true, cutout: '80%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }
-            });
-        }
-        
-        function criarGraficoProgresso(chartId, concluidas, faltantes, cor) {
-            const ctx = document.getElementById(chartId).getContext('2d');
-            if (chartInstances[chartId]) chartInstances[chartId].destroy();
-            chartInstances[chartId] = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    datasets: [{
-                        data: [concluidas, faltantes],
-                        backgroundColor: [cor, 'rgba(255, 255, 255, 0.1)'],
-                        borderColor: [cor, 'rgba(255, 255, 255, 0.2)'],
-                        borderWidth: 1,
-                        hoverOffset: 4
-                    }]
-                },
-                options: { responsive: true, cutout: '80%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }
-            });
-        }
-        
-        function criarGraficoAtividadeDiaria(activityData) {
-            const ctx = document.getElementById('activity-chart').getContext('2d');
-            if (chartInstances['activity']) chartInstances['activity'].destroy();
-            chartInstances['activity'] = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
-                    datasets: [{
-                        label: 'Aulas Visitadas',
-                        data: activityData,
-                        backgroundColor: 'rgba(0, 168, 255, 0.6)',
-                        borderColor: 'rgba(0, 168, 255, 1)',
-                        borderWidth: 1,
-                        borderRadius: 4,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true, ticks: { color: 'rgba(255, 255, 255, 0.7)', stepSize: 1 }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
-                        x: { ticks: { color: 'rgba(255, 255, 255, 0.7)' }, grid: { display: false } }
-                    },
-                    plugins: { legend: { display: false }, title: { display: false } }
-                }
-            });
-        }
+      function criarGraficoAtividadeDiaria(activityData) {
+        const ctx = document.getElementById("activity-chart").getContext("2d");
+        if (chartInstances["activity"]) chartInstances["activity"].destroy();
+        chartInstances["activity"] = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+            datasets: [
+              {
+                label: "Aulas Visitadas",
+                data: activityData,
+                backgroundColor: "rgba(0, 168, 255, 0.6)",
+                borderColor: "rgba(0, 168, 255, 1)",
+                borderWidth: 1,
+                borderRadius: 4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: { color: "rgba(255, 255, 255, 0.7)", stepSize: 1 },
+                grid: { color: "rgba(255, 255, 255, 0.1)" },
+              },
+              x: {
+                ticks: { color: "rgba(255, 255, 255, 0.7)" },
+                grid: { display: false },
+              },
+            },
+            plugins: { legend: { display: false }, title: { display: false } },
+          },
+        });
+      }
     </script>
-</body>
+  </body>
 </html>

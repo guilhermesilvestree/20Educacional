@@ -68,7 +68,7 @@ export async function loginComGoogle() {
 export function verificarLogin(onUserLoggedIn) {
   const appData = JSON.parse(localStorage.getItem(APP_STORAGE_KEY));
   if (!appData || !appData.userData) {
-    window.location.href = "/"; 
+    window.location.href = ""; 
     return;
   }
   if (onUserLoggedIn && typeof onUserLoggedIn === "function") {
@@ -78,7 +78,7 @@ export function verificarLogin(onUserLoggedIn) {
 
 export function logout() {
   localStorage.removeItem(APP_STORAGE_KEY);
-  window.location.href = "/";
+  window.location.href = "";
 }
 
 export async function carregarProgresso(materia) {
