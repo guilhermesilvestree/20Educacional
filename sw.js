@@ -47,16 +47,23 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  // Ignora requisições que não são GET
+  if (event.request.method !== 'GET' || event.request.url.startsWith('chrome-extension://')) {
+    return;
+  }
+
   event.respondWith(
     caches.open(CACHE_NAME).then(async (cache) => {
-      // CORREÇÃO: Estratégia Network falling back to Cache
       try {
         // 1. Tenta obter a resposta da rede primeiro.
         const networkResponse = await fetch(event.request);
         
         // 2. Se a requisição for bem-sucedida, atualiza o cache e retorna a resposta da rede.
-        // Isso garante que o cache esteja sempre atualizado quando o usuário está online.
-        cache.put(event.request, networkResponse.clone());
+        // A verificação 'event.request.method === 'GET'' já foi feita acima, mas é uma boa prática manter aqui também.
+        if (networkResponse.status === 200) {
+            cache.put(event.request, networkResponse.clone());
+        }
+        
         return networkResponse;
       } catch (error) {
         // 3. Se a rede falhar, busca no cache.
@@ -73,7 +80,7 @@ self.addEventListener('fetch', (event) => {
           return offlinePage;
         }
         
-        // 5. Se não for navegação e o recurso não estiver no cache, o erro de rede será propagado.
+        // 5. Se não for navegação e o recurso não estiver no cache, retorna uma resposta de erro genérica.
         return new Response("Conteúdo indisponível offline.", {
           status: 404,
           statusText: "Offline",
