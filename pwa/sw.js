@@ -46,7 +46,6 @@ self.addEventListener('fetch', (event) => {
         return response;
       }
       return fetch(event.request).then((networkResponse) => {
-        // Cacheia as aulas sob demanda (verifique se o caminho está correto)
         if (event.request.url.includes('/aulas/')) {
           return caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, networkResponse.clone());

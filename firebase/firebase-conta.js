@@ -52,7 +52,6 @@ export async function loginComGoogle() {
     window.location.href = "menu.html";
   } catch (error) {
     console.error("Erro no login com Google:", error.code, error.message);
-    alert(`Erro ao fazer login: ${error.message}`);
   }
 }
 
