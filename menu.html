@@ -16,6 +16,7 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
       :root {
         --cor-fundo: #0f0f1a;
@@ -25,6 +26,14 @@
         --cor-texto-secundario: #a0a0b0;
         --cor-destaque-1: #00a8ff;
         --cor-destaque-2: #9c27b0;
+        /* Cores das Matérias */
+        --color-linguagens: #00a8ff;
+        --color-humanas: #9c27b0;
+        --color-natureza: #00bcd4;
+        --color-matematica: #4caf50;
+        /* Medidas de Ajuste */
+        --card-spacing-h: 30px; 
+        --card-spacing-v: 40px; 
       }
       * {
         margin: 0;
@@ -150,7 +159,7 @@
         transform: scale(1.05);
       }
       .main-content-inner {
-        padding: 30px 40px;
+        padding: var(--card-spacing-v) var(--card-spacing-h);
         flex: 1;
         display: flex;
         flex-direction: column;
@@ -245,25 +254,33 @@
       .missions-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 25px;
+        gap: var(--card-spacing-h); 
         width: 100%;
         max-width: 1300px;
+        padding-bottom: 50px;
+        /* CORREÇÃO APLICADA: Força o alinhamento no topo da grade */
+        align-items: start; 
       }
       .mission-card {
         background-color: rgba(22, 22, 38, 0.7);
         border: 1px solid var(--cor-borda);
         border-radius: 16px;
-        padding: 40px 25px;
+        padding: var(--card-spacing-h); 
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-        gap: 20px;
+        gap: 15px;
         cursor: pointer;
         transition: all 0.3s ease;
         text-decoration: none;
         color: var(--cor-texto);
         backdrop-filter: blur(5px);
+        min-height: 250px;
+        position: relative;
+        padding-top: calc(var(--card-spacing-h) + 30px);
+        /* Garante que o conteúdo se espalhe verticalmente */
+        justify-content: space-between; 
       }
       .mission-card:hover {
         transform: translateY(-8px);
@@ -271,13 +288,62 @@
         box-shadow: 0 10px 30px rgba(0, 168, 255, 0.15);
       }
       .mission-card .icon {
-        width: 48px;
-        height: 48px;
+        width: 40px;
+        height: 40px;
+        margin-bottom: 5px;
       }
       .mission-card h4 {
-        font-size: 1.1rem;
-        font-weight: 500;
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin: 0;
       }
+      .mission-card-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+      }
+      .mission-description {
+          font-size: 0.9rem;
+          color: var(--cor-texto-secundario);
+          margin-top: 10px;
+          flex-grow: 1;
+      }
+      /* PIN DE QUADRO */
+      .progress-container {
+          width: 70px;
+          height: 70px;
+          position: absolute;
+          top: -20px; 
+          right: -20px; 
+          background-color: var(--cor-fundo-secundario);
+          border-radius: 50%;
+          border: 4px solid var(--cor-destaque-1);
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          overflow: hidden;
+      }
+      .progress-percent {
+          position: absolute;
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: var(--cor-texto);
+          text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+          z-index: 2;
+      }
+      .progress-canvas {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+      }
+      /* Cores e Estilos Específicos para o Canvas */
+      .mission-card[data-materia="linguagens"] .progress-container { border-color: var(--color-linguagens); }
+      .mission-card[data-materia="humanas"] .progress-container { border-color: var(--color-humanas); }
+      .mission-card[data-materia="natureza"] .progress-container { border-color: var(--color-natureza); }
+      .mission-card[data-materia="matematica"] .progress-container { border-color: var(--color-matematica); }
+
       @media (max-width: 1300px) {
         .missions-grid {
           grid-template-columns: repeat(2, 1fr);
@@ -325,6 +391,19 @@
           padding-top: 20px;
           align-items: flex-start;
         }
+        /* Ajuste do Pin em telas pequenas */
+        .progress-container {
+            width: 60px;
+            height: 60px;
+            top: -15px;
+            right: -15px;
+        }
+        .progress-percent {
+            font-size: 0.9rem;
+        }
+        .mission-card {
+            min-height: 200px;
+        }
       }
     </style>
   </head>
@@ -341,8 +420,7 @@
                 ><i data-lucide="home"></i> Início</a
               >
             </li>
-            </li>
-             <li>
+            <li>
               <a href="visao-geral.html" class="nav-link"
                 ><i data-lucide="layout-dashboard"></i> Visão Geral</a
               >
@@ -404,38 +482,55 @@
             <div class="missions-container">
               <h3>Escolha sua Missão</h3>
               <div class="missions-grid">
-                <a href="linguagens.html" class="mission-card"
-                  ><i
-                    data-lucide="message-circle"
-                    class="icon"
-                    style="color: #00a8ff"
-                  ></i>
-                  <h4>Linguagens e suas Tecnologias</h4></a
-                >
-                <a href="#" class="mission-card"
-                  ><i
-                    data-lucide="puzzle"
-                    class="icon"
-                    style="color: #9c27b0"
-                  ></i>
-                  <h4>Ciências Humanas e suas Tecnologias</h4></a
-                >
-                <a href="#" class="mission-card"
-                  ><i
-                    data-lucide="atom"
-                    class="icon"
-                    style="color: #00bcd4"
-                  ></i>
-                  <h4>Ciências da Natureza e suas Tecnologias</h4></a
-                >
-                <a href="matematica/" class="mission-card"
-                  ><i
-                    data-lucide="function-square"
-                    class="icon"
-                    style="color: #4caf50"
-                  ></i>
-                  <h4>Matemática e suas Tecnologias</h4></a
-                >
+                
+                <a href="linguagens.html" class="mission-card" data-materia="linguagens">
+                    <div class="progress-container">
+                        <canvas id="linguagens-chart" class="progress-canvas"></canvas>
+                        <span class="progress-percent" id="linguagens-percent">--%</span>
+                    </div>
+                    <i data-lucide="message-circle" class="icon" style="color: var(--color-linguagens);"></i>
+                    <div class="mission-card-content">
+                        <h4>Linguagens e suas Tecnologias</h4>
+                        <p class="mission-description">Interpretação textual, gêneros literários, gramática e a redação que vale 1000 pontos.</p>
+                    </div>
+                </a>
+
+                <a href="#" class="mission-card disabled" data-materia="humanas">
+                    <div class="progress-container">
+                        <canvas id="humanas-chart" class="progress-canvas"></canvas>
+                        <span class="progress-percent" id="humanas-percent">--%</span>
+                    </div>
+                    <i data-lucide="puzzle" class="icon" style="color: var(--color-humanas);"></i>
+                    <div class="mission-card-content">
+                        <h4>Ciências Humanas e suas Tecnologias</h4>
+                        <p class="mission-description">Sociedade, história, filosofia e geografia: as bases para a contextualização.</p>
+                    </div>
+                </a>
+
+                <a href="#" class="mission-card disabled" data-materia="natureza">
+                    <div class="progress-container">
+                        <canvas id="natureza-chart" class="progress-canvas"></canvas>
+                        <span class="progress-percent" id="natureza-percent">--%</span>
+                    </div>
+                    <i data-lucide="atom" class="icon" style="color: var(--color-natureza);"></i>
+                    <div class="mission-card-content">
+                        <h4>Ciências da Natureza e suas Tecnologias</h4>
+                        <p class="mission-description">Biologia, Química e Física, com foco na interdisciplinaridade e aplicações práticas.</p>
+                    </div>
+                </a>
+
+                <a href="matematica/" class="mission-card" data-materia="matematica">
+                    <div class="progress-container">
+                        <canvas id="matematica-chart" class="progress-canvas"></canvas>
+                        <span class="progress-percent" id="matematica-percent">--%</span>
+                    </div>
+                    <i data-lucide="function-square" class="icon" style="color: var(--color-matematica);"></i>
+                    <div class="mission-card-content">
+                        <h4>Matemática e suas Tecnologias</h4>
+                        <p class="mission-description">A matéria de maior peso na TRI. Domínio da aritmética, funções, geometria e análise de dados.</p>
+                    </div>
+                </a>
+
               </div>
             </div>
           </main>
@@ -444,16 +539,22 @@
     </div>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script type="module">
-      import { verificarLogin, logout } from "./firebase/firebase-conta.js";
+      import { verificarLogin, logout, carregarProgresso } from "./firebase/firebase-conta.js";
       import { inicializarAnimacaoDeFundo } from "./assets/js/art-background.js";
-      import { solicitarPermissaoNotificacao } from "./pwa/notifications.js";
-
+      
       inicializarAnimacaoDeFundo('art-background-dashboard');
 
       lucide.createIcons();
+      let chartInstances = {};
+      const materiasConfig = {
+          linguagens: { nome: "Linguagens", totalAulas: 80, cor: "var(--color-linguagens)" },
+          humanas: { nome: "Ciências Humanas", totalAulas: 90, cor: "var(--color-humanas)" },
+          natureza: { nome: "Ciências da Natureza", totalAulas: 120, cor: "var(--color-natureza)" },
+          matematica: { nome: "Matemática", totalAulas: 100, cor: "var(--color-matematica)" }
+      };
 
       document.addEventListener("DOMContentLoaded", () => {
-        verificarLogin((userData) => {
+        verificarLogin(async (userData) => {
           const { name, avatar } = userData;
           const firstName = name.split(" ")[0];
 
@@ -463,7 +564,8 @@
           document.getElementById("user-name").textContent = name;
           const userAvatar = document.getElementById("user-avatar");
           if (avatar) userAvatar.src = avatar;
-          solicitarPermissaoNotificacao();
+          
+          await carregarProgressosDasMaterias();
         });
 
         document.getElementById("logout-btn").addEventListener("click", logout);
@@ -486,12 +588,80 @@
           });
         });
        });
+
+        /**
+         * Carrega os dados de progresso para cada matéria e atualiza os cartões.
+         */
+        async function carregarProgressosDasMaterias() {
+            const materiasIds = Object.keys(materiasConfig);
+            const progressosPromises = materiasIds.map(id => carregarProgresso(id));
+            const todosProgressos = await Promise.all(progressosPromises);
+
+            todosProgressos.forEach((progresso, index) => {
+                const materiaId = materiasIds[index];
+                const config = materiasConfig[materiaId];
+                progresso = progresso || {};
+                
+                // Mapeia chaves para contar aulas concluídas (visitas registradas)
+                const aulasConcluidas = Object.keys(progresso).length;
+                const aulasFaltantes = config.totalAulas - aulasConcluidas;
+                const porcentagem = config.totalAulas > 0 
+                    ? (aulasConcluidas / config.totalAulas) * 100 
+                    : 0;
+
+                const percentDisplay = document.getElementById(`${materiaId}-percent`);
+                if (percentDisplay) {
+                    percentDisplay.textContent = `${Math.round(porcentagem)}%`;
+                }
+
+                const chartCanvas = document.getElementById(`${materiaId}-chart`);
+                if (chartCanvas) {
+                    criarGraficoProgresso(
+                        materiaId, 
+                        aulasConcluidas, 
+                        aulasFaltantes, 
+                        config.cor
+                    );
+                }
+            });
+        }
+
+        /**
+         * Cria um gráfico de donut para exibir o progresso de uma matéria.
+         */
+        function criarGraficoProgresso(chartId, concluidas, faltantes, cor) {
+            const ctx = document.getElementById(`${chartId}-chart`).getContext("2d");
+            if (chartInstances[chartId]) chartInstances[chartId].destroy();
+            chartInstances[chartId] = new Chart(ctx, {
+                type: "doughnut",
+                data: {
+                    datasets: [
+                        {
+                            data: [concluidas, faltantes],
+                            backgroundColor: [cor, "rgba(255, 255, 255, 0.1)"],
+                            borderColor: [cor, "rgba(255, 255, 255, 0.2)"],
+                            borderWidth: 1,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    cutout: "80%",
+                    events: [],
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false },
+                    },
+                },
+            });
+        }
     </script>
     <script>
+      // O Service Worker está no arquivo pwa/sw.js
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register("/20Educacional/sw.js", { scope: "/20Educacional/" })
+            .register("/20Educacional/pwa/sw.js", { scope: "/20Educacional/" })
             .then((registration) => {
               console.log(
                 "Service Worker registrado com sucesso com escopo:",
