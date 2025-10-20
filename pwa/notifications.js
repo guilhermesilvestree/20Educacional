@@ -18,7 +18,8 @@ const HORARIOS_NOTIFICACAO = [
     { hora: 15, minuto: 43 },
     { hora: 15, minuto: 46 },
     { hora: 16, minuto: 38 },
-    { hora: 20, minuto: 15 }
+    { hora: 20, minuto: 15 },
+    { hora: 19, minuto: 21 }
 ];
 
 /**
