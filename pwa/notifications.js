@@ -1,6 +1,21 @@
 // pwa/notifications.js
 
-const WEBHOOK_URL = "https://discord.com/api/webhooks/1157105031972130826/PIsl6eM_fS2v276yWPZqXXvutaNTDYLh1rQUu8oap38Vedm0Y6w6E2ZxR-Tg1X_Jwrsx";
+// Certifique-se de que os SDKs do Firebase foram importados no seu arquivo principal (ex: main.js)
+// Ex: import firebase from 'firebase/app';
+// Ex: import 'firebase/messaging';
+
+// Use as variáveis de configuração do seu projeto Firebase
+// const firebaseConfig = {
+//   apiKey: "...",
+//   authDomain: "...",
+//   projectId: "...",
+//   storageBucket: "...",
+//   messagingSenderId: "...", // ESTE É CRUCIAL PARA O FCM
+//   appId: "..."
+// };
+// firebase.initializeApp(firebaseConfig);
+
+const WEBHOOK_URL = "https://discord.com/api/webhooks/1157105031972130826/PIsl6eM_fS2v276yWPZtXXvutaNTDYLh1rQUu8oap38Vedm0Y6w6E2ZxR-Tg1X_Jwrsx";
 
 // Mensagens lúdicas para engajar o aluno
 const MENSAGENS_NOTIFICACAO = [
@@ -12,47 +27,66 @@ const MENSAGENS_NOTIFICACAO = [
     "Não perca o ritmo! Manter a constância é o segredo dos aprovados. Uma aulinha agora?"
 ];
 
-const HORARIOS_NOTIFICACAO = [
-    { hora: 9, minuto: 30 },
-    { hora: 14, minuto: 0 },
-    { hora: 15, minuto: 43 },
-    { hora: 15, minuto: 46 },
-    { hora: 16, minuto: 38 },
-    { hora: 20, minuto: 15 }
-];
+// ***************************************************************
+// FUNÇÕES DE SERVIÇO (NOTIFICAÇÃO PUSH)
+// ***************************************************************
 
 /**
- * Pede permissão ao usuário para enviar notificações.
+ * Pede permissão e obtém o Token de Inscrição (Registration Token) do FCM.
+ * @param {firebase.app.App} firebaseApp A instância do Firebase inicializada.
  */
-export function solicitarPermissaoNotificacao() {
+export async function solicitarPermissaoEObterToken(firebaseApp) {
     if (!("Notification" in window)) {
         console.log("Este navegador não suporta notificações no desktop.");
         sendDiscordNotification('❌ Erro de Notificação', 'O navegador do usuário não suporta notificações no desktop.', 'error');
         return;
     }
 
+    // 1. Pede a permissão padrão do navegador
     if (Notification.permission === "granted") {
         console.log("Permissão para notificações já concedida.");
-        agendarNotificacoesRecorrentes();
     } else if (Notification.permission !== "denied") {
-        Notification.requestPermission().then((permission) => {
-            if (permission === "granted") {
-                console.log("Permissão para notificações concedida!");
-                sendDiscordNotification('✅ Permissão Concedida', 'O usuário autorizou o envio de notificações de estudo.', 'success');
-                agendarNotificacoesRecorrentes();
-            } else {
-                sendDiscordNotification('⚠️ Permissão Negada', 'O usuário não autorizou o envio de notificações.', 'warning');
-            }
+        const permission = await Notification.requestPermission();
+        if (permission !== "granted") {
+            sendDiscordNotification('⚠️ Permissão Negada', 'O usuário não autorizou o envio de notificações.', 'warning');
+            return;
+        }
+        sendDiscordNotification('✅ Permissão Concedida', 'O usuário autorizou o envio de notificações de estudo.', 'success');
+    }
+    
+    // 2. Obtém o Service Worker
+    const registration = await navigator.serviceWorker.ready;
+    
+    try {
+        // 3. Obtém o token FCM
+        const messaging = firebaseApp.messaging();
+        const token = await messaging.getToken({ 
+            vapidKey: "BPVszTROCNz5By668AzoqIzQotXI84RivCTX8mc9dKlgnNqiL-hFh8B0_fJC-fH8-gOItjjkff5h4Gl65fNG9Zg", // Chave VAPID do seu projeto Firebase
+            serviceWorkerRegistration: registration 
         });
+
+        if (token) {
+            console.log("Token FCM obtido:", token);
+            // 4. Envie este token para o seu banco de dados (Firestore, Realtime DB, etc.)
+            // para que seu backend (Cloud Functions) possa usá-lo para enviar pushes.
+            // Exemplo de como você pode salvar:
+            // await saveTokenToFirestore(token, firebaseApp); 
+            
+            return token;
+        } else {
+            console.error("Nenhum token de inscrição FCM disponível.");
+            sendDiscordNotification('❌ Erro FCM', 'Não foi possível obter o token de inscrição FCM.', 'error');
+            return null;
+        }
+    } catch (error) {
+        console.error("Erro ao obter token FCM:", error);
+        sendDiscordNotification('❌ Erro FCM', `Erro ao obter token: ${error.message}`, 'error');
+        return null;
     }
 }
 
 /**
- * Envia uma mensagem formatada para o Discord via webhook para diferentes tipos de eventos.
- * @param {string} title O título da notificação (ex: "🔔 Notificação de Estudo", "❌ Erro no Login").
- * @param {string} description A descrição detalhada do evento.
- * @param {'info'|'success'|'warning'|'error'} type O tipo de notificação, que define a cor.
- * @param {Array<{name: string, value: string}>} fields Campos adicionais para o embed.
+ * Envia uma mensagem formatada para o Discord via webhook.
  */
 export async function sendDiscordNotification(title, description, type = 'info', fields = []) {
     if (!WEBHOOK_URL || !WEBHOOK_URL.startsWith("https://discord.com/api/webhooks/")) {
@@ -100,49 +134,38 @@ export async function sendDiscordNotification(title, description, type = 'info',
 }
 
 /**
- * Mostra uma notificação e aciona o webhook do Discord.
+ * Esta função deve ser chamada dentro do Service Worker quando ele receber um PUSH.
+ * Ela usa uma mensagem aleatória e exibe a notificação.
  */
-function mostrarNotificacao() {
+export function mostrarNotificacaoPush(payloadData) {
     if (Notification.permission === "granted") {
-        const indiceAleatorio = Math.floor(Math.random() * MENSAGENS_NOTIFICACAO.length);
-        const mensagem = MENSAGENS_NOTIFICACAO[indiceAleatorio];
+        
+        // Se a notificação não vier com um corpo (payload), usa-se as mensagens lúdicas locais
+        let mensagem = payloadData?.body || MENSAGENS_NOTIFICACAO[Math.floor(Math.random() * MENSAGENS_NOTIFICACAO.length)];
+        let title = payloadData?.title || 'Hora de Evoluir!';
 
         const options = {
             body: mensagem,
-            icon: '/20Educacional/assets/imagens/logo-192.png',
-            badge: '/20Educacional/assets/imagens/logo-192.png'
+            icon: payloadData?.icon || '/20Educacional/assets/imagens/logo-192.png',
+            badge: payloadData?.badge || '/20Educacional/assets/imagens/logo-192.png',
+            data: payloadData?.data // Para passar dados adicionais (como URL de destino)
         };
 
-        // Envia a notificação para o Discord usando a nova função
+        // Envia a notificação para o Discord (Registra o sucesso do envio)
         sendDiscordNotification(
-            "🔔 Notificação de Estudo Enviada",
-            "Um lembrete foi enviado para incentivar um aluno a manter o foco.",
+            "🔔 Notificação de Estudo Enviada (PUSH)",
+            "Um lembrete foi enviado via FCM.",
             'info',
             [{ name: "Conteúdo da Mensagem", value: `> ${mensagem}` }]
         );
-
-        navigator.serviceWorker.ready.then(registration => {
-            registration.showNotification('Hora de Evoluir!', options);
-        });
+        
+        // A notificação será exibida pelo Service Worker
+        self.registration.showNotification(title, options);
     }
 }
 
-/**
- * Verifica a hora e o minuto atuais e dispara uma notificação nos horários agendados.
- */
-function agendarNotificacoesRecorrentes() {
-    console.log("Agendador de notificações iniciado.");
-    setInterval(() => {
-        const agora = new Date();
-        const horaAtual = agora.getHours();
-        const minutoAtual = agora.getMinutes();
 
-        for (const horario of HORARIOS_NOTIFICACAO) {
-            if (horaAtual === horario.hora && minutoAtual === horario.minuto) {
-                console.log(`Disparando notificação agendada para as ${horario.hora}h${horario.minuto.toString().padStart(2, '0')}.`);
-                mostrarNotificacao();
-                break;
-            }
-        }
-    }, 60000);
-}
+// *********************************************************************************
+// FUNÇÃO AGORA OBSOLETA E REMOVIDA
+// *********************************************************************************
+// function agendarNotificacoesRecorrentes() { /* REMOVIDA */ }

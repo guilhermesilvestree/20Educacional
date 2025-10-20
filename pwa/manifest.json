@@ -16,7 +16,8 @@
     {
       "src": "/20Educacional/assets/imagens/logo-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "screenshots": [
