@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar/Editar Aula | Painel Professor</title>
+    <link rel="shortcut icon" href="assets/icon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --cor-fundo: #F4F4F6;
+            --cor-container: #FFFFFF;
+            --cor-texto-principal: #333A45;
+            --cor-texto-sutil: #7A8291;
+            --cor-borda: #EAEBEE;
+            --cor-acento: #00A8FF;
+            --cor-acento-hover: #008DD1;
+            --cor-sucesso: #28a745;
+            --cor-alerta: #ffc107;
+            --cor-perigo: #dc3545;
+            --cor-aviso-fundo: #fff3cd;
+            --cor-aviso-texto: #856404;
+            --cor-aviso-borda: #ffeeba;
+            --cor-erro-fundo: #f8d7da;
+            --cor-erro-texto: #721c24;
+            --cor-erro-borda: #f5c6cb;
+            --cor-sucesso-fundo: #d4edda;
+            --cor-sucesso-texto: #155724;
+            --cor-sucesso-borda: #c3e6cb;
+        }
+
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto-principal);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header Copiado */
+        .header {
+            background-color: var(--cor-container);
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--cor-borda);
+            height: 81px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            flex-shrink: 0;
+        }
+        .header-logo { display: flex; align-items: center; gap: 12px; }
+        .header-logo i { font-size: 1.5rem; color: var(--cor-acento); }
+        .header h1 { font-size: 1.5rem; color: var(--cor-texto-principal); margin: 0; }
+        .header-nav { display: flex; align-items: center; gap: 20px; }
+        .nav-pills { display: flex; background-color: var(--cor-fundo); padding: 6px; border-radius: 50px; gap: 6px; }
+        .nav-button {
+            background: none; border: none; color: var(--cor-texto-sutil);
+            padding: 10px 20px; border-radius: 20px; cursor: pointer;
+            font-weight: 600; transition: all 0.3s ease; font-size: 0.9rem;
+            display: flex; align-items: center; gap: 8px; text-decoration: none;
+        }
+        .nav-button:hover, .nav-button.active {
+            background-color: var(--cor-container); color: var(--cor-acento);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .nav-button i { color: var(--cor-texto-sutil); transition: color 0.3s ease; }
+        .nav-button.active i { color: var(--cor-acento); }
+        .profile-container { position: relative; }
+        .user-profile-badge { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 5px; border-radius: 50px; transition: background-color 0.2s; }
+        .user-profile-badge:hover { background-color: var(--cor-fundo); }
+        #teacher-name { font-weight: 600; font-size: 1rem; }
+        #teacher-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--cor-borda); }
+        .profile-dropdown { display: none; position: absolute; top: calc(100% + 10px); right: 0; background-color: var(--cor-container); border: 1px solid var(--cor-borda); border-radius: 8px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); width: 160px; overflow: hidden; z-index: 100; }
+        .profile-dropdown.show { display: block; }
+        #logout-button { display: flex; align-items: center; gap: 10px; background: none; border: none; color: var(--cor-texto-principal); padding: 12px 15px; width: 100%; text-align: left; cursor: pointer; font-size: 0.9rem; font-family: 'Poppins', sans-serif; }
+        #logout-button:hover { background-color: var(--cor-fundo); }
+        #logout-button i { color: var(--cor-acento); }
+
+        .main-container {
+            flex-grow: 1;
+            padding: 40px;
+            max-width: 1200px;
+            width: 100%;
+            margin: auto;
+        }
+
+        .step-container {
+            background-color: var(--cor-container);
+            border-radius: 16px;
+            border: 1px solid var(--cor-borda);
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: none; /* Initially hidden */
+            flex-direction: column;
+            gap: 20px;
+        }
+        .step-container.active { display: flex; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        h2 { margin-top: 0; font-size: 1.5rem; display: flex; align-items: center; gap: 10px; color: var(--cor-acento); border-bottom: 1px solid var(--cor-borda); padding-bottom: 10px; }
+        h2 i { color: var(--cor-acento); }
+
+        /* Step 1: Subject Selection */
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .subject-card {
+            background-color: var(--cor-fundo);
+            border: 1px solid var(--cor-borda);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .subject-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); border-color: var(--cor-acento); }
+        .subject-card i { font-size: 2.5rem; color: var(--cor-acento); margin-bottom: 15px; }
+        .subject-card h3 { margin: 0; font-size: 1.1rem; border: none; padding: 0; color: var(--cor-texto-principal); }
+
+        /* Step 2: Lesson List */
+        .list-header { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .search-filter-container { display: flex; gap: 15px; align-items: center; }
+        .search-container { position: relative; }
+        .search-container i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--cor-texto-sutil); }
+        .search-input { padding: 10px 15px 10px 40px; border-radius: 20px; border: 1px solid var(--cor-borda); font-size: 0.9rem; width: 250px; }
+        .sort-select { padding: 10px 15px; border-radius: 20px; border: 1px solid var(--cor-borda); font-size: 0.9rem; background-color: var(--cor-container); }
+        .lesson-list { list-style: none; padding: 0; margin: 0; max-height: 60vh; overflow-y: auto; border: 1px solid var(--cor-borda); border-radius: 8px; }
+        .lesson-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--cor-borda); }
+        .lesson-item:last-child { border-bottom: none; }
+        .lesson-info h4 { margin: 0 0 5px 0; font-size: 1rem; }
+        .lesson-info p { margin: 0; font-size: 0.85rem; color: var(--cor-texto-sutil); }
+        .lesson-actions .btn { padding: 8px 15px; font-size: 0.85rem; }
+        .placeholder { text-align: center; padding: 40px; color: var(--cor-texto-sutil); }
+        .placeholder i { font-size: 2.5rem; margin-bottom: 10px; color: var(--cor-acento); }
+
+        /* Step 3: JSON Input Modal */
+        .modal-backdrop { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-backdrop.active { display: flex; }
+        .modal-content { background-color: var(--cor-container); padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); width: 90%; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--cor-borda); padding-bottom: 15px; margin-bottom: 20px; }
+        .modal-header h2 { margin: 0; font-size: 1.3rem; }
+        .close-btn { background: none; border: none; font-size: 2rem; cursor: pointer; color: var(--cor-texto-sutil); }
+        .modal-body { overflow-y: auto; flex-grow: 1; }
+        #json-input { width: 100%; min-height: 400px; border: 1px solid var(--cor-borda); border-radius: 8px; padding: 15px; font-family: monospace; font-size: 0.9rem; resize: vertical; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--cor-borda); }
+
+        /* Step 4: Summary Screen */
+        .summary-item { margin-bottom: 15px; }
+        .summary-item strong { display: block; font-weight: 600; margin-bottom: 3px; }
+        .summary-item span { color: var(--cor-texto-sutil); }
+        .validation-issues { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--cor-borda); }
+        .validation-issues h3 { margin: 0 0 10px 0; font-size: 1.1rem; color: var(--cor-texto-principal); }
+        #validation-warnings-list, #validation-errors-list { list-style: none; padding: 0; margin: 0 0 15px 0; }
+        #validation-warnings-list li, #validation-errors-list li { padding: 10px 15px; border-radius: 6px; margin-bottom: 8px; font-size: 0.9rem; display: flex; align-items: flex-start; gap: 10px; }
+        #validation-warnings-list li { background-color: var(--cor-aviso-fundo); color: var(--cor-aviso-texto); border: 1px solid var(--cor-aviso-borda); }
+        #validation-errors-list li { background-color: var(--cor-erro-fundo); color: var(--cor-erro-texto); border: 1px solid var(--cor-erro-borda); }
+        #validation-warnings-list li i, #validation-errors-list li i { margin-top: 3px; }
+        .btn-container { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+        /* Utility Classes */
+        .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 8px; }
+        .btn:disabled { background-color: #B0B8C5; cursor: not-allowed; }
+        .btn-primary { background-color: var(--cor-acento); color: white; }
+        .btn-primary:hover:not(:disabled) { background-color: var(--cor-acento-hover); }
+        .btn-secondary { background-color: #e9ecef; color: var(--cor-texto-principal); }
+        .btn-secondary:hover { background-color: #dee2e6; }
+        .btn-danger { background-color: var(--cor-perigo); color: white; }
+        .btn-danger:hover { background-color: #c82333; }
+        .btn .fa-spin { margin-right: 4px; }
+        .loading-spinner { font-size: 1.5rem; color: var(--cor-acento); animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .toast { position: fixed; bottom: 20px; right: 20px; padding: 15px 25px; border-radius: 8px; color: white; font-weight: 500; z-index: 1001; animation: fadeInOut 4s ease; }
+        .toast.success { background-color: var(--cor-sucesso); }
+        .toast.error { background-color: var(--cor-perigo); }
+        @keyframes fadeInOut { 0%, 100% { opacity: 0; transform: translateY(20px); } 10%, 90% { opacity: 1; transform: translateY(0); } }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .header { padding: 0 20px; height: auto; flex-direction: column; align-items: flex-start; padding-top: 15px; padding-bottom: 15px; }
+            .header-nav { width: 100%; overflow-x: auto; padding-bottom: 5px; }
+            .nav-pills { justify-content: flex-start; }
+            .profile-container { position: absolute; top: 15px; right: 20px; }
+            .main-container { padding: 20px; }
+            .list-header { flex-direction: column; align-items: stretch; }
+            .search-filter-container { width: 100%; justify-content: space-between;}
+            .search-input { width: 100%; }
+            .modal-content { width: 95%; padding: 20px; }
+            #json-input { min-height: 300px; }
+            .btn-container { flex-direction: column; gap: 15px; }
+            .btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-logo">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <h1>Painel Professor - Aulas</h1>
+        </div>
+        <div class="header-nav">
+             <div class="nav-pills">
+                 <a href="relatorios.html" class="nav-button" id="reports-nav-btn">
+                     <i class="fa-solid fa-chart-pie"></i> Relatórios
+                 </a>
+                 <a href="painel-professor.html" class="nav-button" id="correction-nav-btn">
+                     <i class="fa-solid fa-clipboard-check"></i> Correções
+                 </a>
+                 <a href="painel-professor.html#view=temas" class="nav-button" id="themes-nav-btn">
+                     <i class="fa-solid fa-book-open"></i> Gerenciar Temas
+                 </a>
+                 <a href="gerenciar-usuarios.html" class="nav-button" id="users-nav-btn">
+                     <i class="fa-solid fa-users"></i> Usuários
+                 </a>
+                 <a href="criar-aula.html" class="nav-button active" id="add-lesson-nav-btn">
+                     <i class="fa-solid fa-plus-circle"></i> Adicionar Aula
+                 </a>
+             </div>
+        </div>
+        <div class="profile-container">
+            <div class="user-profile-badge" id="profile-trigger">
+                <span id="teacher-name">Carregando...</span>
+                <img id="teacher-avatar" src="assets/default-avatar.png" alt="Avatar">
+            </div>
+            <div class="profile-dropdown" id="profile-dropdown">
+                <button id="logout-button">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span>Sair</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+
+        <section id="step-subject-selection" class="step-container active">
+            <h2><i class="fa-solid fa-folder-tree"></i> Selecione a Matéria</h2>
+            <div id="subject-grid" class="subject-grid">
+                <div class="placeholder"><i class="loading-spinner fa-solid fa-spinner"></i> Carregando matérias...</div>
+            </div>
+        </section>
+
+        <section id="step-lesson-list" class="step-container">
+            <button class="btn btn-secondary" onclick="showStep('step-subject-selection')">
+                <i class="fa-solid fa-chevron-left"></i> Voltar para Matérias
+            </button>
+            <h2 id="lesson-list-title"><i class="fa-solid fa-list-ul"></i> Aulas de [Matéria]</h2>
+            <div class="list-header">
+                <div class="search-filter-container">
+                    <div class="search-container">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="search" id="lesson-search-input" class="search-input" placeholder="Buscar aula por título...">
+                    </div>
+                    <select id="lesson-sort-select" class="sort-select">
+                        <option value="newest">Mais Recentes</option>
+                        <option value="oldest">Mais Antigas</option>
+                        <option value="titleAsc">Título (A-Z)</option>
+                        <option value="titleDesc">Título (Z-A)</option>
+                    </select>
+                </div>
+                <button id="create-new-lesson-btn" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i> Criar Nova Aula
+                </button>
+            </div>
+            <ul id="lesson-list" class="lesson-list">
+                <div class="placeholder" id="lesson-list-placeholder"><i class="loading-spinner fa-solid fa-spinner"></i> Carregando aulas...</div>
+            </ul>
+        </section>
+
+        <div id="json-modal" class="modal-backdrop">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="json-modal-title"><i class="fa-solid fa-code"></i> Inserir JSON da Aula</h2>
+                    <button class="close-btn" onclick="closeJsonModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Cole abaixo o conteúdo JSON completo da aula gerado pelo conversor.</p>
+                    <textarea id="json-input" placeholder="{ ... }"></textarea>
+                    <div id="json-validation-errors" style="margin-top: 15px;"></div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="closeJsonModal()">Cancelar</button>
+                    <button id="validate-json-btn" class="btn btn-primary">Validar & Avançar</button>
+                </div>
+            </div>
+        </div>
+
+        <section id="step-summary" class="step-container">
+            <h2 id="summary-title"><i class="fa-solid fa-clipboard-list"></i> Resumo da Aula</h2>
+            <div id="summary-content">
+                <div class="summary-item"><strong>Título:</strong> <span id="summary-titulo"></span></div>
+                <div class="summary-item"><strong>Disciplina:</strong> <span id="summary-disciplina"></span></div>
+                <div class="summary-item"><strong>Foco ENEM:</strong> <span id="summary-foco"></span></div>
+                <div class="summary-item"><strong>Data Criação:</strong> <span id="summary-data"></span></div>
+                <div class="summary-item"><strong>Nº Questões:</strong> <span id="summary-questoes"></span></div>
+                <div class="summary-item"><strong>ID da Aula:</strong> <span id="summary-idAula"></span></div>
+            </div>
+            <div class="validation-issues">
+                <h3><i class="fa-solid fa-triangle-exclamation"></i> Avisos e Erros de Validação</h3>
+                <ul id="validation-warnings-list"></ul>
+                <ul id="validation-errors-list"></ul>
+            </div>
+            <div class="btn-container">
+                <button class="btn btn-secondary" onclick="showJsonModal(true)">
+                    <i class="fa-solid fa-pencil"></i> Corrigir JSON
+                </button>
+                <button id="save-lesson-btn" class="btn btn-primary" disabled>
+                    <i class="fa-solid fa-save"></i> Salvar no Firebase
+                </button>
+                 <button class="btn btn-danger" onclick="cancelSummary()">
+                    Cancelar
+                </button>
+            </div>
+            <div id="save-status" style="text-align: center; margin-top: 15px; font-weight: 500;"></div>
+        </section>
+
+    </main>
+
+    <div id="toast-container"></div>
+
+    <script type="module">
+        import { auth, db } from '../firebase/firebase-config.js';
+        import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { collection, doc, getDoc, getDocs, setDoc, updateDoc, serverTimestamp, query, orderBy as fbOrderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { verificarLogin } from '../firebase/firebase-conta.js'; // Assumindo que verificarLogin retorna dados do usuário logado
+
+        // --- Variáveis Globais ---
+        const APP_STORAGE_KEY = 'perfilUser';
+        let currentUserData = null;
+        let currentSubject = null;
+        let lessonsCache = {};
+        let currentEditingLesson = null; // Armazena o JSON validado
+        let currentLessonId = null; // Armazena o ID da aula sendo editada/criada
+        let firebaseAutoId = null; // Armazena o ID gerado pelo Firebase se necessário
+
+        const subjects = [
+            { id: 'linguagens', name: 'Linguagens e suas Tecnologias', icon: 'fa-solid fa-comments' },
+            { id: 'humanas', name: 'Ciências Humanas e suas Tecnologias', icon: 'fa-solid fa-landmark' },
+            { id: 'natureza', name: 'Ciências da Natureza e suas Tecnologias', icon: 'fa-solid fa-flask' },
+            { id: 'matematica', name: 'Matemática e suas Tecnologias', icon: 'fa-solid fa-calculator' }
+        ];
+
+        // --- Elementos DOM ---
+        const profileTrigger = document.getElementById('profile-trigger');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        const logoutButton = document.getElementById('logout-button');
+        const subjectGrid = document.getElementById('subject-grid');
+        const stepSubjectSelection = document.getElementById('step-subject-selection');
+        const stepLessonList = document.getElementById('step-lesson-list');
+        const stepSummary = document.getElementById('step-summary');
+        const lessonListTitle = document.getElementById('lesson-list-title');
+        const lessonSearchInput = document.getElementById('lesson-search-input');
+        const lessonSortSelect = document.getElementById('lesson-sort-select');
+        const lessonListUl = document.getElementById('lesson-list');
+        const lessonListPlaceholder = document.getElementById('lesson-list-placeholder');
+        const createNewLessonBtn = document.getElementById('create-new-lesson-btn');
+        const jsonModal = document.getElementById('json-modal');
+        const jsonModalTitle = document.getElementById('json-modal-title');
+        const jsonInput = document.getElementById('json-input');
+        const validateJsonBtn = document.getElementById('validate-json-btn');
+        const jsonValidationErrors = document.getElementById('json-validation-errors');
+        const summaryTitle = document.getElementById('summary-title');
+        const validationWarningsList = document.getElementById('validation-warnings-list');
+        const validationErrorsList = document.getElementById('validation-errors-list');
+        const saveLessonBtn = document.getElementById('save-lesson-btn');
+        const saveStatus = document.getElementById('save-status');
+        const toastContainer = document.getElementById('toast-container');
+
+        // --- Funções ---
+
+        // Função utilitária para obter dados do usuário logado
+        function getAppData() {
+            try {
+                const rawData = localStorage.getItem(APP_STORAGE_KEY);
+                return rawData ? JSON.parse(rawData) : null;
+            } catch (e) {
+                console.error("Falha ao ler os dados do localStorage", e);
+                return null;
+            }
+        }
+
+        // Navegação entre Steps
+        function showStep(stepId) {
+            document.querySelectorAll('.step-container').forEach(step => step.classList.remove('active'));
+            document.getElementById(stepId).classList.add('active');
+        }
+
+        // Renderizar seleção de matéria
+        function renderSubjectSelection() {
+            subjectGrid.innerHTML = subjects.map(subject => `
+                <div class="subject-card" data-subject-id="${subject.id}">
+                    <i class="${subject.icon}"></i>
+                    <h3>${subject.name}</h3>
+                </div>
+            `).join('');
+            showStep('step-subject-selection');
+        }
+
+        // Carregar aulas de uma matéria
+        async function loadLessons(subjectId) {
+            currentSubject = subjectId;
+            const subjectName = subjects.find(s => s.id === subjectId)?.name || subjectId;
+            lessonListTitle.innerHTML = `<i class="fa-solid fa-list-ul"></i> Aulas de ${subjectName}`;
+            lessonListUl.innerHTML = '';
+            lessonListPlaceholder.innerHTML = '<i class="loading-spinner fa-solid fa-spinner"></i> Carregando aulas...';
+            lessonListPlaceholder.style.display = 'flex';
+            showStep('step-lesson-list');
+
+            // Cache Simples por Sessão
+            if (lessonsCache[subjectId]) {
+                renderLessonList(lessonsCache[subjectId]);
+                return;
+            }
+
+            try {
+                const lessonsRef = collection(db, `aulasMaterias/${subjectId}/aulas`);
+                const q = query(lessonsRef, fbOrderBy("metadados.dataCriacao", "desc")); // Ordena por data de criação
+                const querySnapshot = await getDocs(q);
+                const lessons = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                lessonsCache[subjectId] = lessons; // Salva no cache
+                renderLessonList(lessons);
+            } catch (error) {
+                console.error("Erro ao carregar aulas:", error);
+                lessonListPlaceholder.innerHTML = '<i class="fa-solid fa-exclamation-triangle"></i> Erro ao carregar aulas. Verifique sua conexão ou contate o suporte.';
+            }
+        }
+
+        // Renderizar lista de aulas
+        function renderLessonList(lessons) {
+            const searchTerm = lessonSearchInput.value.toLowerCase();
+            const sortBy = lessonSortSelect.value;
+
+            const filteredLessons = lessons.filter(lesson =>
+                lesson.tituloAula.toLowerCase().includes(searchTerm)
+            );
+
+            // Ordenação
+            filteredLessons.sort((a, b) => {
+                const dateA = a.metadados?.dataCriacao ? new Date(a.metadados.dataCriacao).getTime() : 0;
+                const dateB = b.metadados?.dataCriacao ? new Date(b.metadados.dataCriacao).getTime() : 0;
+                const titleA = a.tituloAula.toLowerCase();
+                const titleB = b.tituloAula.toLowerCase();
+
+                switch (sortBy) {
+                    case 'newest': return dateB - dateA;
+                    case 'oldest': return dateA - dateB;
+                    case 'titleAsc': return titleA.localeCompare(titleB);
+                    case 'titleDesc': return titleB.localeCompare(titleA);
+                    default: return dateB - dateA;
+                }
+            });
+
+            lessonListUl.innerHTML = '';
+            if (filteredLessons.length === 0) {
+                lessonListPlaceholder.innerHTML = '<i class="fa-solid fa-folder-open"></i> Nenhuma aula encontrada. <button class="btn btn-primary" style="margin-top:15px;" onclick="showJsonModal()">Criar primeira aula</button>';
+                lessonListPlaceholder.style.display = 'flex';
+                return;
+            }
+
+            lessonListPlaceholder.style.display = 'none';
+            filteredLessons.forEach(lesson => {
+                const date = lesson.metadados?.dataCriacao || 'Data Indefinida';
+                const li = document.createElement('li');
+                li.className = 'lesson-item';
+                li.innerHTML = `
+                    <div class="lesson-info">
+                        <h4>${lesson.tituloAula}</h4>
+                        <p>ID: ${lesson.id || 'N/A'} | Foco: ${lesson.focoEnem || 'N/A'} | Criado em: ${date}</p>
+                    </div>
+                    <div class="lesson-actions">
+                        <button class="btn btn-secondary btn-edit-lesson" data-lesson-id="${lesson.id}">
+                            <i class="fa-solid fa-pencil"></i> Editar
+                        </button>
+                        <button class="btn btn-primary btn-open-lesson" data-lesson-id="${lesson.id}">
+                             Abrir Aula (Em breve)
+                        </button>
+                    </div>
+                `;
+                // Event listener para Editar
+                li.querySelector('.btn-edit-lesson').addEventListener('click', () => {
+                     // Encontrar o JSON original no cache e abrir o modal para edição
+                     const lessonData = lessonsCache[currentSubject]?.find(l => l.id === lesson.id);
+                     if (lessonData) {
+                         currentLessonId = lesson.id; // Define o ID da aula sendo editada
+                         showJsonModal(false, lessonData);
+                     } else {
+                         showToast('Erro ao carregar dados da aula para edição.', 'error');
+                     }
+                 });
+
+                 // Placeholder para Abrir Aula (ainda não implementado)
+                 li.querySelector('.btn-open-lesson').addEventListener('click', () => {
+                     showToast('Visualização detalhada da aula ainda não implementada.', 'warning');
+                 });
+
+                lessonListUl.appendChild(li);
+            });
+        }
+
+        // Abrir/Fechar Modal JSON
+        function showJsonModal(isCorrection = false, lessonData = null) {
+            jsonInput.value = isCorrection && currentEditingLesson ? JSON.stringify(currentEditingLesson, null, 2) : (lessonData ? JSON.stringify(lessonData, null, 2) : '');
+            jsonValidationErrors.innerHTML = '';
+            jsonModalTitle.innerHTML = `<i class="fa-solid fa-code"></i> ${lessonData && !isCorrection ? 'Editar JSON da Aula' : 'Inserir JSON da Aula'}`;
+             if (lessonData && !isCorrection) {
+                 currentLessonId = lessonData.id; // Armazena o ID se estiver editando
+             } else if (!isCorrection) {
+                 currentLessonId = null; // Limpa o ID se for uma nova aula
+             }
+            jsonModal.classList.add('active');
+        }
+        function closeJsonModal() {
+            jsonModal.classList.remove('active');
+            jsonInput.value = '';
+            jsonValidationErrors.innerHTML = '';
+             if (!currentEditingLesson) { // Só limpa se não veio da tela de resumo
+                 currentLessonId = null;
+             }
+        }
+        function cancelSummary() {
+            currentEditingLesson = null;
+            currentLessonId = null;
+            firebaseAutoId = null;
+             showStep('step-lesson-list');
+             loadLessons(currentSubject); // Recarrega a lista
+         }
+
+        // Validação do JSON
+        function validateJson() {
+            jsonValidationErrors.innerHTML = '';
+            validationWarningsList.innerHTML = '';
+            validationErrorsList.innerHTML = '';
+            saveLessonBtn.disabled = true; // Desabilita o botão de salvar por padrão
+            firebaseAutoId = null; // Reseta o ID automático
+
+            const jsonString = jsonInput.value.trim();
+            if (!jsonString) {
+                displayJsonError("Erro: Campo JSON está vazio.");
+                return;
+            }
+
+            let data;
+            try {
+                data = JSON.parse(jsonString);
+            } catch (e) {
+                displayJsonError(`Erro ao processar JSON: ${e.message}`);
+                return;
+            }
+
+            const errors = [];
+            const warnings = [];
+
+            // 1. Validação de Chaves Obrigatórias Nível Superior
+            const requiredKeys = ['tituloAula', 'disciplina', 'focoEnem', 'metadados', 'conteudoPrincipal', 'revisaoGeral', 'questoes'];
+            requiredKeys.forEach(key => {
+                if (!(key in data)) {
+                    errors.push(`Chave obrigatória ausente no nível superior: "${key}".`);
+                }
+            });
+             // Permitir idAula ausente ou vazia
+             if (!('idAula' in data)) {
+                 warnings.push('Chave "idAula" ausente. Um ID será gerado automaticamente pelo Firebase.');
+                 data.idAula = ''; // Adiciona para consistência interna
+             } else if (typeof data.idAula !== 'string') {
+                 errors.push('Chave "idAula" deve ser uma string (ou vazia).');
+             }
+             currentLessonId = data.idAula || null; // Atualiza o ID atual
+
+            // 2. Validação de 'disciplina' (deve ser uma das matérias)
+            if (data.disciplina && !subjects.some(s => s.name === data.disciplina)) {
+                 // Permitir salvar mesmo com disciplina diferente, mas avisar
+                 warnings.push(`Disciplina "${data.disciplina}" não corresponde às matérias padrão. Verifique se está correto.`);
+            }
+
+            // 3. Validação de 'metadados'
+            if (data.metadados) {
+                if (!data.metadados.dataCriacao || !/^\d{4}-\d{2}-\d{2}$/.test(data.metadados.dataCriacao)) {
+                    const today = new Date().toISOString().split('T')[0];
+                    warnings.push(`"metadados.dataCriacao" ausente ou inválido. Usando data atual: ${today}.`);
+                    data.metadados.dataCriacao = today; // Preenche com data atual
+                }
+            } else {
+                errors.push('Chave obrigatória ausente: "metadados".');
+            }
+
+            // 4. Validação de 'questoes'
+            if (!data.questoes || !Array.isArray(data.questoes)) {
+                errors.push('Chave obrigatória "questoes" ausente ou não é um array.');
+            } else {
+                 if (data.questoes.length !== 10) {
+                     warnings.push(`A lista "questoes" contém ${data.questoes.length} itens. O ideal são 10 questões.`);
+                     // AQUI: Poderia adicionar uma confirmação extra antes de salvar se a contagem for diferente de 10
+                 }
+                 if (data.questoes.length > 20) {
+                     errors.push(`A lista "questoes" excede o limite máximo de 20 itens (${data.questoes.length}).`);
+                 }
+
+                data.questoes.forEach((q, index) => {
+                    const qNum = index + 1;
+                    const requiredQuestionKeys = ['idQuestao', 'tipo', 'enunciado', 'alternativas', 'respostaCorreta', 'resolucaoDetalhada'];
+                    requiredQuestionKeys.forEach(key => {
+                        if (!(key in q)) {
+                            errors.push(`Questão ${qNum}: Chave obrigatória "${key}" ausente.`);
+                        }
+                    });
+
+                    // Valida 'alternativas'
+                    if (q.alternativas) {
+                        if (!Array.isArray(q.alternativas) || q.alternativas.length !== 5) {
+                            errors.push(`Questão ${qNum}: "alternativas" deve ser um array com exatamente 5 objetos.`);
+                        } else {
+                            const expectedLetters = ['A', 'B', 'C', 'D', 'E'];
+                            q.alternativas.forEach((alt, altIndex) => {
+                                if (!alt || typeof alt !== 'object' || !alt.letra || alt.letra !== expectedLetters[altIndex] || !alt.texto) {
+                                    errors.push(`Questão ${qNum}: Alternativa ${altIndex + 1} (${expectedLetters[altIndex]}) está mal formatada (esperado {"letra": "${expectedLetters[altIndex]}", "texto": "..."}).`);
+                                }
+                                // Valida LaTeX nas alternativas
+                                validateLaTeX(qNum, `Alternativa ${alt.letra}`, alt.texto, warnings);
+                            });
+                        }
+                    }
+
+                    // Valida 'respostaCorreta'
+                    if (q.respostaCorreta && !['A', 'B', 'C', 'D', 'E'].includes(q.respostaCorreta.trim())) {
+                        errors.push(`Questão ${qNum}: "respostaCorreta" (${q.respostaCorreta}) é inválida. Deve ser A, B, C, D ou E.`);
+                        if (q.respostaCorreta) q.respostaCorreta = q.respostaCorreta.trim().toUpperCase(); // Tenta corrigir
+                    }
+
+                    // Valida 'dadosGrafico' se existir
+                    if (q.dadosGrafico) {
+                         if (!['bar', 'line', 'pie'].includes(q.dadosGrafico.tipo)) {
+                             warnings.push(`Questão ${qNum}: "dadosGrafico.tipo" (${q.dadosGrafico.tipo}) inválido. Tipos permitidos: bar, line, pie.`);
+                         }
+                         if (!q.dadosGrafico.datasets || !Array.isArray(q.dadosGrafico.datasets) || q.dadosGrafico.datasets.some(ds => !Array.isArray(ds.data) || ds.data.some(isNaN))) {
+                             warnings.push(`Questão ${qNum}: "dadosGrafico.datasets" deve ser um array de objetos com uma chave "data" contendo um array de números.`);
+                         }
+                    }
+                     // Valida 'midiaQuestao' se existir
+                     if ('midiaQuestao' in q && !Array.isArray(q.midiaQuestao)) {
+                         warnings.push(`Questão ${qNum}: "midiaQuestao" deve ser um array (pode ser vazio).`);
+                     }
+
+
+                    // Valida LaTeX nos campos de texto
+                    validateLaTeX(qNum, 'Enunciado', q.enunciado, warnings);
+                    validateLaTeX(qNum, 'Resolução', q.resolucaoDetalhada, warnings);
+                });
+            }
+
+            // Valida LaTeX nos conteúdos principais
+            validateLaTeX('Global', 'Conteúdo Principal', data.conteudoPrincipal, warnings);
+            validateLaTeX('Global', 'Revisão Geral', data.revisaoGeral, warnings);
+
+             // Validação de tamanho
+             if (jsonString.length > 500 * 1024) { // Aproximadamente 500KB
+                 warnings.push(`O JSON é grande (${(jsonString.length / 1024).toFixed(1)}KB). Pode haver lentidão ou timeout ao salvar.`);
+             }
+
+            // Exibe erros e avisos
+            if (errors.length > 0) {
+                 errors.forEach(err => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<i class="fa-solid fa-times-circle"></i> ${err}`;
+                    validationErrorsList.appendChild(li);
+                    displayJsonError(err); // Mostra no modal também
+                });
+                showStep('step-summary');
+                displaySummary(data); // Mostra o resumo mesmo com erros para facilitar correção
+            } else {
+                 warnings.forEach(warn => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<i class="fa-solid fa-exclamation-triangle"></i> ${warn}`;
+                    validationWarningsList.appendChild(li);
+                });
+                 currentEditingLesson = data; // Armazena o JSON validado
+                 saveLessonBtn.disabled = false; // Habilita o botão de salvar
+                 closeJsonModal();
+                 showStep('step-summary');
+                 displaySummary(data);
+             }
+        }
+
+        // Função auxiliar para validar LaTeX
+        function validateLaTeX(questionNum, fieldName, text, warnings) {
+            if (!text || typeof text !== 'string') return;
+            // Verifica se há delimitadores LaTeX não fechados ou misturados
+            const latexRegex = /\$\$(.*?)\$\$|\$(.*?)\$/gs; // Captura $$...$$ ou $...$
+            let match;
+            while ((match = latexRegex.exec(text)) !== null) {
+                if (match[0].startsWith('$$') && !match[0].endsWith('$$')) {
+                    warnings.push(`Q.${questionNum} - ${fieldName}: Delimitador LaTeX "$$" parece não estar fechado corretamente.`);
+                } else if (match[0].startsWith('$') && !match[0].startsWith('$$') && !match[0].endsWith('$')) {
+                    warnings.push(`Q.${questionNum} - ${fieldName}: Delimitador LaTeX "$" parece não estar fechado corretamente.`);
+                }
+            }
+             // Aviso se houver $ sem par (possível erro) - Regex mais simples
+            const singleDollarRegex = /(?<!\$)\$[^\$]+(?!\$)/g;
+            if (singleDollarRegex.test(text)) {
+                 //warnings.push(`Q.${questionNum} - ${fieldName}: Encontrado delimitador "$" isolado. Verifique se o formato LaTeX está correto (use $$...$$ para blocos ou $...$ inline).`);
+             }
+         }
+
+
+        // Exibir erros de validação JSON no modal
+        function displayJsonError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.style.color = 'var(--cor-perigo)';
+            errorDiv.style.marginTop = '10px';
+            errorDiv.textContent = message;
+            jsonValidationErrors.appendChild(errorDiv);
+        }
+
+        // Exibir resumo da aula
+        function displaySummary(data) {
+             summaryTitle.innerHTML = `<i class="fa-solid fa-clipboard-list"></i> Resumo da Aula: ${data.tituloAula}`;
+             document.getElementById('summary-titulo').textContent = data.tituloAula || 'N/A';
+             document.getElementById('summary-disciplina').textContent = data.disciplina || 'N/A';
+             document.getElementById('summary-foco').textContent = data.focoEnem || 'N/A';
+             document.getElementById('summary-data').textContent = data.metadados?.dataCriacao || 'N/A';
+             document.getElementById('summary-questoes').textContent = data.questoes?.length ?? 'N/A';
+             document.getElementById('summary-idAula').textContent = currentLessonId || '(Será gerado ao salvar)';
+         }
+
+
+        // Salvar aula no Firebase
+        async function saveLessonToFirebase() {
+             if (!currentEditingLesson || !currentSubject) return;
+
+             saveLessonBtn.disabled = true;
+             saveLessonBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+             saveStatus.textContent = 'Verificando ID e salvando...';
+
+             let lessonIdToSave = currentLessonId;
+             let isNewLesson = !lessonIdToSave;
+
+             try {
+                 const collectionPath = `aulasMaterias/${currentSubject}/aulas`;
+                 let lessonRef;
+
+                 if (isNewLesson) {
+                     lessonRef = doc(collection(db, collectionPath)); // Gera um novo ID
+                     lessonIdToSave = lessonRef.id;
+                     currentEditingLesson.idAula = lessonIdToSave; // Atualiza o objeto JSON com o novo ID
+                     firebaseAutoId = lessonIdToSave; // Guarda o ID gerado
+                     saveStatus.textContent = `Gerado ID: ${lessonIdToSave}. Salvando dados...`;
+                     await setDoc(lessonRef, currentEditingLesson);
+                 } else {
+                     lessonRef = doc(db, collectionPath, lessonIdToSave);
+                     const docSnap = await getDoc(lessonRef);
+                     if (docSnap.exists()) {
+                         const overwrite = confirm(`Já existe uma aula com o ID "${lessonIdToSave}". Deseja sobrescrevê-la?`);
+                         if (!overwrite) {
+                             saveLessonBtn.disabled = false;
+                             saveLessonBtn.innerHTML = '<i class="fa-solid fa-save"></i> Salvar no Firebase';
+                             saveStatus.textContent = 'Salvamento cancelado.';
+                             return;
+                         }
+                         saveStatus.textContent = `Sobrescrevendo aula ID: ${lessonIdToSave}...`;
+                         await setDoc(lessonRef, currentEditingLesson); // Sobrescreve
+                     } else {
+                         saveStatus.textContent = `Criando aula com ID: ${lessonIdToSave}...`;
+                         await setDoc(lessonRef, currentEditingLesson); // Cria novo com ID especificado
+                     }
+                 }
+
+                 saveStatus.textContent = '';
+                 showToast(`Aula "${currentEditingLesson.tituloAula}" salva com sucesso! ID: ${lessonIdToSave}`, 'success');
+                 lessonsCache[currentSubject] = null; // Invalida o cache
+                 currentEditingLesson = null; // Limpa o JSON editado
+                 currentLessonId = null; // Limpa o ID atual
+                 firebaseAutoId = null; // Limpa o ID gerado
+                 showStep('step-lesson-list');
+                 loadLessons(currentSubject); // Recarrega a lista
+
+             } catch (error) {
+                 console.error("Erro ao salvar aula:", error);
+                 saveStatus.textContent = `Erro: ${error.message}`;
+                 showToast(`Falha ao salvar a aula: ${error.message}`, 'error');
+                 saveLessonBtn.disabled = false;
+                 saveLessonBtn.innerHTML = '<i class="fa-solid fa-save"></i> Salvar no Firebase';
+             }
+         }
+
+         // Exibir Toast Notifications
+         function showToast(message, type = 'info') {
+             const toast = document.createElement('div');
+             toast.className = `toast ${type}`;
+             toast.textContent = message;
+             toastContainer.appendChild(toast);
+             setTimeout(() => toast.remove(), 4000);
+         }
+
+
+        // --- Inicialização e Event Listeners ---
+        function initializeApp() {
+            const appData = getAppData();
+            if (!appData || !appData.userData) {
+                 window.location.href = '../index.html'; // Redireciona se não estiver logado
+                 return;
+             }
+             currentUserData = appData.userData;
+
+            // Verifica se é professor
+            if (currentUserData.role !== 'teacher') {
+                alert('Acesso negado. Esta página é apenas para professores.');
+                window.location.href = '../menu.html'; // Redireciona para o menu principal
+                return;
+            }
+
+            // Popula header
+            document.getElementById('teacher-name').textContent = currentUserData.name;
+            document.getElementById('teacher-avatar').src = currentUserData.avatar || 'assets/default-avatar.png';
+
+            // Renderiza seleção de matéria
+            renderSubjectSelection();
+
+            // Event Listeners
+            profileTrigger.addEventListener('click', (e) => { e.stopPropagation(); profileDropdown.classList.toggle('show'); });
+            window.addEventListener('click', (e) => { if (!e.target.closest('.profile-container')) profileDropdown.classList.remove('show'); });
+            logoutButton.addEventListener('click', () => signOut(auth).then(() => { localStorage.removeItem(APP_STORAGE_KEY); window.location.href = '../index.html'; }));
+
+            subjectGrid.addEventListener('click', (e) => {
+                const card = e.target.closest('.subject-card');
+                if (card) {
+                    loadLessons(card.dataset.subjectId);
+                }
+            });
+
+            lessonSearchInput.addEventListener('input', () => renderLessonList(lessonsCache[currentSubject] || []));
+            lessonSortSelect.addEventListener('change', () => renderLessonList(lessonsCache[currentSubject] || []));
+            createNewLessonBtn.addEventListener('click', () => {
+                 currentLessonId = null; // Garante que é uma nova aula
+                 currentEditingLesson = null; // Limpa qualquer JSON anterior
+                 showJsonModal();
+             });
+            validateJsonBtn.addEventListener('click', validateJson);
+            saveLessonBtn.addEventListener('click', saveLessonToFirebase);
+
+        }
+
+        // --- Execução ---
+        verificarLogin(initializeApp); // Verifica login e inicializa
+        // Lida com o botão de voltar do navegador (opcional, pode causar loop se mal implementado)
+        // window.onpopstate = function(event) {
+        //     if (document.getElementById('step-lesson-list').classList.contains('active')) {
+        //         showStep('step-subject-selection');
+        //     } else if (document.getElementById('step-summary').classList.contains('active')) {
+        //         showStep('step-lesson-list');
+        //         // Potencialmente recarregar lições aqui se necessário
+        //     }
+        // };
+
+    </script>
+
+</body>
+</html>

@@ -179,6 +179,7 @@
       }
       header p {
         color: var(--cor-texto-secundario);
+        margin-bottom: 20px;
       }
       .hamburger-menu {
         display: none;
@@ -576,153 +577,210 @@
       inicializarAnimacaoDeFundo("art-background-dashboard");
       let chartInstances = {};
 
-      document.addEventListener("DOMContentLoaded", () => {
-        verificarLogin(async (userData) => {
-          document.getElementById("user-name").textContent = userData.name;
-          if (userData.avatar)
-            document.getElementById("user-avatar").src = userData.avatar;
+      // --- CONFIGURAÇÃO E FUNÇÕES DE CACHE ---
+      const CLIENT_CACHE_PROGRESS_KEY = 'client_cache_progress_geral';
+      const CLIENT_CACHE_STREAK_KEY = 'client_cache_streak';
 
+      function saveCache(key, data) {
           try {
-            await Promise.all([carregarDadosGerais(), carregarDadosUsuario()]);
-          } catch (error) {
-            console.error("Falha ao buscar dados do Firebase:", error);
-            showOfflineAlert();
+              localStorage.setItem(key, JSON.stringify(data));
+          } catch (e) {
+              console.warn("Falha ao salvar cache no localStorage.", e);
           }
-        });
-
-        document.getElementById("logout-btn").addEventListener("click", logout);
-
-        const sidebar = document.getElementById("sidebar");
-        const hamburgerMenu = document.getElementById("hamburger-menu");
-        const overlay = document.getElementById("overlay");
-        const toggleSidebar = () => {
-          sidebar.classList.toggle("open");
-          overlay.classList.toggle("visible");
-        };
-        hamburgerMenu.addEventListener("click", toggleSidebar);
-        overlay.addEventListener("click", toggleSidebar);
-      });
-
-      function showOfflineAlert() {
-        const alertBox = document.getElementById("offline-alert");
-        alertBox.style.display = "block";
-        setTimeout(() => {
-          alertBox.style.display = "none";
-        }, 5000);
       }
+      function loadCache(key) {
+          try {
+              const data = localStorage.getItem(key);
+              return data ? JSON.parse(data) : null;
+          } catch (e) {
+              console.error("Erro ao carregar cache.", e);
+              return null;
+          }
+      }
+      
+      const materiasConfig = [
+        { id: "matematica", nome: "Matemática", totalAulas: 100, cor: "#4caf50" },
+        { id: "linguagens", nome: "Linguagens", totalAulas: 80, cor: "#00a8ff" },
+        { id: "humanas", nome: "Ciências Humanas", totalAulas: 90, cor: "#9c27b0" },
+        { id: "natureza", nome: "Ciências da Natureza", totalAulas: 120, cor: "#00bcd4" },
+      ];
 
-      async function carregarDadosUsuario() {
-        const userId = getUserId();
-        if (!userId) return;
 
-        const userDocRef = doc(db, "users", userId);
-        const docSnap = await getDoc(userDocRef);
+      // --- Funções de Renderização ---
 
-        if (docSnap.exists()) {
-          const userData = docSnap.data();
-          const streakCount = userData.streak?.count || 0;
+      function renderStreak(streakData) {
+          const streakCount = streakData?.count || 0;
           document.getElementById("streak-value").textContent = streakCount;
-        } else {
-          throw new Error("Documento do usuário não encontrado.");
-        }
       }
 
-      async function carregarDadosGerais() {
-        const materias = [
-          {
-            id: "matematica",
-            nome: "Matemática",
-            totalAulas: 100,
-            cor: "#4caf50",
-          },
-          {
-            id: "linguagens",
-            nome: "Linguagens",
-            totalAulas: 80,
-            cor: "#00a8ff",
-          },
-          {
-            id: "humanas",
-            nome: "Ciências Humanas",
-            totalAulas: 90,
-            cor: "#9c27b0",
-          },
-          {
-            id: "natureza",
-            nome: "Ciências da Natureza",
-            totalAulas: 120,
-            cor: "#00bcd4",
-          },
-        ];
+      function renderProgress(data, isStale) {
+          if (!data || !data.materias || !data.activityByDay) return;
 
-        let totalConcluidasGeral = 0;
-        let totalAulasGeral = 0;
-        const activityByDay = [0, 0, 0, 0, 0, 0, 0];
+          let totalConcluidasGeral = 0;
+          let totalAulasGeral = 0;
+          
+          // Renderização do progresso das matérias
+          data.materias.forEach(materia => {
+              const aulasConcluidas = materia.aulasConcluidas;
+              const aulasFaltantes = materia.totalAulas - aulasConcluidas;
+              const porcentagem = materia.totalAulas > 0 
+                  ? (aulasConcluidas / materia.totalAulas) * 100 
+                  : 0;
 
-        const progressPromises = materias.map((materia) =>
-          carregarProgresso(materia.id)
-        );
-        const todosProgressos = await Promise.all(progressPromises);
+              totalConcluidasGeral += aulasConcluidas;
+              totalAulasGeral += materia.totalAulas;
 
-        todosProgressos.forEach((progresso, index) => {
-          const materia = materias[index];
-          progresso = progresso || {};
-          const aulasConcluidas = Object.keys(progresso).length;
-          const aulasFaltantes = materia.totalAulas - aulasConcluidas;
-          const porcentagem =
-            materia.totalAulas > 0
-              ? (aulasConcluidas / materia.totalAulas) * 100
+              document.getElementById(`${materia.id}-details`).textContent = 
+                  `${aulasConcluidas}/${materia.totalAulas} Aulas`;
+              document.getElementById(`${materia.id}-percent`).textContent = 
+                  `${Math.round(porcentagem)}%`;
+
+              criarGraficoMateria(
+                  materia.id,
+                  aulasConcluidas,
+                  aulasFaltantes,
+                  materia.cor
+              );
+          });
+
+          // Renderização do progresso geral
+          const porcentagemGeral = totalAulasGeral > 0 
+              ? (totalConcluidasGeral / totalAulasGeral) * 100 
               : 0;
+          
+          document.getElementById("chart-percentage").textContent = 
+              `${Math.round(porcentagemGeral)}%`;
 
-          totalConcluidasGeral += aulasConcluidas;
-          totalAulasGeral += materia.totalAulas;
-
-          document.getElementById(
-            `${materia.id}-details`
-          ).textContent = `${aulasConcluidas}/${materia.totalAulas} Aulas`;
-          document.getElementById(
-            `${materia.id}-percent`
-          ).textContent = `${Math.round(porcentagem)}%`;
-          criarGraficoMateria(
-            materia.id,
-            aulasConcluidas,
-            aulasFaltantes,
-            materia.cor
+          criarGraficoProgresso(
+              "progress-chart",
+              totalConcluidasGeral,
+              totalAulasGeral - totalConcluidasGeral,
+              "#00a8ff"
           );
 
-          for (const lessonId in progresso) {
-            const lessonData = progresso[lessonId];
-            if (
-              lessonData.lastVisited &&
-              typeof lessonData.lastVisited.toDate === "function"
-            ) {
-              const dayOfWeek = lessonData.lastVisited.toDate().getDay();
-              activityByDay[dayOfWeek]++;
-            }
+          // Renderização do gráfico de atividade
+          criarGraficoAtividadeDiaria(data.activityByDay);
+          
+          if (isStale && totalAulasGeral > 0) {
+              console.log("Renderizado com dados em cache.");
           }
-        });
-
-        const porcentagemGeral =
-          totalAulasGeral > 0
-            ? (totalConcluidasGeral / totalAulasGeral) * 100
-            : 0;
-        document.getElementById("chart-percentage").textContent = `${Math.round(
-          porcentagemGeral
-        )}%`;
-        criarGraficoProgresso(
-          "progress-chart",
-          totalConcluidasGeral,
-          totalAulasGeral - totalConcluidasGeral,
-          "#00a8ff"
-        );
-
-        criarGraficoAtividadeDiaria(activityByDay);
       }
 
+
+      // --- Funções de Busca (adaptadas para retornar dados prontos) ---
+
+      async function carregarDadosGerais() {
+          const activityByDay = [0, 0, 0, 0, 0, 0, 0];
+          const progressPromises = materiasConfig.map((materia) => carregarProgresso(materia.id));
+          const todosProgressos = await Promise.all(progressPromises);
+
+          const resultadosMateria = [];
+
+          todosProgressos.forEach((progresso, index) => {
+              const materia = materiasConfig[index];
+              progresso = progresso || {};
+              const aulasConcluidas = Object.keys(progresso).length;
+              
+              for (const lessonId in progresso) {
+                  const lessonData = progresso[lessonId];
+                  if (lessonData.lastVisited && typeof lessonData.lastVisited.toDate === "function") {
+                      const dayOfWeek = lessonData.lastVisited.toDate().getDay();
+                      activityByDay[dayOfWeek]++;
+                  }
+              }
+              
+              resultadosMateria.push({
+                  id: materia.id,
+                  nome: materia.nome,
+                  totalAulas: materia.totalAulas,
+                  aulasConcluidas: aulasConcluidas,
+                  cor: materia.cor
+              });
+          });
+
+          return {
+              materias: resultadosMateria,
+              activityByDay: activityByDay
+          };
+      }
+
+
+      async function carregarDadosUsuario() {
+          const userId = getUserId();
+          if (!userId) return { count: 0 };
+          
+          const userDocRef = doc(db, "users", userId);
+          try {
+              const docSnap = await getDoc(userDocRef);
+              if (docSnap.exists()) {
+                  const userData = docSnap.data();
+                  const streakData = userData.streak || { count: 0 };
+                  return { count: streakData.count || 0 };
+              } else {
+                  throw new Error("Documento do usuário não encontrado.");
+              }
+          } catch (error) {
+              throw error; 
+          }
+      }
+
+
+      // --- Lógica Central: Stale-While-Revalidate ---
+
+      async function loadAndRenderData() {
+          // 1. TENTA CARREGAR E RENDERIZAR O CACHE SINCRONAMENTE PARA EXIBIÇÃO INSTANTÂNEA
+          const cachedData = loadCache(CLIENT_CACHE_PROGRESS_KEY);
+          const cachedStreak = loadCache(CLIENT_CACHE_STREAK_KEY);
+
+          // Renderiza o cache se disponível (corrige o problema do '--%')
+          if (cachedData) {
+              renderProgress(cachedData, true);
+          }
+          if (cachedStreak) {
+              renderStreak(cachedStreak);
+          }
+
+          // 2. BUSCA NOVOS DADOS NA REDE
+          try {
+              const [networkData, networkStreak] = await Promise.all([
+                  carregarDadosGerais(),
+                  carregarDadosUsuario()
+              ]);
+
+              // 3. COMPARA E RENDERIZA NOVAMENTE APENAS SE HOUVER MUDANÇA
+              const dataChanged = JSON.stringify(cachedData) !== JSON.stringify(networkData);
+              const streakChanged = JSON.stringify(cachedStreak) !== JSON.stringify(networkStreak);
+              
+              if (dataChanged || !cachedData) { 
+                  renderProgress(networkData, false);
+                  saveCache(CLIENT_CACHE_PROGRESS_KEY, networkData);
+                  console.log("Dados gerais atualizados com a rede.");
+              }
+              
+              if (streakChanged || !cachedStreak) { 
+                  renderStreak(networkStreak);
+                  saveCache(CLIENT_CACHE_STREAK_KEY, networkStreak);
+                  console.log("Streak atualizado com a rede.");
+              }
+              
+              if (!cachedData && !networkData) {
+                   console.log("Nenhum dado encontrado (rede ou cache).");
+              }
+
+          } catch (error) {
+              console.error("Falha ao buscar dados na rede.", error);
+              // Mostra alerta APENAS se não havia nenhum dado em cache para exibir
+              if (!cachedData) {
+                   showOfflineAlert();
+              }
+          }
+      }
+
+
+      // --- Funções de Gráfico (sem alterações) ---
+
       function criarGraficoMateria(chartId, concluidas, faltantes, cor) {
-        const ctx = document
-          .getElementById(`${chartId}-chart`)
-          .getContext("2d");
+        const ctx = document.getElementById(`${chartId}-chart`).getContext("2d");
         if (chartInstances[chartId]) chartInstances[chartId].destroy();
         chartInstances[chartId] = new Chart(ctx, {
           type: "doughnut",
@@ -733,7 +791,6 @@
                 backgroundColor: [cor, "rgba(255, 255, 255, 0.1)"],
                 borderColor: [cor, "rgba(255, 255, 255, 0.2)"],
                 borderWidth: 1,
-                hoverOffset: 4,
               },
             ],
           },
@@ -760,7 +817,6 @@
                 backgroundColor: [cor, "rgba(255, 255, 255, 0.1)"],
                 borderColor: [cor, "rgba(255, 255, 255, 0.2)"],
                 borderWidth: 1,
-                hoverOffset: 4,
               },
             ],
           },
@@ -809,6 +865,60 @@
             },
             plugins: { legend: { display: false }, title: { display: false } },
           },
+        });
+      }
+      
+      function showOfflineAlert() {
+        const alertBox = document.getElementById("offline-alert");
+        alertBox.style.display = "block";
+        setTimeout(() => {
+          alertBox.style.display = "none";
+        }, 5000);
+      }
+
+
+      document.addEventListener("DOMContentLoaded", () => {
+        verificarLogin(async (userData) => {
+          document.getElementById("user-name").textContent = userData.name;
+          if (userData.avatar)
+            document.getElementById("user-avatar").src = userData.avatar;
+
+          try {
+            await loadAndRenderData(); // Chamada inicial com estratégia de cache
+          } catch (error) {
+            console.error("Falha ao buscar dados do Firebase:", error);
+          }
+        });
+
+        document.getElementById("logout-btn").addEventListener("click", logout);
+
+        const sidebar = document.getElementById("sidebar");
+        const hamburgerMenu = document.getElementById("hamburger-menu");
+        const overlay = document.getElementById("overlay");
+        const toggleSidebar = () => {
+          sidebar.classList.toggle("open");
+          overlay.classList.toggle("visible");
+        };
+        hamburgerMenu.addEventListener("click", toggleSidebar);
+        overlay.addEventListener("click", toggleSidebar);
+      });
+
+    </script>
+    <script>
+      // O Service Worker está no arquivo pwa/sw.js
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/20Educacional/pwa/sw.js", { scope: "/20Educacional/" })
+            .then((registration) => {
+              console.log(
+                "Service Worker registrado com sucesso com escopo:",
+                registration.scope
+              );
+            })
+            .catch((error) => {
+              console.log("Falha ao registrar o Service Worker:", error);
+            });
         });
       }
     </script>

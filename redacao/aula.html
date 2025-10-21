@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carregando Aula...</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2071&auto=format&fit=crop');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+        }
+
+        .main-container {
+            background-color: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(8px);
+        }
+
+        h1, h2, h3 {
+             border-left: 4px solid #4f46e5;
+             padding-left: 1rem;
+             color: #1e293b;
+        }
+        h1 { border: none; padding-left: 0; text-align: center; color: #4f46e5;}
+        h2 { border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; margin-top: 2rem; color: #1e293b;}
+        h3 { border: none; padding-left: 0; margin-top: 1.5rem; color: #4f46e5; }
+
+        .highlight-yellow { background-color: #fef9c3; padding: 0.1rem 0.3rem; border-radius: 4px; font-weight: 500;}
+
+        pre {
+            background-color: #f3f4f6; border: 1px solid #d1d5db; border-radius: 8px;
+            padding: 16px; white-space: pre-wrap; word-wrap: break-word;
+            font-family: 'Courier New', Courier, monospace; font-size: 1rem;
+            line-height: 1.6; color: #1f2937; margin-top: 1rem; margin-bottom: 1rem;
+        }
+
+       .quiz-form label {
+            display: block; padding: 12px 16px; border: 2px solid #e5e7eb;
+            border-radius: 8px; margin-bottom: 8px; cursor: pointer;
+            transition: all 0.2s ease-in-out; background-color: white;
+        }
+       .quiz-form label:hover { border-color: #38bdf8; background-color: #f0f9ff; }
+       .quiz-form input[type='radio'] { display: none; }
+       .quiz-form input[type='radio']:checked + label {
+            border-color: #38bdf8; background-color: #e0f2fe; font-weight: 700;
+        }
+       .correct { border-color: #22c55e !important; background-color: #dcfce7 !important; color: #15803d; }
+       .incorrect { border-color: #ef4444 !important; background-color: #fee2e2 !important; color: #b91c1c; }
+       .resolution-text { margin-top: 1rem; padding: 1rem; background-color: #f1f5f9; border-left: 4px solid #4f46e5; border-radius: 4px; }
+       .pomodoro-timer { background-color: #eef2ff; border: 1px solid #c7d2fe; }
+
+        /* Estilos de conteúdo Markdown (incluindo tabelas) */
+        .prose-styles table {
+            width: auto;
+            border-collapse: collapse;
+            margin-top: 1em;
+            margin-bottom: 1em;
+            border: 1px solid #d1d5db;
+        }
+        .prose-styles th,
+        .prose-styles td {
+            border: 1px solid #d1d5db;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        .prose-styles th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+        }
+        .prose-styles h1, .prose-styles h2, .prose-styles h3 {
+             border: none;
+             padding-left: 0;
+             margin-top: 1.5em;
+             margin-bottom: 1rem;
+             color: #1e293b;
+        }
+        .prose-styles h1 { font-size: 2rem; font-weight: 700; }
+        .prose-styles h2 { font-size: 1.5rem; font-weight: 600; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; }
+        .prose-styles h3 { font-size: 1.25rem; font-weight: 600; }
+        .prose-styles ul { list-style: disc; margin-left: 1.5rem; margin-bottom: 1rem; }
+        .prose-styles ol { list-style: decimal; margin-left: 1.5rem; margin-bottom: 1rem; }
+        .prose-styles li { margin-bottom: 0.5rem; }
+        .prose-styles strong, .prose-styles b { font-weight: 700; }
+        .prose-styles em, .prose-styles i { font-style: italic; }
+        .prose-styles code { background-color: #f3f4f6; padding: 2px 5px; border-radius: 4px; font-family: monospace; }
+        .prose-styles blockquote { border-left: 4px solid #d1d5db; padding-left: 1rem; margin-left: 0; color: #6b7280; }
+
+
+        /* **** CORREÇÃO 2: Força o $$LaTeX$$ (MathJax) a ficar inline **** */
+        .prose-styles mjx-display, 
+        .resolution-content mjx-display,
+        .quiz-form label mjx-display {
+            display: inline-block !important; /* Força a ficar na mesma linha */
+            margin: 0 0.25em !important;     /* Adiciona um pequeno espaço */
+            vertical-align: middle !important; /* Alinha com o texto */
+            text-align: left !important;   /* Impede centralização */
+        }
+
+        @media print {
+            body { background-image: none; background-color: white; }
+           .no-print { display: none !important; }
+           .main-container { box-shadow: none; border: 1px solid #ccc; margin: 0; max-width: 100%; backdrop-filter: none; background-color: white;}
+           .quiz-form label { border: 1px solid #eee; background-color: white !important; }
+            h1, h2, h3 { color: black !important; border-color: #ccc !important; }
+            pre { background-color: #f9f9f9; border: 1px solid #eee; }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 text-gray-800 p-4 sm:p-6 md:p-8">
+
+    <div class="main-container max-w-4xl mx-auto rounded-2xl shadow-2xl p-6 sm:p-8 md:p-12">
+        <header class="text-center mb-10">
+            <h1 id="lesson-title" class="text-3xl sm:text-4xl font-bold">Carregando Aula...</h1>
+            <p id="lesson-focus" class="text-gray-600 mt-2">Foco ENEM: Carregando...</p>
+        </header>
+
+        <section class="no-print pomodoro-timer rounded-xl p-6 mb-12 text-center">
+            <h2 class="text-2xl font-bold text-indigo-800 mb-2">Timer de Foco (Pomodoro)</h2>
+            <div id="pomodoro-display" class="text-6xl font-bold text-indigo-900 my-4">25:00</div>
+            <div class="flex justify-center space-x-4">
+                <button id="pomodoro-start" class="px-6 py-2 bg-indigo-500 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-600 transition">
+                    Iniciar
+                </button>
+                <button id="pomodoro-pause" class="px-6 py-2 bg-amber-500 text-white font-semibold rounded-lg shadow-md hover:bg-amber-600 transition">
+                    Pausar
+                </button>
+                <button id="pomodoro-reset" class="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 transition">
+                    Resetar
+                </button>
+            </div>
+        </section>
+
+        <article class="space-y-6">
+            <section id="lesson-content-section">
+                <h2>Conteúdo Principal</h2>
+                <div id="lesson-content" class="prose-styles max-w-none text-gray-700">
+                    <p>Carregando conteúdo...</p>
+                </div>
+            </section>
+
+            <section id="revision-section">
+                <h2>Revisão Geral</h2>
+                <div id="revision-content" class="prose-styles max-w-none text-gray-700">
+                    <p>Carregando revisão...</p>
+                </div>
+            </section>
+
+             <section id="video-section" class="my-8 hidden no-print">
+                <h2>Vídeo Aula Complementar</h2>
+                <div class="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg overflow-hidden shadow-lg">
+                    <iframe id="video-iframe" class="w-full h-full" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </section>
+
+            <section class="mt-12">
+                <h2 class="border-b-4 border-teal-400 pb-2 mb-6">Questões Propostas (Estilo ENEM)</h2>
+                <form id="quiz-form" class="quiz-form space-y-8">
+                    <div id="questions-container">
+                        <p>Carregando questões...</p>
+                    </div>
+                    <button type="button" id="submit-quiz" class="no-print w-full py-4 text-xl font-bold text-white bg-teal-500 rounded-lg shadow-lg hover:bg-teal-600 transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                        Corrigir Respostas
+                    </button>
+                </form>
+            </section>
+
+            <section id="results-section" class="hidden mt-12 text-center bg-blue-50 border-2 border-blue-200 rounded-xl p-8">
+                <h2 class="text-3xl font-bold text-blue-800">Seu Desempenho</h2>
+                <p id="score-text" class="text-2xl mt-4 text-blue-700">Calculando...</p>
+            </section>
+
+            <section id="answer-key-section" class="hidden mt-12">
+                 <h2 class="border-b-4 border-teal-400 pb-2 mb-6">Gabarito Comentado</h2>
+                <div id="answer-key-content" class="space-y-6">
+                    </div>
+            </section>
+
+        </article>
+
+        <footer class="no-print mt-12 pt-8 border-t-2 border-gray-200 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
+            <a id="back-to-track-btn" href="../linguagens.html" class="w-full sm:w-auto px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 transition text-center">Voltar para a Trilha</a>
+            <button onclick="window.print()" class="w-full sm:w-auto px-6 py-3 bg-sky-600 text-white font-semibold rounded-lg shadow-md hover:bg-sky-700 transition">
+                Salvar como PDF ou Imprimir
+            </button>
+        </footer>
+
+    </div>
+
+    <script type="module">
+        // --- IMPORTAÇÕES DO FIREBASE ---
+        // Assumindo que este HTML está em /redacao/
+        import { db } from '../firebase/firebase-config.js';
+        import { doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { verificarLogin, verificarAulaAtual, registrarVisitaAula } from '../firebase/firebase-conta.js';
+        import { enviarResultadoQuiz } from '../firebase/firebase-aula.js';
+
+        // --- DEBUG: Mensagem de início ---
+        console.log("DEBUG: Script da aula.html iniciado.");
+
+        // --- LÓGICA DO TIMER POMODORO ---
+        const pomodoroDisplay = document.getElementById('pomodoro-display');
+        const pomodoroStartBtn = document.getElementById('pomodoro-start');
+        const pomodoroPauseBtn = document.getElementById('pomodoro-pause');
+        const pomodoroResetBtn = document.getElementById('pomodoro-reset');
+        let pomodoroInterval;
+        let pomodoroTime = 25 * 60;
+        let isPomodoroPaused = true;
+        function updatePomodoroDisplay() { const minutes = Math.floor(pomodoroTime / 60); const seconds = pomodoroTime % 60; pomodoroDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`; }
+        pomodoroStartBtn.addEventListener('click', () => { if (isPomodoroPaused) { isPomodoroPaused = false; pomodoroStartBtn.textContent = 'Focando...'; pomodoroInterval = setInterval(() => { pomodoroTime--; updatePomodoroDisplay(); if (pomodoroTime <= 0) { clearInterval(pomodoroInterval); alert('Pomodoro finalizado! Hora de uma pausa.'); isPomodoroPaused = true; pomodoroStartBtn.textContent = 'Iniciar'; } }, 1000); } });
+        pomodoroPauseBtn.addEventListener('click', () => { if (!isPomodoroPaused) { isPomodoroPaused = true; clearInterval(pomodoroInterval); pomodoroStartBtn.textContent = 'Continuar'; } });
+        pomodoroResetBtn.addEventListener('click', () => { isPomodoroPaused = true; clearInterval(pomodoroInterval); pomodoroTime = 25 * 60; updatePomodoroDisplay(); pomodoroStartBtn.textContent = 'Iniciar'; });
+        updatePomodoroDisplay();
+
+        // --- LÓGICA DA AULA E QUIZ ---
+        const lessonTitleEl = document.getElementById('lesson-title');
+        const lessonFocusEl = document.getElementById('lesson-focus');
+        const lessonContentEl = document.getElementById('lesson-content');
+        const revisionContentEl = document.getElementById('revision-content');
+        const questionsContainerEl = document.getElementById('questions-container');
+        const submitQuizBtn = document.getElementById('submit-quiz');
+        const resultsSectionEl = document.getElementById('results-section');
+        const scoreTextEl = document.getElementById('score-text');
+        const answerKeySectionEl = document.getElementById('answer-key-section');
+        const answerKeyContentEl = document.getElementById('answer-key-content');
+        const videoSectionEl = document.getElementById('video-section');
+        const videoIframeEl = document.getElementById('video-iframe');
+        const backToTrackBtn = document.getElementById('back-to-track-btn');
+
+        let currentLessonData = null;
+        let currentSubjectId = null; // Ex: "Linguagens"
+        let currentDocumentId = null; // Ex: "mat_op_fundamentais_01"
+        
+        /**
+         * Mapeia o prefixo do ID da URL para o nome do *documento* da matéria no Firebase.
+         * Ex: "lin" -> "Linguagens" (COM "L" MAIÚSCULO, CONFORME A IMAGEM)
+         */
+        function mapPrefixToSubject(prefix) {
+            console.log(`DEBUG: Mapeando prefixo "${prefix}"...`);
+            const map = {
+                'mat': 'matematica',
+                'lin': 'linguagens', // <-- Corrigido para "L" maiúsculo
+                'hum': 'humanas',
+                'nat': 'natureza'
+            };
+            const subject = map[prefix];
+            if (!subject) {
+                console.error(`ERRO: Prefixo "${prefix}" não reconhecido!`);
+                return null;
+            }
+            console.log(`DEBUG: Matéria (Documento Parente) encontrada: "${subject}"`);
+            return subject;
+        }
+
+        // Função para buscar e carregar o JSON da aula do Firebase
+        async function loadLessonData(subjectId, documentId) {
+            const firebasePath = `/aulasMaterias/${subjectId}/aulas/${documentId}`;
+            console.log(`DEBUG: loadLessonData - Buscando do Firebase no caminho: ${firebasePath}`);
+            
+            // --- DEBUG: Listar todos os documentos da subcoleção ---
+            try {
+                const subcollectionRef = collection(db, 'aulasMaterias', subjectId, 'aulas');
+                const querySnapshot = await getDocs(subcollectionRef);
+                console.log(`--- DEBUG: INÍCIO DA LISTA DE AULAS EM /aulasMaterias/${subjectId}/aulas ---`);
+                if (querySnapshot.empty) {
+                    console.log("DEBUG: A subcoleção 'aulas' está vazia ou não foi encontrada.");
+                }
+                querySnapshot.forEach(doc => {
+                    console.log(`DEBUG: Documento encontrado na subcoleção: ID = "${doc.id}"`);
+                });
+                console.log(`--- DEBUG: FIM DA LISTA DE AULAS ---`);
+            } catch (listError) {
+                console.error(`ERRO DE DEBUG: Não foi possível LISTAR a subcoleção 'aulas'. Provavelmente é um problema de Regra de Segurança (permission denied).`, listError);
+            }
+            // --- FIM DO DEBUG ---
+
+            try {
+                const docRef = doc(db, 'aulasMaterias', subjectId, 'aulas', documentId);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    console.log("DEBUG: Documento específico encontrado!", docSnap.data());
+                    return docSnap.data();
+                } else {
+                    console.error(`ERRO: Nenhum documento encontrado para o ID: "${documentId}" na coleção "${subjectId}"`);
+                    return null; 
+                }
+            } catch (error) {
+                console.error("ERRO: Falha ao carregar dados da aula do Firebase:", error);
+                throw new Error("Não foi possível carregar os dados da aula. Verifique sua conexão e as regras de segurança.");
+            }
+        }
+
+        // Função para renderizar conteúdo (Markdown/HTML) e LaTeX
+        function renderContent(element, markdownText) {
+             if (markdownText) {
+                // DEBUG: Verifica se 'marked' está carregado
+                if (typeof marked === 'undefined' || typeof marked.parse !== 'function') {
+                    console.warn("DEBUG: Biblioteca 'marked' (Markdown) não foi carregada. Renderizando como HTML puro.");
+                    // Fallback simples: substitui quebras de linha por <br>
+                    element.innerHTML = markdownText.replace(/\n/g, '<br>');
+                } else {
+                    console.log("DEBUG: Renderizando Markdown com 'marked'.");
+                    element.innerHTML = marked.parse(markdownText);
+                }
+                
+                if (window.MathJax) {
+                    console.log(`DEBUG: Executando MathJax no elemento: ${element.id}`);
+                    MathJax.typesetPromise([element]).catch(err => console.error('Erro no MathJax:', err));
+                }
+            } else {
+                element.innerHTML = '<p class="text-gray-500 italic">Conteúdo não disponível.</p>';
+            }
+        }
+
+        // Função para renderizar as questões do quiz
+        function renderQuiz(questions) {
+            console.log("DEBUG: renderQuiz - Renderizando questões...");
+            questionsContainerEl.innerHTML = '';
+            answerKeyContentEl.innerHTML = '';
+
+            if (!questions || questions.length === 0) {
+                 questionsContainerEl.innerHTML = '<p>Nenhuma questão disponível para esta aula.</p>';
+                 submitQuizBtn.disabled = true;
+                 return;
+            }
+
+            questions.forEach((q, index) => {
+                const questionNumber = q.idQuestao || (index + 1);
+                
+                // Funções auxiliares para renderizar com 'marked'
+                const parseInline = (text) => (typeof marked === 'function' ? marked.parseInline(text || '') : (text || ''));
+                const parseBlock = (text) => (typeof marked === 'function' ? marked.parse(text || '') : (text || ''));
+                
+                const enunciadoHtml = parseInline(q.enunciado);
+                const alternativasHtml = q.alternativas.map(alt => `
+                    <div>
+                        <input type="radio" name="q${questionNumber}" id="q${questionNumber}${alt.letra}" value="${alt.letra}" class="hidden">
+                        <label for="q${questionNumber}${alt.letra}">${alt.letra}) ${parseInline(alt.texto)}</label>
+                    </div>
+                `).join('');
+                
+                const resolucaoHtml = parseBlock(q.resolucaoDetalhada || 'Resolução não disponível.');
+                const motivadorHtml = q.textoMotivador ? `<div class="text-sm text-gray-600 bg-gray-100 p-3 rounded mb-4">${parseBlock(q.textoMotivador)}</div>` : '';
+
+
+                const questionHTML = `
+                    <div class="question-container bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                        <div class="font-semibold text-lg mb-4"><strong>Questão ${questionNumber}:</strong> ${enunciadoHtml}</div>
+                        ${motivadorHtml}
+                        
+                        ${q.midiaQuestao && q.midiaQuestao.length > 0 ?
+                            `<div class="my-4 p-4 border rounded">${q.midiaQuestao[0].legenda || 'Mídia da Questão'} (Renderização de gráfico/tabela não implementada)</div>`
+                            : ''
+                        }
+
+                        <div class="space-y-2">
+                            ${alternativasHtml}
+                        </div>
+                        <div id="res${questionNumber}" class="resolution-text hidden mt-4">
+                             <strong>Resolução:</strong>
+                             <div class="resolution-content">${resolucaoHtml}</div>
+                        </div>
+                    </div>
+                `;
+                questionsContainerEl.insertAdjacentHTML('beforeend', questionHTML);
+
+                 const answerKeyHTML = `
+                     <div class="mb-6 pb-6 border-b border-gray-200">
+                         <h3 class="font-bold text-lg mb-2">Questão ${questionNumber} - Correta: ${q.respostaCorreta}</h3>
+                         <div class="resolution-content">${resolucaoHtml}</div>
+                     </div>
+                 `;
+                 answerKeyContentEl.insertAdjacentHTML('beforeend', answerKeyHTML);
+            });
+             if (window.MathJax) {
+                 console.log("DEBUG: Executando MathJax no Quiz e Gabarito.");
+                 MathJax.typesetPromise([questionsContainerEl, answerKeyContentEl]).catch(err => console.error('Erro no MathJax (Quiz):', err));
+             }
+        }
+
+        // Função para verificar respostas e enviar ao Firebase
+        async function checkAnswers() {
+            console.log("DEBUG: checkAnswers - Corrigindo o quiz...");
+            if (!currentLessonData) {
+                console.error("ERRO: 'currentLessonData' está nulo. Não é possível corrigir.");
+                return;
+            }
+
+            let score = 0;
+            const totalQuestions = currentLessonData.questoes.length;
+            const quizForm = document.getElementById('quiz-form');
+            const questoesCorretas = [];
+
+            currentLessonData.questoes.forEach((q, index) => {
+                const questionNumber = q.idQuestao || (index + 1);
+                const selectedAnswerNode = quizForm.querySelector(`input[name="q${questionNumber}"]:checked`);
+                const resolutionEl = document.getElementById(`res${questionNumber}`);
+                const labels = quizForm.querySelectorAll(`input[name="q${questionNumber}"] + label`);
+
+                 labels.forEach(label => {
+                     label.style.pointerEvents = 'none';
+                     const input = document.getElementById(label.getAttribute('for'));
+                     if(input) input.disabled = true;
+                 });
+
+                if (selectedAnswerNode) {
+                    const userAnswer = selectedAnswerNode.value;
+                    const correct = userAnswer === q.respostaCorreta;
+                    const userLabel = quizForm.querySelector(`label[for="q${questionNumber}${userAnswer}"]`);
+
+                    if (correct) {
+                        score++;
+                        questoesCorretas.push(questionNumber);
+                        userLabel.classList.add('correct');
+                    } else {
+                        userLabel.classList.add('incorrect');
+                        const correctLabel = quizForm.querySelector(`label[for="q${questionNumber}${q.respostaCorreta}"]`);
+                        if(correctLabel) correctLabel.classList.add('correct');
+                    }
+                } else {
+                     const correctLabel = quizForm.querySelector(`label[for="q${questionNumber}${q.respostaCorreta}"]`);
+                     if(correctLabel) correctLabel.classList.add('correct');
+                }
+
+                 if(resolutionEl) resolutionEl.classList.remove('hidden');
+            });
+            
+             if (window.MathJax) {
+                 console.log("DEBUG: Executando MathJax nas resoluções exibidas.");
+                 MathJax.typesetPromise([answerKeyContentEl]).catch(err => console.error('Erro no MathJax (Resoluções):', err));
+             }
+
+            scoreTextEl.textContent = `Você acertou ${score} de ${totalQuestions} questões.`;
+            resultsSectionEl.classList.remove('hidden');
+            answerKeySectionEl.classList.remove('hidden');
+            submitQuizBtn.disabled = true;
+            submitQuizBtn.textContent = 'Resultados Exibidos';
+
+            const resultado = {
+                acertos: score,
+                totalQuestoes: totalQuestions,
+                questoesCorretas: questoesCorretas
+            };
+
+            try {
+                // ** IMPORTANTE: O firebase-aula.js também deve usar o ID da matéria e o ID do documento **
+                console.log(`DEBUG: Enviando resultado para Matéria: ${currentSubjectId}, ID da Aula: ${currentDocumentId}`);
+                await enviarResultadoQuiz(currentSubjectId, currentDocumentId, resultado);
+                console.log("DEBUG: Resultado do quiz enviado com sucesso.");
+            } catch (error) {
+                console.error("ERRO: Falha ao enviar resultado do quiz:", error);
+                alert("Houve um erro ao salvar seu progresso, mas sua correção está visível na tela.");
+            }
+
+             resultsSectionEl.scrollIntoView({ behavior: 'smooth' });
+        }
+
+
+        // --- Inicialização da Página ---
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("DEBUG: DOMContentLoaded - Página carregada.");
+            console.log("DEBUG: Verificando se a biblioteca 'marked' carregou:", typeof marked);
+            
+            // **** CORREÇÃO 3: Configura o 'marked' para renderizar tabelas (GFM) ****
+            if (typeof marked === 'function') {
+                marked.setOptions({
+                    gfm: true // Habilita GitHub Flavored Markdown (para tabelas)
+                });
+                console.log("DEBUG: 'marked' configurado com GFM=true.");
+            }
+            
+            verificarLogin(async (userData) => {
+                if (!userData) {
+                    console.error("ERRO: Usuário não logado. Redirecionando...");
+                    window.location.href = '../index.html'; 
+                    return;
+                }
+                
+                console.log(`DEBUG: Usuário logado: ${userData.name}`);
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlId = urlParams.get('id'); // Pega "lin-mat_op_fundamentais_01"
+                console.log(`DEBUG: ID da URL capturado: ${urlId}`);
+
+                if (!urlId) {
+                    lessonTitleEl.textContent = "Erro";
+                    lessonContentEl.innerHTML = '<p class="text-red-500">ID da aula não encontrado na URL. Use ?id=MATERIA-ID_DA_AULA (ex: ?id=lin-mat_op_fundamentais_01)</p>';
+                    return;
+                }
+
+                // --- LÓGICA DE PARSING CORRIGIDA ---
+                const parts = urlId.split('-');
+                if (parts.length < 2) {
+                    lessonTitleEl.textContent = "Erro";
+                    lessonContentEl.innerHTML = `<p class="text-red-500">Formato de ID inválido. Use o formato PREFIXO-ID_DOCUMENTO (ex: ?id=lin-mat_op_fundamentais_01)</p>`;
+                    return;
+                }
+
+                const subjectPrefix = parts[0]; // "lin"
+                currentDocumentId = parts.slice(1).join('-'); // "mat_op_fundamentais_01"
+                currentSubjectId = mapPrefixToSubject(subjectPrefix); // "Linguagens"
+                
+                console.log(`DEBUG: ID do Documento (aula): ${currentDocumentId}`);
+                console.log(`DEBUG: ID da Matéria (documento): ${currentSubjectId}`);
+
+                // Extrai o número da aula (ex: '01' de '..._01')
+                const numericMatch = urlId.match(/_(\d+)$/); 
+                let lessonNumber = 1;
+
+                if (numericMatch) {
+                    lessonNumber = parseInt(numericMatch[1], 10); // Pega "01" -> 1
+                } else {
+                    console.warn(`DEBUG: Não foi possível extrair um número do final de "${urlId}". Assumindo "1" para verificação de progresso.`);
+                }
+                console.log(`DEBUG: Número da Aula (para verificação): ${lessonNumber}`);
+                
+                if (!currentSubjectId) {
+                    lessonTitleEl.textContent = "Erro";
+                    lessonContentEl.innerHTML = `<p class="text-red-500">Prefixo de matéria inválido: "${subjectPrefix}" (extraído de "${urlId}"). Verifique o \`mapPrefixToSubject\`.</p>`;
+                    return;
+                }
+
+                // Atualiza o botão "Voltar"
+                let trackPagePath = `../${currentSubjectId.toLowerCase()}/index.html`;
+                if (currentSubjectId.toLowerCase() === 'linguagens') {
+                    trackPagePath = '../linguagens.html';
+                }
+                
+                backToTrackBtn.href = trackPagePath; 
+                console.log(`DEBUG: Botão 'Voltar' aponta para: ${backToTrackBtn.href}`);
+
+                try {
+                    // 1. Verifica permissão de acesso
+                    console.log(`DEBUG: Verificando permissão: Matéria=${currentSubjectId}, Aula Nº=${lessonNumber}`);
+                    await verificarAulaAtual(currentSubjectId, lessonNumber);
+                    console.log("DEBUG: Permissão de acesso concedida.");
+
+                    // 2. Carrega os dados da aula (usando o ID *corrigido*)
+                    const lessonData = await loadLessonData(currentSubjectId, currentDocumentId);
+                    
+                    if (lessonData) {
+                        currentLessonData = lessonData; 
+
+                        // 3. Renderiza o conteúdo
+                        console.log("DEBUG: Renderizando conteúdo...");
+                        document.title = lessonData.tituloAula;
+                        lessonTitleEl.textContent = lessonData.tituloAula;
+                        lessonFocusEl.textContent = `Foco ENEM: ${lessonData.focoEnem}`;
+
+                        renderContent(lessonContentEl, lessonData.conteudoPrincipal);
+                        renderContent(revisionContentEl, lessonData.revisaoGeral);
+
+                        if (lessonData.videoUrl) {
+                            videoIframeEl.src = lessonData.videoUrl;
+                            videoSectionEl.classList.remove('hidden');
+                        }
+
+                        renderQuiz(lessonData.questoes);
+
+                        // 4. Adiciona o listener de correção
+                        submitQuizBtn.addEventListener('click', checkAnswers);
+
+                        // 5. Registra a visita
+                        // O ID de registro DEVE ser o ID do documento da aula (ex: mat_op_fundamentais_01)
+                        // A função 'registrarVisitaAula' já espera a matéria ('Linguagens') e o ID ('mat_op_fundamentais_01')
+                        console.log(`DEBUG: Registrando visita: Matéria=${currentSubjectId}, ID=${currentDocumentId}`);
+                        await registrarVisitaAula(currentSubjectId, currentDocumentId);
+                        console.log("DEBUG: Visita registrada.");
+
+                    } else {
+                        // Erro se o documento não for encontrado no Firebase
+                        throw new Error(`O documento de aula com ID "${currentDocumentId}" não foi encontrado na matéria "${currentSubjectId}". Verifique o ID no Firebase.`);
+                    }
+                } catch (error) {
+                    // Captura erros de 'verificarAulaAtual' (acesso negado) ou 'loadLessonData' (não encontrado/rede)
+                    console.error("ERRO: Falha na inicialização da aula:", error);
+                    lessonTitleEl.textContent = "Acesso Negado ou Erro";
+                    // Exibe a mensagem de erro específica na tela
+                    lessonContentEl.innerHTML = `<p class="text-red-500 font-bold text-lg">${error.message}</p>`;
+                    
+                    // Esconde o resto da página
+                    document.getElementById('revision-section').classList.add('hidden');
+                    document.querySelector('.mt-12').classList.add('hidden'); 
+                    document.querySelector('.no-print.mt-12.pt-8').classList.add('hidden');
+                    pomodoroDisplay.parentElement.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
