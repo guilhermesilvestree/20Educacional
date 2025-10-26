@@ -442,9 +442,12 @@
                         const distance = (item.y + LESSON_HEIGHT_SPACING / 2) / totalHeight * pathLength;
                         const point = path.getPointAtLength(distance);
                         if (!point) return;
-                        const lessonId = `mat-${item.index + 1}`;
+                        
+                        // *** MUDANÇA 1 e 2: Atualizando o ID e o link (href) ***
+                        const lessonId = `mat-mat_p${item.index + 1}`;
                         const lessonEl = document.createElement('a');
-                        lessonEl.href = `aulas/aula${item.index + 1}.html`;
+                        lessonEl.href = `aulas/aula.html?id=${lessonId}`;
+                        
                         lessonEl.className = 'lesson-item';
                         lessonEl.dataset.lessonId = lessonId;
                         lessonEl.style.left = `${point.x}px`;
@@ -458,14 +461,25 @@
             async function checkAndUpdateUI() {
                 const statusData = await carregarProgresso(MATERIA_ATUAL);
                 let lastCompletedLesson = 0;
+                
                 Object.keys(statusData).forEach(key => {
-                    const lessonNum = parseInt(key.split('-')[1]);
-                    if (lessonNum > lastCompletedLesson) lastCompletedLesson = lessonNum;
+                    // *** MUDANÇA 3: Lógica de parsing para 'mat_p1' ***
+                    // Espera chaves como 'mat_p1', 'mat_p10', etc.
+                    const match = key.match(/mat_p(\d+)/);
+                    if (match && match[1]) {
+                         const lessonNum = parseInt(match[1]);
+                         if (lessonNum > lastCompletedLesson) lastCompletedLesson = lessonNum;
+                    }
                 });
+                
                 const nextLesson = lastCompletedLesson + 1;
 
                 document.querySelectorAll('.lesson-item').forEach((item) => {
-                    const lessonNumber = parseInt(item.dataset.lessonId.split('-')[1]);
+                    // *** MUDANÇA 4: Lógica de parsing para 'mat_p1' ***
+                    const lessonId = item.dataset.lessonId; // ex: 'mat_p1'
+                    const match = lessonId.match(/mat_p(\d+)/);
+                    const lessonNumber = match ? parseInt(match[1]) : 0;
+                    
                     item.className = 'lesson-item';
                     if (statusData[item.dataset.lessonId]) item.classList.add('visited');
                     if (lessonNumber === nextLesson) item.classList.add('active');
@@ -515,7 +529,7 @@
                     event.preventDefault(); return;
                 }
                 event.preventDefault();
-                const lessonId = item.dataset.lessonId;
+                const lessonId = item.dataset.lessonId; // Agora será 'mat_p1', 'mat_p2', etc.
                 await registrarVisitaAula(MATERIA_ATUAL, lessonId);
                 window.location.href = item.href;
             });

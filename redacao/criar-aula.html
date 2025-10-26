@@ -345,11 +345,12 @@
         let currentLessonId = null; // Armazena o ID da aula sendo editada/criada
         let firebaseAutoId = null; // Armazena o ID gerado pelo Firebase se necessário
 
+        // *** CORREÇÃO AQUI: Adicionado 'simpleName' para validação ***
         const subjects = [
-            { id: 'linguagens', name: 'Linguagens e suas Tecnologias', icon: 'fa-solid fa-comments' },
-            { id: 'humanas', name: 'Ciências Humanas e suas Tecnologias', icon: 'fa-solid fa-landmark' },
-            { id: 'natureza', name: 'Ciências da Natureza e suas Tecnologias', icon: 'fa-solid fa-flask' },
-            { id: 'matematica', name: 'Matemática e suas Tecnologias', icon: 'fa-solid fa-calculator' }
+            { id: 'linguagens', name: 'Linguagens e suas Tecnologias', simpleName: 'Linguagens', icon: 'fa-solid fa-comments' },
+            { id: 'humanas', name: 'Ciências Humanas e suas Tecnologias', simpleName: 'Ciências Humanas', icon: 'fa-solid fa-landmark' },
+            { id: 'natureza', name: 'Ciências da Natureza e suas Tecnologias', simpleName: 'Ciências da Natureza', icon: 'fa-solid fa-flask' },
+            { id: 'matematica', name: 'Matemática e suas Tecnologias', simpleName: 'Matemática', icon: 'fa-solid fa-calculator' }
         ];
 
         // --- Elementos DOM ---
@@ -579,9 +580,10 @@
              currentLessonId = data.idAula || null; // Atualiza o ID atual
 
             // 2. Validação de 'disciplina' (deve ser uma das matérias)
-            if (data.disciplina && !subjects.some(s => s.name === data.disciplina)) {
+            // *** CORREÇÃO AQUI: Verifica 'simpleName' (ex: "Matemática") ou 'id' (ex: "matematica") ***
+            if (data.disciplina && !subjects.some(s => s.simpleName === data.disciplina || s.id === data.disciplina)) {
                  // Permitir salvar mesmo com disciplina diferente, mas avisar
-                 warnings.push(`Disciplina "${data.disciplina}" não corresponde às matérias padrão. Verifique se está correto.`);
+                 warnings.push(`Disciplina "${data.disciplina}" não corresponde às matérias padrão (esperado: "Matemática" ou "matematica"). Verifique se está correto.`);
             }
 
             // 3. Validação de 'metadados'
@@ -705,11 +707,6 @@
                     warnings.push(`Q.${questionNum} - ${fieldName}: Delimitador LaTeX "$" parece não estar fechado corretamente.`);
                 }
             }
-             // Aviso se houver $ sem par (possível erro) - Regex mais simples
-            const singleDollarRegex = /(?<!\$)\$[^\$]+(?!\$)/g;
-            if (singleDollarRegex.test(text)) {
-                 //warnings.push(`Q.${questionNum} - ${fieldName}: Encontrado delimitador "$" isolado. Verifique se o formato LaTeX está correto (use $$...$$ para blocos ou $...$ inline).`);
-             }
          }
 
 
@@ -852,15 +849,6 @@
 
         // --- Execução ---
         verificarLogin(initializeApp); // Verifica login e inicializa
-        // Lida com o botão de voltar do navegador (opcional, pode causar loop se mal implementado)
-        // window.onpopstate = function(event) {
-        //     if (document.getElementById('step-lesson-list').classList.contains('active')) {
-        //         showStep('step-subject-selection');
-        //     } else if (document.getElementById('step-summary').classList.contains('active')) {
-        //         showStep('step-lesson-list');
-        //         // Potencialmente recarregar lições aqui se necessário
-        //     }
-        // };
 
     </script>
 

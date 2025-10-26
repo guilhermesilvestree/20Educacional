@@ -202,10 +202,10 @@
     <script type="module">
         // --- IMPORTAÇÕES DO FIREBASE ---
         // Assumindo que este HTML está em /redacao/
-        import { db } from '../firebase/firebase-config.js';
+        import { db } from '../../firebase/firebase-config.js';
         import { doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-        import { verificarLogin, verificarAulaAtual, registrarVisitaAula } from '../firebase/firebase-conta.js';
-        import { enviarResultadoQuiz } from '../firebase/firebase-aula.js';
+        import { verificarLogin, verificarAulaAtual, registrarVisitaAula } from '../../firebase/firebase-conta.js';
+        import { enviarResultadoQuiz } from '../../firebase/firebase-aula.js';
 
         // --- DEBUG: Mensagem de início ---
         console.log("DEBUG: Script da aula.html iniciado.");
@@ -240,18 +240,14 @@
         const backToTrackBtn = document.getElementById('back-to-track-btn');
 
         let currentLessonData = null;
-        let currentSubjectId = null; // Ex: "Linguagens"
-        let currentDocumentId = null; // Ex: "mat_op_fundamentais_01"
-        
-        /**
-         * Mapeia o prefixo do ID da URL para o nome do *documento* da matéria no Firebase.
-         * Ex: "lin" -> "Linguagens" (COM "L" MAIÚSCULO, CONFORME A IMAGEM)
-         */
+        let currentSubjectId = null;
+        let currentDocumentId = null;
+
         function mapPrefixToSubject(prefix) {
             console.log(`DEBUG: Mapeando prefixo "${prefix}"...`);
             const map = {
                 'mat': 'matematica',
-                'lin': 'linguagens', // <-- Corrigido para "L" maiúsculo
+                'lin': 'linguagens',
                 'hum': 'humanas',
                 'nat': 'natureza'
             };
@@ -269,7 +265,6 @@
             const firebasePath = `/aulasMaterias/${subjectId}/aulas/${documentId}`;
             console.log(`DEBUG: loadLessonData - Buscando do Firebase no caminho: ${firebasePath}`);
             
-            // --- DEBUG: Listar todos os documentos da subcoleção ---
             try {
                 const subcollectionRef = collection(db, 'aulasMaterias', subjectId, 'aulas');
                 const querySnapshot = await getDocs(subcollectionRef);
@@ -284,7 +279,6 @@
             } catch (listError) {
                 console.error(`ERRO DE DEBUG: Não foi possível LISTAR a subcoleção 'aulas'. Provavelmente é um problema de Regra de Segurança (permission denied).`, listError);
             }
-            // --- FIM DO DEBUG ---
 
             try {
                 const docRef = doc(db, 'aulasMaterias', subjectId, 'aulas', documentId);
@@ -303,13 +297,10 @@
             }
         }
 
-        // Função para renderizar conteúdo (Markdown/HTML) e LaTeX
         function renderContent(element, markdownText) {
              if (markdownText) {
-                // DEBUG: Verifica se 'marked' está carregado
                 if (typeof marked === 'undefined' || typeof marked.parse !== 'function') {
                     console.warn("DEBUG: Biblioteca 'marked' (Markdown) não foi carregada. Renderizando como HTML puro.");
-                    // Fallback simples: substitui quebras de linha por <br>
                     element.innerHTML = markdownText.replace(/\n/g, '<br>');
                 } else {
                     console.log("DEBUG: Renderizando Markdown com 'marked'.");
@@ -325,7 +316,6 @@
             }
         }
 
-        // Função para renderizar as questões do quiz
         function renderQuiz(questions) {
             console.log("DEBUG: renderQuiz - Renderizando questões...");
             questionsContainerEl.innerHTML = '';
