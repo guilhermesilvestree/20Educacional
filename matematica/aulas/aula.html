@@ -10,6 +10,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+    </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
@@ -119,7 +126,7 @@
     </style>
 </head>
 
-<body class="bg-gray-100 text-gray-800 p-4 sm:p-6 md:p-8">
+<body class="bg-gray-100 text-gray-800 p-4 sm:p-6 md:p-8" style="overflow-x: hidden;">
 
     <div class="main-container max-w-4xl mx-auto rounded-2xl shadow-2xl p-6 sm:p-8 md:p-12">
         <header class="text-center mb-10">
